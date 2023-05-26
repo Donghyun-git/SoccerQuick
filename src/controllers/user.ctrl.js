@@ -61,6 +61,7 @@ const logIn = async (req, res, next) => {
 
 //[ 유저정보 수정 ]
 const updateUserInfo = async (req, res, next) => {
+  //나중에 토큰 검증하고 나서 유저 정보 데이터를 따로 받아야 한다.
   const { userId, password } = req.body;
 
   if (!password) {
