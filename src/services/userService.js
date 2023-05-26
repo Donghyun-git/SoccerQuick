@@ -11,6 +11,7 @@ const {
 } = require('../envconfig');
 
 //[ 비밀번호 해싱 ]
+/** 패스워드 */
 const hashPassword = async (password) => {
   const saltRounds = parseInt(BCRYPT_SALT_ROUNDS);
   const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -18,6 +19,7 @@ const hashPassword = async (password) => {
 };
 
 //[ 유저 회원가입 ]
+/** (아이디, 패스워드, next 함수) */
 const signUpUser = async (userId, password, next) => {
   try {
     const foundUser = await User.findOne({ $or: [{ userId }] });
@@ -42,7 +44,8 @@ const signUpUser = async (userId, password, next) => {
   }
 };
 
-/**[유저 로그인] */
+//[유저 로그인]
+/** (아이디, 패스워드, next 함수)*/
 const logInUser = async (userId, password, next) => {
   try {
     const foundUser = await User.findOne({ userId });
@@ -85,7 +88,40 @@ const logInUser = async (userId, password, next) => {
   }
 };
 
+//[ 유저정보 수정 ]
+/** (아이디, 패스워드, next 함수) */
+const updateUser = async (userId, password, next) => {
+  try {
+    const foundUser = User.findOne({ userId });
+
+    if (!foundUser) {
+      return next(new AppError(400, '일치하는 아이디가 없습니다.'));
+    }
+
+    const updateData = {};
+
+    if (password) {
+      updateData.password = await bcrypt.hash(
+        password,
+        Number(BCRYPT_SALT_ROUNDS)
+      );
+    }
+
+    const newUser = await User.updateOne(
+      { userId },
+      { $set: updateData },
+      { new: true }
+    );
+
+    return newUser;
+  } catch (error) {
+    console.error(error);
+    next(new AppError(500, '회원정보 수정에 실패하였습니다.'));
+  }
+};
+
 module.exports = {
   signUpUser,
   logInUser,
+  updateUser,
 };

@@ -59,7 +59,31 @@ const logIn = async (req, res, next) => {
   }
 };
 
+//[ 유저정보 수정 ]
+const updateUserInfo = async (req, res, next) => {
+  const { userId, password } = req.body;
+
+  if (!password) {
+    return next(new AppError(400, '수정된 패스워드 입력은 필수 사항입니다!'));
+  }
+
+  try {
+    const newUser = await userService.updateUser(userId, password, next);
+
+    res.status(200).json({
+      message: '회원정보 수정 성공',
+      updateData: {
+        userId: userId,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    next(new AppError(500, '회원 정보 수정 실패'));
+  }
+};
+
 module.exports = {
   signUp,
   logIn,
+  updateUserInfo,
 };
