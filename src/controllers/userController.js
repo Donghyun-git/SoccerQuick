@@ -139,14 +139,14 @@ const adminBanUser = async (req, res, next) => {
   try {
     const result = await userService.banUser(userId, role, banUserId);
 
-    if (result === 'notAdmin') {
-      return next(new AppError(400, '관리자 권한이 없습니다.'));
-    } else if (result === 'Not Found User') {
-      return next(new AppError(400, '존재하지 않는 유저 입니다!'));
-    }
+    if (result.statusCode === 403)
+      return next(new AppError(403, '관리자 권한이 없습니다.'));
 
-    res.status(200).json({
-      message: '정지 성공',
+    if (result.statusCode === 400)
+      return next(new AppError(400, '존재하지 않는 유저 입니다!'));
+
+    res.status(result.statusCode).json({
+      message: result.message,
     });
   } catch (error) {
     console.error(error);
