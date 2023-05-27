@@ -132,8 +132,31 @@ const updateUserInfo = async (req, res, next) => {
   }
 };
 
+// [ 관리자 ] 유저 로그인 정지
+const adminBanUser = async (req, res, next) => {
+  const { userId, role, banUserId } = req.body;
+
+  try {
+    const result = await userService.banUser(userId, role, banUserId);
+
+    if (result === 'notAdmin') {
+      return next(new AppError(400, '관리자 권한이 없습니다.'));
+    } else if (result === 'Not Found User') {
+      return next(new AppError(400, '존재하지 않는 유저 입니다!'));
+    }
+
+    res.status(200).json({
+      message: '정지 성공',
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '정지 실패, 서버 에러'));
+  }
+};
+
 module.exports = {
   signUp,
   logIn,
   updateUserInfo,
+  adminBanUser,
 };
