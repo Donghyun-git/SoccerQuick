@@ -19,21 +19,22 @@ const hashPassword = async (password) => {
 };
 
 //[ 유저 회원가입 ]
-/** (유저 입력 formdata, next 함수) */
-const signUpUser = async (formData, next) => {
+/** (유저 입력 formdata) */
+const signUpUser = async (formData) => {
   const { userId, password, userName, userEmail } = formData;
   try {
     const foundUser = await User.findOne({
       $or: [{ userId }, { userName }, { userEmail }],
     });
 
+    // 이미 사용 중이라면 데이터 추가 안하고 에러를 반환하기 위해 겹치는 요소 컨트롤러로.
     if (foundUser) {
       if (foundUser.userId === userId) {
-        return next(new AppError(400, '이미 존재하는 아이디 입니다.'));
+        return 'id';
       } else if (foundUser.userName === userName) {
-        return next(new AppError(400, '이미 존재하는 닉네임 입니다.'));
+        return 'name';
       } else if (foundUser.userEmail === userEmail) {
-        return next(new AppError(400, '이미 존재하는 이메일 입니다.'));
+        return 'email';
       }
     }
 
@@ -56,19 +57,19 @@ const signUpUser = async (formData, next) => {
 };
 
 //[유저 로그인]
-/** (아이디, 패스워드, next 함수)*/
-const logInUser = async (userId, password, next) => {
+/** (아이디, 패스워드)*/
+const logInUser = async (userId, password) => {
   try {
     const foundUser = await User.findOne({ userId });
 
     if (!foundUser) {
-      return next(new AppError(400, '존재하지 않는 아이디입니다.'));
+      return new AppError(400, 'incorrectId');
     }
 
     const isMatched = await bcrypt.compare(password, foundUser.password);
 
     if (!isMatched) {
-      return next(new AppError(400, '비밀번호가 일치하지 않습니다.'));
+      return new AppError(400, 'incorrectPassword');
     }
 
     const payload = {
@@ -106,34 +107,33 @@ const logInUser = async (userId, password, next) => {
 };
 
 //[ 유저정보 수정 ]
-/** (아이디, 패스워드, next 함수) */
-const updateUser = async (userId, password, next) => {
+/** (수정 formData) */
+const updateUser = async (formData) => {
+  const { userId, password, userName, userEmail } = formData;
   try {
-    const foundUser = User.findOne({ userId });
+    const foundUser = await User.findOne({ userId });
 
     if (!foundUser) {
-      return next(new AppError(400, '일치하는 아이디가 없습니다.'));
-    }
+      return null;
+    } else {
+      const updateData = {
+        userId: userId,
+        password: await bcrypt.hash(password, Number(BCRYPT_SALT_ROUNDS)),
+        userName: userName,
+        userEmail: userEmail,
+      };
 
-    const updateData = {};
-
-    if (password) {
-      updateData.password = await bcrypt.hash(
-        password,
-        Number(BCRYPT_SALT_ROUNDS)
+      const updatedUser = await User.findOneAndUpdate(
+        { userId },
+        { $set: updateData },
+        { new: true }
       );
+
+      return updatedUser;
     }
-
-    const newUser = await User.updateOne(
-      { userId },
-      { $set: updateData },
-      { new: true }
-    );
-
-    return newUser;
   } catch (error) {
     console.error(error);
-    next(new AppError(500, '회원정보 수정에 실패하였습니다.'));
+    throw new AppError(500, '회원정보 수정 실패');
   }
 };
 

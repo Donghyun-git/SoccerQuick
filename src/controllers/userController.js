@@ -18,13 +18,20 @@ const signUp = async (req, res, next) => {
   }
 
   if (!userName) {
-    return new new AppError(400, '닉네임은 필수 입력 사항입니다.')();
+    return next(new AppError(400, '닉네임은 필수 입력 사항입니다.'));
   }
 
   const formData = req.body;
 
   try {
-    await userService.signUpUser(formData, next);
+    const result = await userService.signUpUser(formData);
+
+    if (result === 'id')
+      return next(new AppError(400, '이미 존재하는 아이디 입니다.'));
+    if (result === 'name')
+      return next(new AppError(400, '이미 존재하는 닉네임 입니다.'));
+    if (result === 'email')
+      return next(new AppError(400, '이미 존재하는 이메일 입니다.'));
 
     res.status(201).json({ message: '회원가입에 성공하였습니다.' });
   } catch (error) {
@@ -45,9 +52,13 @@ const logIn = async (req, res, next) => {
   }
 
   try {
-    const result = await userService.logInUser(userId, password, next);
+    const result = await userService.logInUser(userId, password);
 
-    if (result) {
+    if (result.message === 'incorrectId') {
+      return next(new AppError(400, '존재하지 않는 아이디 입니다.'));
+    } else if (result.message === 'incorrectPassword') {
+      return next(new AppError(400, '비밀번호가 일치하지 않습니다.'));
+    } else if (result) {
       const { accessToken, refreshToken, userData } = result;
       const {
         userName,
@@ -85,25 +96,39 @@ const logIn = async (req, res, next) => {
 
 //[ 유저정보 수정 ]
 const updateUserInfo = async (req, res, next) => {
-  //나중에 토큰 검증하고 나서 유저 정보 데이터를 따로 받아야 한다.
-  const { userId, password } = req.body;
+  //나중에 tokenValidator 미들웨어에서 토큰 검증하고 나서 유저 정보 데이터를 따로 받아야 한다.
+  // const { userId } = req.user;
+
+  const { userId, password, userName, userEmail } = req.body;
 
   if (!password) {
     return next(new AppError(400, '수정된 패스워드 입력은 필수 사항입니다!'));
   }
 
+  if (!userName) {
+    return next(new AppError(400, '닉네임을 입력해주세요.'));
+  }
+
+  if (!userEmail) {
+    return next(new AppError(400, '이메일을 입력해주세요.'));
+  }
+
+  const formData = req.body;
+
   try {
-    const newUser = await userService.updateUser(userId, password, next);
+    const newUser = await userService.updateUser(formData);
+
+    if (newUser === null) {
+      return next(new AppError(400, '존재하지 않는 아이디 입니다.'));
+    }
 
     res.status(200).json({
       message: '회원정보 수정 성공',
-      updateData: {
-        userId: userId,
-      },
+      updateData: newUser,
     });
   } catch (error) {
     console.error(error);
-    next(new AppError(500, '회원 정보 수정 실패'));
+    return next(new AppError(500, '회원 정보 수정 실패'));
   }
 };
 
