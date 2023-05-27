@@ -1,5 +1,6 @@
 const { User } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
+const getBanTime = require('../utils/getBanTime');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const {
@@ -17,6 +18,8 @@ const hashPassword = async (password) => {
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   return hashedPassword;
 };
+
+// [ 유저 로그인 정지 ]
 
 //[ 유저 회원가입 ]
 /** (유저 입력 formdata) */
@@ -137,8 +140,43 @@ const updateUser = async (formData) => {
   }
 };
 
+// [ 관리자 ] 유저 로그인 정지
+/**(아이디, 유저 유형, 정지 대상 아이디) */
+const banUser = async (userId, role, banUserId) => {
+  try {
+    const foundUser = await User.findOne({ userId });
+
+    if (
+      foundUser.role === 'user' &&
+      foundUser.role === role &&
+      role !== 'admin'
+    ) {
+      return 'notAdmin';
+    }
+    console.log(banUserId);
+    const foundBanUser = await User.findOne({ userId: banUserId });
+    console.log(foundBanUser);
+    if (!foundBanUser) return 'Not Found User';
+
+    if (foundBanUser) {
+      const currentDate = new Date();
+      const banEndDate = getBanTime(currentDate, 2000); // 시간 1000 단위, 1000당 1일, 클라에서 받아야될듯
+
+      foundBanUser.isBanned = true;
+      foundBanUser.banEndDate = banEndDate;
+      await foundBanUser.save();
+
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+    throw new AppError(500, '회원 정지 실패');
+  }
+};
+
 module.exports = {
   signUpUser,
   logInUser,
   updateUser,
+  banUser,
 };
