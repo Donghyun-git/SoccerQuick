@@ -58,6 +58,8 @@ const logIn = async (req, res, next) => {
       return next(new AppError(400, '존재하지 않는 아이디 입니다.'));
     } else if (result.message === 'incorrectPassword') {
       return next(new AppError(400, '비밀번호가 일치하지 않습니다.'));
+    } else if (result.statusCode === 403) {
+      return next(new AppError(403, result.message));
     } else if (result) {
       const { accessToken, refreshToken, userData } = result;
       const {
@@ -101,6 +103,10 @@ const updateUserInfo = async (req, res, next) => {
 
   const { userId, password, userName, userEmail } = req.body;
 
+  if (!userId) {
+    return next(new AppError(400, '아이디를 입력해주세요'));
+  }
+
   if (!password) {
     return next(new AppError(400, '수정된 패스워드 입력은 필수 사항입니다!'));
   }
@@ -120,6 +126,10 @@ const updateUserInfo = async (req, res, next) => {
 
     if (newUser === null) {
       return next(new AppError(400, '존재하지 않는 아이디 입니다.'));
+    }
+
+    if (newUser.statusCode === 400) {
+      return next(new AppError(400, newUser.message));
     }
 
     res.status(200).json({

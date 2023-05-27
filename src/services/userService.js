@@ -75,6 +75,34 @@ const logInUser = async (userId, password) => {
       return new AppError(400, 'incorrectPassword');
     }
 
+    if (foundUser.isBanned) {
+      const { banEndDate } = foundUser;
+      const dateString = banEndDate.toString();
+      const newDate = new Date(dateString);
+
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        weekday: 'long',
+        timeZoneName: 'long',
+      };
+
+      const dateFormatter = new Intl.DateTimeFormat('ko-KR', options);
+      const translatedDate = dateFormatter.format(newDate);
+
+      const [year, month, date, day, type, hour, minute] =
+        translatedDate.split(' ');
+
+      return new AppError(
+        403,
+        `${year} ${month} ${date} ${day} ${type} ${hour} ${minute}분 까지 로그인 정지입니다.`
+      );
+    }
+
     const payload = {
       userId: foundUser.userId,
       password: foundUser.password,
@@ -104,8 +132,8 @@ const logInUser = async (userId, password) => {
       },
     };
   } catch (error) {
-    console.error(error);
-    throw new AppError(500, '로그인에 실패하였습니다');
+    console.error(error, 'catch문');
+    return new AppError(500, '로그인에 실패하였습니다');
   }
 };
 
@@ -118,22 +146,30 @@ const updateUser = async (formData) => {
 
     if (!foundUser) {
       return null;
-    } else {
-      const updateData = {
-        userId: userId,
-        password: await bcrypt.hash(password, Number(BCRYPT_SALT_ROUNDS)),
-        userName: userName,
-        userEmail: userEmail,
-      };
-
-      const updatedUser = await User.findOneAndUpdate(
-        { userId },
-        { $set: updateData },
-        { new: true }
-      );
-
-      return updatedUser;
     }
+
+    if (foundUser.userName === userName) {
+      return new AppError(400, '이미 존재하는 닉네임입니다.');
+    }
+
+    if (foundUser.userEmail === userEmail) {
+      return new AppError(400, '이미 존재하는 이메일입니다.');
+    }
+
+    const updateData = {
+      userId: userId,
+      password: await bcrypt.hash(password, Number(BCRYPT_SALT_ROUNDS)),
+      userName: userName,
+      userEmail: userEmail,
+    };
+
+    const updatedUser = await User.findOneAndUpdate(
+      { userId },
+      { $set: updateData },
+      { new: true }
+    );
+
+    return updatedUser;
   } catch (error) {
     console.error(error);
     throw new AppError(500, '회원정보 수정 실패');
@@ -153,14 +189,15 @@ const banUser = async (userId, role, banUserId) => {
     ) {
       return 'notAdmin';
     }
-    console.log(banUserId);
+
     const foundBanUser = await User.findOne({ userId: banUserId });
-    console.log(foundBanUser);
+
     if (!foundBanUser) return 'Not Found User';
 
     if (foundBanUser) {
       const currentDate = new Date();
-      const banEndDate = getBanTime(currentDate, 2000); // 시간 1000 단위, 1000당 1일, 클라에서 받아야될듯
+      const banEndDate = getBanTime(currentDate, 2000);
+      // 시간 1000 단위, 1000당 1일, 프론트에서 받아야될듯
 
       foundBanUser.isBanned = true;
       foundBanUser.banEndDate = banEndDate;
