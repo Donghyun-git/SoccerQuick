@@ -23,15 +23,14 @@ const UserSchema = new Schema(
       type: String,
       default: 'user',
     },
-    favoritePlaygrounds: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'Ground' },
-    ],
+    favoritePlaygrounds: [{ type: Schema.Types.ObjectId, ref: 'Ground' }],
     isBanned: {
       type: Boolean,
       default: false,
     },
     banEndDate: {
       type: Date,
+      default: null,
     },
   },
   { timestamps: true }

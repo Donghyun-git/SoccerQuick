@@ -8,7 +8,7 @@ const GroundSchema = new Schema({
   },
   price: { type: Number, required: true },
   rating: { type: Number },
-  usersFavorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  usersFavorites: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
 module.exports = GroundSchema;
