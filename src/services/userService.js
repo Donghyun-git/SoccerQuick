@@ -19,8 +19,6 @@ const hashPassword = async (password) => {
   return hashedPassword;
 };
 
-// [ 유저 로그인 정지 ]
-
 //[ 유저 회원가입 ]
 /** (유저 입력 formdata) */
 const signUpUser = async (formData) => {
@@ -76,31 +74,39 @@ const logInUser = async (userId, password) => {
     }
 
     if (foundUser.isBanned) {
-      const { banEndDate } = foundUser;
-      const dateString = banEndDate.toString();
-      const newDate = new Date(dateString);
+      const { isBanned, banEndDate } = foundUser;
+      const currentDate = new Date();
 
-      const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        weekday: 'long',
-        timeZoneName: 'long',
-      };
+      if (banEndDate && banEndDate <= currentDate) {
+        isBanned = false;
+        banEndDate = null;
+        await foundUser.save();
+      } else {
+        const dateString = banEndDate.toString();
+        const newDate = new Date(dateString);
 
-      const dateFormatter = new Intl.DateTimeFormat('ko-KR', options);
-      const translatedDate = dateFormatter.format(newDate);
+        const options = {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          weekday: 'long',
+          timeZoneName: 'long',
+        };
 
-      const [year, month, date, day, type, hour, minute] =
-        translatedDate.split(' ');
+        const dateFormatter = new Intl.DateTimeFormat('ko-KR', options);
+        const translatedDate = dateFormatter.format(newDate);
 
-      return new AppError(
-        403,
-        `${year} ${month} ${date} ${day} ${type} ${hour} ${minute}분 까지 로그인 정지입니다.`
-      );
+        const [year, month, date, day, type, hour, minute] =
+          translatedDate.split(' ');
+
+        return new AppError(
+          403,
+          `${year} ${month} ${date} ${day} ${type} ${hour} ${minute} 까지 로그인 정지입니다.`
+        );
+      }
     }
 
     const payload = {
@@ -186,13 +192,13 @@ const banUser = async (userId, role, banUserId) => {
       foundUser.role === 'user' &&
       foundUser.role === role &&
       role !== 'admin'
-    ) {
-      return 'notAdmin';
-    }
+    )
+      return new AppError(403, '관리자 권한이 없습니다.');
 
     const foundBanUser = await User.findOne({ userId: banUserId });
 
-    if (!foundBanUser) return 'Not Found User';
+    if (!foundBanUser)
+      return new AppError(400, '존재하지 않는 유저입니다. 다시 선택해 주세요.');
 
     if (foundBanUser) {
       const currentDate = new Date();
@@ -203,7 +209,7 @@ const banUser = async (userId, role, banUserId) => {
       foundBanUser.banEndDate = banEndDate;
       await foundBanUser.save();
 
-      return;
+      return { statusCode: 201, message: '정지 성공' };
     }
   } catch (error) {
     console.error(error);
