@@ -26,12 +26,8 @@ const signUp = async (req, res, next) => {
   try {
     const result = await userService.signUpUser(formData);
 
-    if (result === 'id')
-      return next(new AppError(400, '이미 존재하는 아이디 입니다.'));
-    if (result === 'name')
-      return next(new AppError(400, '이미 존재하는 닉네임 입니다.'));
-    if (result === 'email')
-      return next(new AppError(400, '이미 존재하는 이메일 입니다.'));
+    if (result.statusCode === 400)
+      return next(new AppError(400, result.message));
 
     res.status(201).json({ message: '회원가입에 성공하였습니다.' });
   } catch (error) {
@@ -54,10 +50,8 @@ const logIn = async (req, res, next) => {
   try {
     const result = await userService.logInUser(userId, password);
 
-    if (result.message === 'incorrectId') {
-      return next(new AppError(400, '존재하지 않는 아이디 입니다.'));
-    } else if (result.message === 'incorrectPassword') {
-      return next(new AppError(400, '비밀번호가 일치하지 않습니다.'));
+    if (result.statusCode === 400) {
+      return next(new AppError(400, result.message));
     } else if (result.statusCode === 403) {
       return next(new AppError(403, result.message));
     } else if (result) {
@@ -123,10 +117,6 @@ const updateUserInfo = async (req, res, next) => {
 
   try {
     const newUser = await userService.updateUser(formData);
-
-    if (newUser === null) {
-      return next(new AppError(400, '존재하지 않는 아이디 입니다.'));
-    }
 
     if (newUser.statusCode === 400) {
       return next(new AppError(400, newUser.message));
