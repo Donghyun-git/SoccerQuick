@@ -15,7 +15,10 @@ router.post('/login', userController.logIn);
 /* PATCH */
 
 //[ 회원정보 수정 ]
-router.patch('/update', userController.updateUserInfo);
+router.patch('/my/update', userController.updateUserInfo);
+
+//[ 관리자 - 유저 로그인 정지 ]
+router.patch('/admin/ban', userController.adminBanUser);
 
 /* DELETE */
 
