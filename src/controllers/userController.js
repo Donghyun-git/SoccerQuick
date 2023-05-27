@@ -3,7 +3,7 @@ const { AppError } = require('../middlewares/errorHandler');
 
 //[ 유저 회원가입 ]
 const signUp = async (req, res, next) => {
-  const { userId, password } = req.body;
+  const { userId, password, userName, userEmail } = req.body;
 
   if (!userId) {
     return next(new AppError(400, '아이디는 필수 입력 사항입니다.'));
@@ -13,8 +13,18 @@ const signUp = async (req, res, next) => {
     return next(new AppError(400, '비밀번호는 필수 입력 사항입니다.'));
   }
 
+  if (!userEmail) {
+    return next(new AppError(400, '이메일은 필수 입력 사항입니다.'));
+  }
+
+  if (!userName) {
+    return new new AppError(400, '닉네임은 필수 입력 사항입니다.')();
+  }
+
+  const formData = req.body;
+
   try {
-    await userService.signUpUser(userId, password, next);
+    await userService.signUpUser(formData, next);
 
     res.status(201).json({ message: '회원가입에 성공하였습니다.' });
   } catch (error) {
@@ -39,6 +49,14 @@ const logIn = async (req, res, next) => {
 
     if (result) {
       const { accessToken, refreshToken, userData } = result;
+      const {
+        userName,
+        userEmail,
+        favoritePlaygrounds,
+        isBanned,
+        banEndDate,
+        createdAt,
+      } = userData;
 
       //[accessToken, refreshToken 각각 response 헤더, 쿠키 세팅]
       res.setHeader('Authorization', `Bearer ${accessToken}`);
@@ -50,6 +68,12 @@ const logIn = async (req, res, next) => {
         message: '로그인 성공',
         userData: {
           userId: userData.userId,
+          userName: userName,
+          userEmail: userEmail,
+          favoritePlaygrounds: favoritePlaygrounds,
+          isBanned: isBanned,
+          banEndDate: banEndDate,
+          createdAt: createdAt,
         },
       });
     }

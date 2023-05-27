@@ -19,13 +19,22 @@ const hashPassword = async (password) => {
 };
 
 //[ 유저 회원가입 ]
-/** (아이디, 패스워드, next 함수) */
-const signUpUser = async (userId, password, next) => {
+/** (유저 입력 formdata, next 함수) */
+const signUpUser = async (formData, next) => {
+  const { userId, password, userName, userEmail } = formData;
   try {
-    const foundUser = await User.findOne({ $or: [{ userId }] });
+    const foundUser = await User.findOne({
+      $or: [{ userId }, { userName }, { userEmail }],
+    });
 
-    if (foundUser && foundUser.userId === userId) {
-      return next(new AppError(400, '이미 존재하는 아이디 입니다.'));
+    if (foundUser) {
+      if (foundUser.userId === userId) {
+        return next(new AppError(400, '이미 존재하는 아이디 입니다.'));
+      } else if (foundUser.userName === userName) {
+        return next(new AppError(400, '이미 존재하는 닉네임 입니다.'));
+      } else if (foundUser.userEmail === userEmail) {
+        return next(new AppError(400, '이미 존재하는 이메일 입니다.'));
+      }
     }
 
     const hashedPassword = await hashPassword(password);
@@ -33,6 +42,8 @@ const signUpUser = async (userId, password, next) => {
     const addUser = await User.create({
       userId,
       password: hashedPassword,
+      userName,
+      userEmail,
     });
 
     await addUser.save();
@@ -80,6 +91,12 @@ const logInUser = async (userId, password, next) => {
       refreshToken,
       userData: {
         userId: foundUser.userId,
+        userName: foundUser.userName,
+        userEmail: foundUser.userEmail,
+        favoritePlaygrounds: foundUser.favoritePlaygrounds,
+        isBanned: foundUser.isBanned,
+        banEndDate: foundUser.banEndDate,
+        createdAt: foundUser.createdAt,
       },
     };
   } catch (error) {
