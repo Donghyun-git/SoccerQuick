@@ -143,6 +143,31 @@ const logInUser = async (userId, password) => {
   }
 };
 
+//[ 유저정보 조회 ]
+/** (유저아이디) */
+const getUser = async (userId) => {
+  try {
+    const foundUser = await User.findOne({ userId });
+
+    if (!foundUser) return new AppError(400, '존재하지 않는 아이디 입니다.');
+
+    return {
+      statusCode: 200,
+      message: '마이페이지 조회 성공',
+      userData: {
+        userId: foundUser.userId,
+        userName: foundUser.userName,
+        favoritePlaygrounds: foundUser.favoritePlaygrounds,
+        role: foundUser.role,
+        createdAt: foundUser.createdAt,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, '마이페이지 조회 실패');
+  }
+};
+
 //[ 유저정보 수정 ]
 /** (수정 formData) */
 const updateUser = async (formData) => {
@@ -204,6 +229,35 @@ const deleteUser = async (userId, password) => {
   }
 };
 
+// [ 관리자 ] 정보 조회
+/** (관리자 userId ) */
+const getAdmin = async (userId) => {
+  try {
+    const foundAdmin = await User.findOne({ userId });
+
+    if (!foundAdmin)
+      return new AppError(400, '유효하지 않은 관리자 아이디입니다.');
+
+    if (foundAdmin.role === 'user')
+      return new AppError(403, '관리자가 아닙니다. 접근 권한이 없습니다.');
+
+    return {
+      statusCode: 200,
+      message: '관리자 정보 조회 성공',
+      adminData: {
+        userId: foundAdmin.userId,
+        userNamd: foundAdmin.userName,
+        userEmail: foundAdmin.userEmail,
+        role: foundAdmin.role,
+        createdAt: foundAdmin.createdAt,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, '관리자 정보 조회 실패');
+  }
+};
+
 // [ 관리자 ] 유저 로그인 정지
 /**(아이디, 유저 유형, 정지 대상 아이디) */
 const banUser = async (userId, role, banUserId) => {
@@ -242,7 +296,9 @@ const banUser = async (userId, role, banUserId) => {
 module.exports = {
   signUpUser,
   logInUser,
+  getUser,
   updateUser,
   deleteUser,
+  getAdmin,
   banUser,
 };

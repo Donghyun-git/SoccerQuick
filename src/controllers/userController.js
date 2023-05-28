@@ -90,6 +90,29 @@ const logIn = async (req, res, next) => {
   }
 };
 
+//[ 유저정보 조회 ]
+const getUserInfo = async (req, res, next) => {
+  const { userId } = req.body;
+
+  if (!userId) return next(new AppError(400, '아이디가 입력되지 않았습니다.'));
+
+  try {
+    const result = await userService.getUser(userId);
+
+    if (result.status === 400) {
+      return next(new AppError(result.status, result.message));
+    }
+
+    res.status(result.statusCode).json({
+      message: result.message,
+      userData: result.userData,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '마이페이지 조회 실패'));
+  }
+};
+
 //[ 유저정보 수정 ]
 const updateUserInfo = async (req, res, next) => {
   //나중에 tokenValidator 미들웨어에서 토큰 검증하고 나서 유저 정보 데이터를 따로 받아야 한다.
@@ -156,6 +179,30 @@ const deleteUserInfo = async (req, res, next) => {
   }
 };
 
+// [ 관리자 ] 정보 조회
+const getAdminInfo = async (req, res, next) => {
+  const { userId } = req.body;
+
+  if (!userId) return next(new AppError(400, '아이디를 입력해주세요'));
+
+  try {
+    const result = await userService.getAdmin(userId);
+
+    if (result.statusCode === 400)
+      return next(new AppError(result.statusCode, result.message));
+    if (result.statusCode === 403)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(result.statusCode).json({
+      message: result.message,
+      adminData: result.adminData,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(500, '관리자 정보 조회 실패');
+  }
+};
+
 // [ 관리자 ] 유저 로그인 정지
 const adminBanUser = async (req, res, next) => {
   const { userId, role, banUserId } = req.body;
@@ -181,7 +228,9 @@ const adminBanUser = async (req, res, next) => {
 module.exports = {
   signUp,
   logIn,
+  getUserInfo,
   updateUserInfo,
   deleteUserInfo,
+  getAdminInfo,
   adminBanUser,
 };
