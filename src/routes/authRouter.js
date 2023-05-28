@@ -21,5 +21,6 @@ router.patch('/my/update', userController.updateUserInfo);
 router.patch('/admin/ban', userController.adminBanUser);
 
 /* DELETE */
+router.delete('/my/delete', userController.deleteUserInfo);
 
 module.exports = router;

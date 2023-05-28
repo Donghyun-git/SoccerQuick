@@ -50,7 +50,7 @@ const signUpUser = async (formData) => {
 
     await addUser.save();
 
-    return;
+    return { statusCode: 201, message: '회원가입에 성공하였습니다.' };
   } catch (error) {
     console.error(error);
     throw new AppError(500, '회원가입에 실패하였습니다.');
@@ -182,6 +182,28 @@ const updateUser = async (formData) => {
   }
 };
 
+// [ 유저 회원탈퇴 ]
+/** (유저아이디, 패스워드) */
+const deleteUser = async (userId, password) => {
+  try {
+    const foundUser = await User.findOne({ userId });
+
+    if (!foundUser) return new AppError(400, '존재하지 않는 정보 입니다.');
+
+    const isMatched = await bcrypt.compare(password, foundUser.password);
+    if (!isMatched) {
+      return new AppError(400, '비밀번호가 일치하지 않습니다.');
+    }
+
+    await User.deleteOne({ userId });
+
+    return { statusCode: 204, message: '회원탈퇴 되었습니다.' };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, '회원탈퇴 실패');
+  }
+};
+
 // [ 관리자 ] 유저 로그인 정지
 /**(아이디, 유저 유형, 정지 대상 아이디) */
 const banUser = async (userId, role, banUserId) => {
@@ -221,5 +243,6 @@ module.exports = {
   signUpUser,
   logInUser,
   updateUser,
+  deleteUser,
   banUser,
 };

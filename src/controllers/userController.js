@@ -29,7 +29,7 @@ const signUp = async (req, res, next) => {
     if (result.statusCode === 400)
       return next(new AppError(400, result.message));
 
-    res.status(201).json({ message: '회원가입에 성공하였습니다.' });
+    res.status(201).json({ message: result.message });
   } catch (error) {
     console.error(error);
     next(new AppError(500, '회원가입 실패'));
@@ -132,6 +132,30 @@ const updateUserInfo = async (req, res, next) => {
   }
 };
 
+//[ 유저 회원탈퇴 ]
+const deleteUserInfo = async (req, res, next) => {
+  const { userId, password } = req.body;
+
+  if (!userId) return next(new AppError(400, '아이디를 입력해주세요.'));
+
+  if (!password) return next(new AppError(400, '비밀번호를 입력해주세요.'));
+
+  try {
+    const result = await userService.deleteUser(userId, password);
+
+    if (result.statusCode === 400) {
+      return next(new AppError(result.statusCode, result.message));
+    }
+
+    res.status(result.statusCode).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '회원탈퇴 실패'));
+  }
+};
+
 // [ 관리자 ] 유저 로그인 정지
 const adminBanUser = async (req, res, next) => {
   const { userId, role, banUserId } = req.body;
@@ -158,5 +182,6 @@ module.exports = {
   signUp,
   logIn,
   updateUserInfo,
+  deleteUserInfo,
   adminBanUser,
 };
