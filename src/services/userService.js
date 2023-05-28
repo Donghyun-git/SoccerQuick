@@ -78,8 +78,8 @@ const logInUser = async (userId, password) => {
       const currentDate = new Date();
 
       if (banEndDate && banEndDate <= currentDate) {
-        isBanned = false;
-        banEndDate = null;
+        foundUser.isBanned = false;
+        foundUser.banEndDate = null;
         await foundUser.save();
       } else {
         const dateString = banEndDate.toString();
