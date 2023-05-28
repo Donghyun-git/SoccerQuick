@@ -92,7 +92,7 @@ const logIn = async (req, res, next) => {
 
 //[ 유저정보 조회 ]
 const getUserInfo = async (req, res, next) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   if (!userId) return next(new AppError(400, '아이디가 입력되지 않았습니다.'));
 
@@ -181,7 +181,7 @@ const deleteUserInfo = async (req, res, next) => {
 
 // [ 관리자 ] 정보 조회
 const getAdminInfo = async (req, res, next) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   if (!userId) return next(new AppError(400, '아이디를 입력해주세요'));
 

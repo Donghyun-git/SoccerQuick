@@ -4,10 +4,10 @@ const userController = require('../controllers/userController');
 
 /* GET */
 // [ 유저 정보 조회 ]
-router.get('/my', userController.getUserInfo);
+router.get('/my/:userId', userController.getUserInfo);
 
 // [ 관리자 - 유저 정보 조회]
-router.get('/admin', userController.getAdminInfo);
+router.get('/admin/:userId', userController.getAdminInfo);
 
 /* POST */
 
