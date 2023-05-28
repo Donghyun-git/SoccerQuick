@@ -9,7 +9,7 @@ const PostSchema = new Schema(
       required: true,
     },
     title: { type: String, required: true },
-    description: { type: String },
+    description: { type: String, required: true },
     isNotice: { type: Boolean, default: false },
   },
   { timestamps: true }
