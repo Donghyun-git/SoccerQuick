@@ -1,5 +1,6 @@
 const { Post, Comment, User } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
+const createPostId = require('../utils/createPostId');
 
 // [ 커뮤니티 전체 게시글 조회 ]
 const getAllPosts = async () => {
@@ -20,7 +21,7 @@ const getAllPosts = async () => {
 //[ 커뮤니티 게시글 등록 ]
 /** ([유저아이디, 제목, 본분, 공지사항여부] 객체) */
 const addPost = async (posts) => {
-  const { userId, postId, title, description, isNotice } = posts;
+  const { userId, title, description, isNotice } = posts;
 
   try {
     const foundUser = await User.findOne({ userId });
@@ -31,6 +32,9 @@ const addPost = async (posts) => {
       return new AppError(403, '관리자만 공지사항을 등록할 수 있습니다.');
 
     const user_id = foundUser._id;
+
+    const postsArray = await Post.find();
+    const postId = createPostId(postsArray);
 
     const newPostField = {
       userId: user_id,

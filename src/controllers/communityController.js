@@ -18,18 +18,16 @@ const getAllPosts = async (req, res, next) => {
 
 //[ 커뮤니티 게시글 등록 ]
 const addPost = async (req, res, next) => {
-  const { userId, postId, title, description } = req.body;
+  const { userId, title, description } = req.body;
   const isNotice = req.body.isNotice || false;
 
   if (!userId) return next(new AppError(400, '작성자 아이디를 입력해주세요.'));
-  if (!postId) return next(new AppError(400, '게시글 번호를 입력해주세요.'));
   if (!title) return next(new AppError(400, '글 제목을 입력해주세요.'));
   if (!description) return next(new AppError(400, '본문 내용을 입력해주세요.'));
 
   try {
     const posts = {
       userId,
-      postId,
       title,
       description,
       isNotice,
