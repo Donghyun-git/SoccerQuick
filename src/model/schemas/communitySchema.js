@@ -9,7 +9,7 @@ const PostSchema = new Schema(
       required: true,
     },
     postId: {
-      type: Number,
+      type: String,
       required: true,
       unique: true,
     },
