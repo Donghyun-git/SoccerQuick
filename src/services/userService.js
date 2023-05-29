@@ -277,6 +277,12 @@ const banUser = async (userId, role, banUserId) => {
     if (!foundBanUser)
       return new AppError(400, '존재하지 않는 유저입니다. 다시 선택해 주세요.');
 
+    if (foundBanUser.role === 'manager' || foundBanUser.role === 'admin')
+      return new AppError(
+        400,
+        '총 관리자 및 매니저는 서로 정지 시킬 수 없습니다.'
+      );
+
     if (foundBanUser) {
       const currentDate = new Date();
       const banEndDate = getBanTime(currentDate, 2000);

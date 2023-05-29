@@ -211,10 +211,10 @@ const adminBanUser = async (req, res, next) => {
     const result = await userService.banUser(userId, role, banUserId);
 
     if (result.statusCode === 403)
-      return next(new AppError(403, '관리자 권한이 없습니다.'));
+      return next(new AppError(403, result.message));
 
     if (result.statusCode === 400)
-      return next(new AppError(400, '존재하지 않는 유저 입니다!'));
+      return next(new AppError(400, result.message));
 
     res.status(result.statusCode).json({
       message: result.message,
