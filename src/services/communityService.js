@@ -20,7 +20,7 @@ const getAllPosts = async () => {
 //[ 커뮤니티 게시글 등록 ]
 /** ([유저아이디, 제목, 본분, 공지사항여부] 객체) */
 const addPost = async (posts) => {
-  const { userId, title, description, isNotice } = posts;
+  const { userId, postId, title, description, isNotice } = posts;
 
   try {
     const foundUser = await User.findOne({ userId });
@@ -34,6 +34,7 @@ const addPost = async (posts) => {
 
     const newPostField = {
       userId: user_id,
+      postId: postId,
       title,
       description,
       isNotice,
@@ -52,7 +53,20 @@ const addPost = async (posts) => {
   }
 };
 
+//[ 커뮤니티 게시글 수정 ]
+/** (게시물 수정 목록 객체) */
+const updatePost = async (updatePost) => {
+  const { postId, userId, title, description, isNotice } = updatePost;
+
+  const foundUser = await User.findOne({ userId });
+  if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
+
+  if (isNotice && foundUser.role === 'user')
+    return new AppError(403, '관리자만 공지사항으로 변경 가능합니다.');
+};
+
 module.exports = {
   addPost,
   getAllPosts,
+  updatePost,
 };
