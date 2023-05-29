@@ -25,6 +25,9 @@ router.patch('/my/update', userController.updateUserInfo);
 //[ 관리자 - 유저 로그인 정지 ]
 router.patch('/admin/ban', userController.adminBanUser);
 
+//[ 관리자 - 유저 직위 변경 ]
+router.patch('/admin/role', userController.updateUserRole);
+
 /* DELETE */
 router.delete('/my/delete', userController.deleteUserInfo);
 
