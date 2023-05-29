@@ -15,5 +15,7 @@ router.post('/posts', communityController.addPost);
 router.patch('/posts/:postId', communityController.updatePost);
 
 /* DELETE*/
+// [ 커뮤니티 게시글 삭제 ]
+router.delete('/posts/:postId', communityController.deletePost);
 
 module.exports = router;

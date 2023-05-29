@@ -92,8 +92,34 @@ const updatePost = async (req, res, next) => {
     return next(new AppError(500, '게시물 수정 실패'));
   }
 };
+
+//[ (유저, 관리자) 커뮤니티 게시글 삭제 ]
+const deletePost = async (req, res, next) => {
+  const { postId } = req.params;
+  const { userId } = req.body;
+
+  if (!postId) return next(new AppError(400, '게시물 번호를 같이 보내주세요'));
+  if (!userId) return next(new AppError(400, '존재하지 않는 아이디입니다.'));
+
+  try {
+    const result = await communityService.deletePost(postId, userId);
+
+    if (result.statusCode === 400)
+      return next(new AppError(400, result.message));
+
+    if (result.statusCode === 403)
+      return next(new AppError(403, result.message));
+
+    res.status(204).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 module.exports = {
   addPost,
   getAllPosts,
   updatePost,
+  deletePost,
 };
