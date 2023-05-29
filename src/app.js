@@ -10,6 +10,7 @@ const { errorHandler } = require('./middlewares/errorHandler');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/authRouter');
 const communityRouter = require('./routes/communityRouter');
+const groundRouter = require('./routes/groundRouter');
 
 const origins = ['http://localhost:8800'];
 const corsOptions = {
@@ -39,4 +40,5 @@ connectToDatabase()
 
 app.use('/auth', authRouter);
 app.use('/community', communityRouter);
+app.use('/ground', groundRouter);
 app.use(errorHandler);
