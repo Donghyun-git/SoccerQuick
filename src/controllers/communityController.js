@@ -50,7 +50,7 @@ const addPost = async (req, res, next) => {
 };
 
 //[ (유저,관리자) 커뮤니티 게시글 수정 ]
-// [관리자] 는 게시글 공지사항 변경 가능.
+// [admin, manager] 는 게시글 공지사항 변경 가능.
 const updatePost = async (req, res, next) => {
   const { postId } = req.params;
   const { userId, title, description } = req.body;
@@ -69,14 +69,24 @@ const updatePost = async (req, res, next) => {
     return next(new AppError(400, '수정할 본문을 입력해주세요.'));
 
   try {
-    const updatePost = {
+    const post = {
       postId,
       userId,
       title,
       description,
       isNotice,
     };
-    const result = await updatePost(updatePost);
+    const result = await communityService.updatePost(post);
+
+    if (result.statusCode === 400)
+      return next(new AppError(400, result.message));
+    if (result.statusCode === 403)
+      return next(new AppError(403, result.message));
+
+    res.status(201).json({
+      message: result.message,
+      data: result.data,
+    });
   } catch (error) {
     console.error(error);
     return next(new AppError(500, '게시물 수정 실패'));
