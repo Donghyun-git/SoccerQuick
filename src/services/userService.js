@@ -1,4 +1,4 @@
-const { User } = require('../model/models/index');
+const { User, WithdrawnUser } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
 const getBanTime = require('../utils/getBanTime');
 const jwt = require('jsonwebtoken');
@@ -219,6 +219,15 @@ const deleteUser = async (userId, password) => {
     if (!isMatched) {
       return new AppError(400, '비밀번호가 일치하지 않습니다.');
     }
+
+    //탈퇴 db 저장
+    const withdrawnUserData = {
+      userId: foundUser.userId,
+      userEmail: foundUser.userEmail,
+      userName: foundUser.userName,
+    };
+
+    await WithdrawnUser.create(withdrawnUserData);
 
     await User.deleteOne({ userId });
 
