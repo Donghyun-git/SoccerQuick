@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const cron = require('node-cron');
+const deleteExpiredWithdrawnUsers = require('./utils/deleteExpiredWithdrawnUsers');
 const { connectToDatabase } = require('./database/db');
 const { PORT, DB_HOST, DB_NAME } = require('./envconfig');
 const { errorHandler } = require('./middlewares/errorHandler');
@@ -24,6 +26,11 @@ app.use(cookieParser());
 
 connectToDatabase()
   .then(async () => {
+    cron.schedule('0 0 * * *', async () => {
+      console.log('스케줄러 실행중.');
+      await deleteExpiredWithdrawnUsers();
+    });
+
     app.use('/', indexRouter);
 
     app.listen(PORT, () => {
