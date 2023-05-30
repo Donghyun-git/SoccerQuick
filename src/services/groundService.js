@@ -66,7 +66,9 @@ const addFavorites = async (groundId, userId) => {
     // 이미 즐겨찾기에 추가되어 있는지 확인
     const usersFavorites = foundGround.usersFavorites;
 
-    const favoritesFiltered = usersFavorites.filter((v) => v === user_id);
+    const favoritesFiltered = usersFavorites.filter(
+      (v) => toString(v) === toString(user_id)
+    );
     console.log('? 엥?', favoritesFiltered);
     if (favoritesFiltered.length > 0)
       return new AppError(400, '이미 즐겨찾기에 추가되어있습니다.');
