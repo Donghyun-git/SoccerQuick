@@ -50,6 +50,10 @@ const WithdrawnUserSchema = new Schema({
     type: String,
     required: true,
   },
+  withdrawalDate: {
+    type: Date,
+    required: true,
+  },
 });
 
 module.exports = { UserSchema, WithdrawnUserSchema };
