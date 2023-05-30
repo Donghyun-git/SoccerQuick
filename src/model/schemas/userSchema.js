@@ -36,4 +36,20 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = UserSchema;
+const WithdrawnUserSchema = new Schema({
+  userId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  userEmail: {
+    type: String,
+    required: true,
+  },
+  userName: {
+    type: String,
+    required: true,
+  },
+});
+
+module.exports = { UserSchema, WithdrawnUserSchema };
