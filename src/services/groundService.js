@@ -1,5 +1,7 @@
-const { Ground } = require('../model/models/index');
+const { Ground, User } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
+const { createGroundId } = require('../utils/createIndex');
+const toString = require('../utils/toString');
 
 // [ 전체 풋볼장 조회 ]
 const getAllGrounds = async () => {
@@ -48,28 +50,50 @@ const getFilteredGrounds = async (location, date) => {
 };
 
 // [ 풋볼장 즐겨찾기에 추가 ]
-const addFavorites = async (req, res, nex) => {
+const addFavorites = async (groundId, userId) => {
   try {
-    const { groundId } = req.params;
-    const { userId } = req.body;
+    const foundUser = await User.findOne({ userId });
+
+    if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
+
+    const user_id = foundUser._id;
 
     // 풋볼장 조회
-    const ground = await Ground.findById(groundId);
-    if (!ground) {
-      return new AppError(404, '풋볼장을 찾을 수 없습니다.');
-    }
+    const foundGround = await Ground.findOne({ groundId });
+
+    if (!foundGround) return new AppError(400, '풋볼장을 찾을 수 없습니다.');
 
     // 이미 즐겨찾기에 추가되어 있는지 확인
-    const isAlreadyFavorite = ground.usersFavorites.includes(userId);
+    const usersFavorites = foundGround.usersFavorites;
 
-    if (isAlreadyFavorite) {
-      return new AppError(400, '이미 즐겨찾기에 추가되어 있습니다.');
-    }
+    const favoritesFiltered = usersFavorites.filter((v) => v === user_id);
+    console.log('? 엥?', favoritesFiltered);
+    if (favoritesFiltered.length > 0)
+      return new AppError(400, '이미 즐겨찾기에 추가되어있습니다.');
+
     // 즐겨찾기에 추가
-    ground.usersFavorites.push(userId);
-    await ground.save();
+    usersFavorites.push(user_id);
 
-    return { statusCode: 200, message: '즐겨찾기에 추가되었습니다.' };
+    const updateData = {
+      groundId: groundId,
+      name: foundGround.name,
+      location: foundGround.location,
+      price: foundGround.price,
+      rating: foundGround.rating,
+      usersFavorites: usersFavorites,
+    };
+
+    const updatedFavorites = await Ground.findOneAndUpdate(
+      { groundId },
+      { $set: updateData },
+      { new: true }
+    );
+
+    return {
+      statusCode: 201,
+      message: '즐겨찾기에 추가되었습니다.',
+      data: updatedFavorites,
+    };
   } catch (error) {
     console.error('즐겨찾기 추가 중에 오류 발생', error);
     return new AppError(500, '즐겨찾기 추가 중 오류 발생');

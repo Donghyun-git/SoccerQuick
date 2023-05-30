@@ -27,12 +27,19 @@ const getFilteredGrounds = async (req, res, next) => {
 
 // [ 풋볼장 즐겨찾기 추가 ]
 const addFavorites = async (req, res, next) => {
-  try {
-    const { groundId } = req.params;
-    const userId = req.user.id;
+  const { groundId } = req.params;
+  const { userId } = req.body;
 
-    const message = await groundService.addFavorites(groundId, userId);
-    return { statusCode: 200, message };
+  try {
+    const result = await groundService.addFavorites(groundId, userId);
+
+    if (result.statusCode === 400)
+      return next(new AppError(400, result.message));
+
+    res.status(201).json({
+      message: result.message,
+      data: result.data,
+    });
   } catch (error) {
     console.error('즐겨찾기 추가 중에 오류 발생', error);
     return new AppError(500, '즐겨찾기 추가 중에 오류 발생');
@@ -48,8 +55,8 @@ const removeFavorites = async (req, res) => {
     const message = await groundService.removeFavorites(groundId, userId);
     return { statusCode: 200, message };
   } catch (error) {
-    console.error("즐겨찾기 삭제 중에 오류 발생", error)
-    return new AppError(500, "즐겨찾기 삭제 중에 오류 발생");
+    console.error('즐겨찾기 삭제 중에 오류 발생', error);
+    return new AppError(500, '즐겨찾기 삭제 중에 오류 발생');
   }
 };
 

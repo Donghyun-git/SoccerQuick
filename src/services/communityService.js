@@ -1,6 +1,6 @@
 const { Post, Comment, User } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
-const createPostId = require('../utils/createPostId');
+const createPostId = require('../utils/createIndex');
 const toString = require('../utils/toString');
 
 // [ 커뮤니티 전체 게시글 조회 ]

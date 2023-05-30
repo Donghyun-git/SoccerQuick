@@ -11,10 +11,10 @@ router.get('/filter', groundController.getFilteredGrounds);
 
 /* POST */
 // [ 풋볼장 즐겨찾기에 추가 ]
-router.post('/:groundId/search', groundController.addFavorites);
+router.post('/:groundId', groundController.addFavorites);
 
 /* DELETE */
 // [ 풋볼장 즐겨찾기에서 삭제]
-router.delete('/:id/usersFavorites/:userId', groundController.removeFavorites);
+router.delete('/:groundId', groundController.removeFavorites);
 
 module.exports = router;
