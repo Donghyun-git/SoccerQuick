@@ -1,6 +1,6 @@
 const { Post, Comment, User } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
-const createPostId = require('../utils/createIndex');
+const { createPostId } = require('../utils/createIndex');
 const toString = require('../utils/toString');
 
 // [ 커뮤니티 전체 게시글 조회 ]
@@ -34,8 +34,7 @@ const addPost = async (posts) => {
 
     const user_id = foundUser._id;
 
-    const postsArray = await Post.find();
-    const postId = createPostId(postsArray);
+    const postId = await createPostId();
 
     const newPostField = {
       userId: user_id,
