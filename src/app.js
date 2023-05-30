@@ -11,6 +11,8 @@ const { errorHandler } = require('./middlewares/errorHandler');
 //router
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/authRouter');
+const userRouter = require('./routes/userRouter');
+const adminRouter = require('./routes/adminRouter');
 const communityRouter = require('./routes/communityRouter');
 const groundRouter = require('./routes/groundRouter');
 
@@ -46,6 +48,8 @@ connectToDatabase()
   });
 
 app.use('/auth', authRouter);
+app.use('/user', userRouter);
+app.use('/admin', adminRouter);
 app.use('/community', communityRouter);
 app.use('/ground', groundRouter);
 app.use(errorHandler);

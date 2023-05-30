@@ -1,34 +1,17 @@
 const { Router } = require('express');
 const router = Router();
-const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 
 /* GET */
-// [ 유저 정보 조회 ]
-router.get('/my/:userId', userController.getUserInfo);
-
-// [ 관리자 - 유저 정보 조회]
-router.get('/admin/:userId', userController.getAdminInfo);
 
 /* POST */
 
 //[ 회원가입 ]
-router.post('/signup', userController.signUp);
+router.post('/signup', authController.signUp); //auth/signup
 
 // [ 로그인 ]
-router.post('/login', userController.logIn);
+router.post('/login', authController.logIn); // auth/login
 
 /* PATCH */
-
-//[ 회원정보 수정 ]
-router.patch('/my/update', userController.updateUserInfo);
-
-//[ 관리자 - 유저 로그인 정지 ]
-router.patch('/admin/ban', userController.adminBanUser);
-
-//[ 관리자 - 유저 직위 변경 ]
-router.patch('/admin/role', userController.updateUserRole);
-
-/* DELETE */
-router.delete('/my/delete', userController.deleteUserInfo);
 
 module.exports = router;
