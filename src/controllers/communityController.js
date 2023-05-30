@@ -48,7 +48,78 @@ const addPost = async (req, res, next) => {
     return next(new AppError(500, '게시글 등록 실패'));
   }
 };
+
+//[ (유저,관리자) 커뮤니티 게시글 수정 ]
+// [admin, manager] 는 게시글 공지사항 변경 가능.
+const updatePost = async (req, res, next) => {
+  const { postId } = req.params;
+  const { userId, title, description } = req.body;
+  const isNotice = req.body.isNotice || false;
+
+  if (!postId)
+    return next(
+      new AppError(400, '게시글 번호를 URL 파라미터에 포함 시켜주세요. ㅎㅎ')
+    );
+  if (!userId)
+    return next(
+      new AppError(400, '유저 아이디를 바디에 넣어서 같이 보내주세용 ㅎㅎ')
+    );
+  if (!title) return next(new AppError(400, '수정할 제목을 입력해주세요.'));
+  if (!description)
+    return next(new AppError(400, '수정할 본문을 입력해주세요.'));
+
+  try {
+    const post = {
+      postId,
+      userId,
+      title,
+      description,
+      isNotice,
+    };
+    const result = await communityService.updatePost(post);
+
+    if (result.statusCode === 400)
+      return next(new AppError(400, result.message));
+    if (result.statusCode === 403)
+      return next(new AppError(403, result.message));
+
+    res.status(201).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '게시물 수정 실패'));
+  }
+};
+
+//[ (유저, 관리자) 커뮤니티 게시글 삭제 ]
+const deletePost = async (req, res, next) => {
+  const { postId } = req.params;
+  const { userId } = req.body;
+
+  if (!postId) return next(new AppError(400, '게시물 번호를 같이 보내주세요'));
+  if (!userId) return next(new AppError(400, '존재하지 않는 아이디입니다.'));
+
+  try {
+    const result = await communityService.deletePost(postId, userId);
+
+    if (result.statusCode === 400)
+      return next(new AppError(400, result.message));
+
+    if (result.statusCode === 403)
+      return next(new AppError(403, result.message));
+
+    res.status(204).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 module.exports = {
   addPost,
   getAllPosts,
+  updatePost,
+  deletePost,
 };

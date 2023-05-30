@@ -8,6 +8,11 @@ const PostSchema = new Schema(
       ref: 'User',
       required: true,
     },
+    postId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     title: { type: String, required: true },
     description: { type: String, required: true },
     isNotice: { type: Boolean, default: false },
