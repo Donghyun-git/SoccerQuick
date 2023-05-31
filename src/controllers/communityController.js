@@ -51,9 +51,8 @@ const addPost = async (req, res, next) => {
 // [admin, manager] 는 게시글 공지사항 변경 가능.
 const updatePost = async (req, res, next) => {
   const { postId } = req.params;
-  const { userId, title, description } = req.body;
-  const isNotice = req.body.isNotice || false;
-
+  const { userId, title, description, isNotice } = req.body;
+  console.log(postId);
   if (!postId)
     return next(
       new AppError(400, '게시글 번호를 URL 파라미터에 포함 시켜주세요. ㅎㅎ')
@@ -67,14 +66,13 @@ const updatePost = async (req, res, next) => {
     return next(new AppError(400, '수정할 본문을 입력해주세요.'));
 
   try {
-    const post = {
+    const result = await communityService.updatePost({
       postId,
       userId,
       title,
       description,
       isNotice,
-    };
-    const result = await communityService.updatePost(post);
+    });
 
     if (result.statusCode === 400)
       return next(new AppError(400, result.message));
