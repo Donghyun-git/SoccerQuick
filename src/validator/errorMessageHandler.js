@@ -4,6 +4,7 @@ const errorMessageHandler = (error) => {
   const { type, context } = error.details[0];
   const errorLabel = context.label;
   console.log(type);
+  console.log(context);
   console.log(errorLabel);
   switch (type) {
     case 'any.required': {
@@ -38,6 +39,13 @@ const errorMessageHandler = (error) => {
       }
       return `${errorLabel} 형식을 다시 한 번 확인해주세요.`;
     }
+    // case 'object.base': {
+    //   switch (errorLabel) {
+    //     case 'value': {
+    //       return '파라미터를 다시 확인해주세요.';
+    //     }
+    //   }
+    // }
     case 'string.email': {
       return `${errorLabel} 형식이 올바르지 않습니다.`;
     }

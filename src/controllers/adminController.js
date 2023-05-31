@@ -1,11 +1,22 @@
 const adminService = require('../services/adminService');
 const { AppError } = require('../middlewares/errorHandler');
+const {
+  getAllUserInfoSchema,
+  adminBanUserSchema,
+  updateUserRoleSchema,
+} = require('../validator/adminValidator');
+const errorMessageHandler = require('../validator/errorMessageHandler');
 
 // [ 관리자 ] 유저 전체 정보 조회
 const getAllUserInfo = async (req, res, next) => {
   const { id } = req.params;
 
-  if (!id) return next(new AppError(400, '아이디를 입력해주세요'));
+  const { error } = getAllUserInfoSchema.validate(id);
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
 
   try {
     const result = await adminService.getAllUserInfo(id);
@@ -29,6 +40,13 @@ const getAllUserInfo = async (req, res, next) => {
 const adminBanUser = async (req, res, next) => {
   const { user_id, banUserId } = req.body;
 
+  const { error } = adminBanUserSchema.validate(req.body);
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
   try {
     const result = await adminService.banUser(user_id, banUserId);
 
@@ -51,12 +69,12 @@ const adminBanUser = async (req, res, next) => {
 const updateUserRole = async (req, res, next) => {
   const { user_id, updateUser } = req.body;
 
-  if (!user_id)
-    return next(new AppError(400, '관리자 아이디를 같이 보내주세요.'));
-  if (!updateUser)
-    return next(
-      new AppError(400, '직위를 바꾸려는 유저의 아이디를 입력해주세요.')
-    );
+  const { error } = updateUserRoleSchema.validate(req.body);
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
 
   try {
     const result = await adminService.updateUserRole(user_id, updateUser);
