@@ -4,25 +4,25 @@ const getBanTime = require('../utils/getBanTime');
 
 // [ 관리자 ] 정보 조회
 /** (관리자 userId ) */
-const getAdmin = async (userId) => {
+const getAdmin = async (user_id) => {
   try {
-    const foundAdmin = await User.findOne({ userId });
+    const foundUser = await User.findOne({ user_id });
 
-    if (!foundAdmin)
-      return new AppError(400, '유효하지 않은 관리자 아이디입니다.');
+    if (!foundUser) return new AppError(400, '유효하지 않은 아이디입니다.');
 
-    if (foundAdmin.role === 'user')
+    if (!admin_id)
       return new AppError(403, '관리자가 아닙니다. 접근 권한이 없습니다.');
 
     return {
       statusCode: 200,
       message: '관리자 정보 조회 성공',
       adminData: {
-        userId: foundAdmin.userId,
-        userNamd: foundAdmin.userName,
-        userEmail: foundAdmin.userEmail,
-        role: foundAdmin.role,
-        createdAt: foundAdmin.createdAt,
+        admin_id: foundUser.admin_id,
+        user_id: foundUser.id,
+        name: foundUser.name,
+        email: foundUser.email,
+        role: foundUser.role,
+        createdAt: foundUser.createdAt,
       },
     };
   } catch (error) {

@@ -29,9 +29,9 @@ const updateUserInfo = async (req, res, next) => {
   //나중에 tokenValidator 미들웨어에서 토큰 검증하고 나서 유저 정보 데이터를 따로 받아야 한다.
   // const { userId } = req.user;
 
-  const { userId, password, userName, userEmail } = req.body;
+  const { user_id, password, nick_name, email, phone_number } = req.body;
 
-  if (!userId) {
+  if (!user_id) {
     return next(new AppError(400, '아이디를 입력해주세요'));
   }
 
@@ -39,26 +39,30 @@ const updateUserInfo = async (req, res, next) => {
     return next(new AppError(400, '수정된 패스워드 입력은 필수 사항입니다!'));
   }
 
-  if (!userName) {
+  if (!nick_name) {
     return next(new AppError(400, '닉네임을 입력해주세요.'));
   }
 
-  if (!userEmail) {
+  if (!email) {
     return next(new AppError(400, '이메일을 입력해주세요.'));
   }
 
-  const formData = req.body;
-
   try {
-    const newUser = await userService.updateUser(formData);
+    const result = await userService.updateUser({
+      user_id,
+      password,
+      nick_name,
+      email,
+      phone_number,
+    });
 
-    if (newUser.statusCode === 400) {
-      return next(new AppError(400, newUser.message));
+    if (result.statusCode === 400) {
+      return next(new AppError(400, result.message));
     }
 
     res.status(200).json({
       message: '회원정보 수정 성공',
-      updateData: newUser,
+      updateData: result.data,
     });
   } catch (error) {
     console.error(error);
@@ -68,14 +72,14 @@ const updateUserInfo = async (req, res, next) => {
 
 //[ 유저 회원탈퇴 ]
 const deleteUserInfo = async (req, res, next) => {
-  const { userId, password } = req.body;
+  const { user_id, password } = req.body;
 
-  if (!userId) return next(new AppError(400, '아이디를 입력해주세요.'));
+  if (!user_id) return next(new AppError(400, '아이디를 입력해주세요.'));
 
   if (!password) return next(new AppError(400, '비밀번호를 입력해주세요.'));
 
   try {
-    const result = await userService.deleteUser(userId, password);
+    const result = await userService.deleteUser(user_id, password);
 
     if (result.statusCode === 400) {
       return next(new AppError(result.statusCode, result.message));

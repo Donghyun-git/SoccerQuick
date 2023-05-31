@@ -1,4 +1,4 @@
-const { Post, Comment, User } = require('../model/models/index');
+const { Post, Comment, User, Admin } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
 const { createPostId } = require('../utils/createIndex');
 const toString = require('../utils/toString');
@@ -25,20 +25,22 @@ const addPost = async (posts) => {
   const { userId, title, description, isNotice } = posts;
 
   try {
-    const foundUser = await User.findOne({ userId });
+    const foundUser = await User.findOne({ user_id: userId });
 
     if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
 
-    if (isNotice === true && foundUser.role === 'user')
+    const admin_id = foundUser.admin_id;
+
+    if (isNotice === '공지사항' && !admin_id)
       return new AppError(403, '관리자만 공지사항을 등록할 수 있습니다.');
 
     const user_id = foundUser._id;
 
-    const postId = await createPostId();
+    const post_id = await createPostId();
 
     const newPostField = {
-      userId: user_id,
-      postId: postId,
+      user_id: user_id,
+      post_id: post_id,
       title,
       description,
       isNotice,

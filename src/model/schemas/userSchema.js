@@ -2,7 +2,12 @@ const { Schema } = require('mongoose');
 
 const UserSchema = new Schema(
   {
-    userId: {
+    admin_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'Admin',
+      default: null,
+    },
+    user_id: {
       type: String,
       required: true,
       unique: true,
@@ -11,16 +16,25 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    userName: {
+    name: {
       type: String,
       required: true,
     },
-    userEmail: {
+    nick_name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone_number: {
       type: String,
       required: true,
     },
     role: {
       type: String,
+      enum: ['admin', 'manager', 'user'],
       default: 'user',
     },
     favoritePlaygrounds: [{ type: Schema.Types.ObjectId, ref: 'Ground' }],
@@ -37,16 +51,16 @@ const UserSchema = new Schema(
 );
 
 const WithdrawnUserSchema = new Schema({
-  userId: {
+  user_id: {
     type: String,
     required: true,
     unique: true,
   },
-  userEmail: {
+  email: {
     type: String,
     required: true,
   },
-  userName: {
+  name: {
     type: String,
     required: true,
   },

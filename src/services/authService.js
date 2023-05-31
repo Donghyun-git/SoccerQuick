@@ -13,19 +13,22 @@ const {
 //[ 유저 회원가입 ]
 /** (유저 입력 formdata) */
 const signUpUser = async (formData) => {
-  const { userId, password, userName, userEmail } = formData;
+  const { user_id, password, name, nick_name, email, phone_number } = formData;
   try {
     const foundUser = await User.findOne({
-      $or: [{ userId }, { userName }, { userEmail }],
+      $or: [{ user_id }, { name }, { email }],
     });
-
     // 이미 사용 중이라면 데이터 추가 안하고 에러를 반환하기 위해 겹치는 요소 컨트롤러로.
     if (foundUser) {
-      if (foundUser.userId === userId) {
+      if (foundUser.user_id === user_id) {
         return new AppError(400, '이미 존재하는 아이디입니다.');
-      } else if (foundUser.userName === userName) {
+      }
+
+      if (foundUser.nick_name === nick_name) {
         return new AppError(400, '이미 존재하는 닉네임입니다.');
-      } else if (foundUser.userEmail === userEmail) {
+      }
+
+      if (foundUser.email === email) {
         return new AppError(400, '이미 존재하는 이메일입니다.');
       }
     }
@@ -33,10 +36,12 @@ const signUpUser = async (formData) => {
     const hashedPassword = await hashPassword(password);
 
     const addUser = await User.create({
-      userId,
+      user_id: user_id,
       password: hashedPassword,
-      userName,
-      userEmail,
+      name,
+      nick_name,
+      email,
+      phone_number,
     });
 
     await addUser.save();
@@ -50,9 +55,9 @@ const signUpUser = async (formData) => {
 
 //[유저 로그인]
 /** (아이디, 패스워드)*/
-const logInUser = async (userId, password) => {
+const logInUser = async (user_id, password) => {
   try {
-    const foundUser = await User.findOne({ userId });
+    const foundUser = await User.findOne({ user_id });
 
     if (!foundUser) {
       return new AppError(400, '존재하지 않는 아이디입니다.');
@@ -101,7 +106,7 @@ const logInUser = async (userId, password) => {
     }
 
     const payload = {
-      userId: foundUser.userId,
+      user_id: foundUser.user_id,
       password: foundUser.password,
     };
 
@@ -119,9 +124,11 @@ const logInUser = async (userId, password) => {
       accessToken,
       refreshToken,
       userData: {
-        userId: foundUser.userId,
-        userName: foundUser.userName,
-        userEmail: foundUser.userEmail,
+        user_id: foundUser.user_id,
+        name: foundUser.name,
+        nick_name: foundUser.nick_name,
+        email: foundUser.email,
+        phone_number: foundUser.phone_number,
         favoritePlaygrounds: foundUser.favoritePlaygrounds,
         isBanned: foundUser.isBanned,
         banEndDate: foundUser.banEndDate,

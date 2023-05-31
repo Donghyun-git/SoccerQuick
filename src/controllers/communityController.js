@@ -18,21 +18,19 @@ const getAllPosts = async (req, res, next) => {
 
 //[ 커뮤니티 게시글 등록 ]
 const addPost = async (req, res, next) => {
-  const { userId, title, description } = req.body;
-  const isNotice = req.body.isNotice || false;
+  const { userId, title, description, isNotice } = req.body;
 
   if (!userId) return next(new AppError(400, '작성자 아이디를 입력해주세요.'));
   if (!title) return next(new AppError(400, '글 제목을 입력해주세요.'));
   if (!description) return next(new AppError(400, '본문 내용을 입력해주세요.'));
 
   try {
-    const posts = {
+    const result = await communityService.addPost({
       userId,
       title,
       description,
       isNotice,
-    };
-    const result = await communityService.addPost(posts);
+    });
 
     if (result.statusCode === 400)
       return next(new AppError(400, result.message));

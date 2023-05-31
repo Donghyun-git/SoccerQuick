@@ -5,6 +5,10 @@ const { UserSchema, WithdrawnUserSchema } = require('../schemas/userSchema');
 const User = mongoose.model('User', UserSchema);
 const WithdrawnUser = mongoose.model('WidthdrawnUser', WithdrawnUserSchema);
 
+// [ 관리자 기능 모델 ]
+const AdminSchema = require('../schemas/adminSchema');
+const Admin = mongoose.model('Admin', AdminSchema);
+
 // [ 커뮤니티 관련 모델 ]
 const { PostSchema, CommentSchema } = require('../schemas/communitySchema');
 const Post = mongoose.model('Post', PostSchema);
@@ -20,6 +24,7 @@ const Ground = mongoose.model('Ground', GroundSchema);
 
 module.exports = {
   User,
+  Admin,
   WithdrawnUser,
   Post,
   Comment,

@@ -5,9 +5,9 @@ const { BCRYPT_SALT_ROUNDS } = require('../envconfig');
 
 //[ 유저정보 조회 ]
 /** (유저아이디) */
-const getUser = async (userId) => {
+const getUser = async (user_id) => {
   try {
-    const foundUser = await User.findOne({ userId });
+    const foundUser = await User.findOne({ user_id });
 
     if (!foundUser) return new AppError(400, '존재하지 않는 아이디 입니다.');
 
@@ -15,8 +15,11 @@ const getUser = async (userId) => {
       statusCode: 200,
       message: '마이페이지 조회 성공',
       userData: {
-        userId: foundUser.userId,
-        userName: foundUser.userName,
+        user_id: foundUser.user_id,
+        name: foundUser.name,
+        nick_name: foundUser.nick_name,
+        email: foundUser.email,
+        phone_number: foundUser.phone_number,
         favoritePlaygrounds: foundUser.favoritePlaygrounds,
         role: foundUser.role,
         createdAt: foundUser.createdAt,
@@ -31,36 +34,43 @@ const getUser = async (userId) => {
 //[ 유저정보 수정 ]
 /** (수정 formData) */
 const updateUser = async (formData) => {
-  const { userId, password, userName, userEmail } = formData;
+  const { user_id, password, nick_name, email, phone_number } = formData;
   try {
-    const foundUser = await User.findOne({ userId });
+    const foundUser = await User.findOne({
+      $or: [{ user_id }, { nick_name }, { email }],
+    });
 
     if (!foundUser) {
       return new AppError(400, '존재하지 않는 아이디입니다.');
     }
 
-    if (foundUser.userName === userName) {
+    if (foundUser.nick_name === nick_name) {
       return new AppError(400, '이미 존재하는 닉네임입니다.');
     }
 
-    if (foundUser.userEmail === userEmail) {
+    if (foundUser.email === email) {
       return new AppError(400, '이미 존재하는 이메일입니다.');
     }
 
     const updateData = {
-      userId: userId,
+      user_id: user_id,
       password: await bcrypt.hash(password, Number(BCRYPT_SALT_ROUNDS)),
-      userName: userName,
-      userEmail: userEmail,
+      nick_name: nick_name,
+      email: email,
+      phone_number: phone_number,
     };
 
     const updatedUser = await User.findOneAndUpdate(
-      { userId },
+      { user_id },
       { $set: updateData },
       { new: true }
     );
 
-    return updatedUser;
+    return {
+      statusCode: 201,
+      message: '회원정보 수정 성공',
+      data: updatedUser,
+    };
   } catch (error) {
     console.error(error);
     throw new AppError(500, '회원정보 수정 실패');
@@ -69,9 +79,9 @@ const updateUser = async (formData) => {
 
 // [ 유저 회원탈퇴 ]
 /** (유저아이디, 패스워드) */
-const deleteUser = async (userId, password) => {
+const deleteUser = async (user_id, password) => {
   try {
-    const foundUser = await User.findOne({ userId });
+    const foundUser = await User.findOne({ user_id });
 
     if (!foundUser) return new AppError(400, '존재하지 않는 정보 입니다.');
 
@@ -82,15 +92,15 @@ const deleteUser = async (userId, password) => {
 
     //탈퇴 db 저장
     const withdrawnUserData = {
-      userId: foundUser.userId,
-      userEmail: foundUser.userEmail,
-      userName: foundUser.userName,
+      user_id: foundUser.user_id,
+      email: foundUser.email,
+      name: foundUser.name,
       withdrawalDate: new Date(),
     };
 
     await WithdrawnUser.create(withdrawnUserData);
 
-    await User.deleteOne({ userId });
+    await User.deleteOne({ user_id });
 
     return { statusCode: 204, message: '회원탈퇴 되었습니다.' };
   } catch (error) {

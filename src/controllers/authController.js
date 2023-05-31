@@ -3,9 +3,9 @@ const { AppError } = require('../middlewares/errorHandler');
 
 //[ 유저 회원가입 ]
 const signUp = async (req, res, next) => {
-  const { userId, password, userName, userEmail } = req.body;
+  const { user_id, password, name, nick_name, email, phone_number } = req.body;
 
-  if (!userId) {
+  if (!user_id) {
     return next(new AppError(400, '아이디는 필수 입력 사항입니다.'));
   }
 
@@ -13,18 +13,31 @@ const signUp = async (req, res, next) => {
     return next(new AppError(400, '비밀번호는 필수 입력 사항입니다.'));
   }
 
-  if (!userEmail) {
+  if (!nick_name) {
+    return next(new AppError(400, '이름은 필수 입력 사항입니다.'));
+  }
+
+  if (!email) {
     return next(new AppError(400, '이메일은 필수 입력 사항입니다.'));
   }
 
-  if (!userName) {
-    return next(new AppError(400, '닉네임은 필수 입력 사항입니다.'));
+  if (!name) {
+    return next(new AppError(400, '이름은 필수 입력 사항입니다.'));
   }
 
-  const formData = req.body;
+  if (!phone_number) {
+    return next(new AppError(400, '연락처는 필수 입력 사항입니다.'));
+  }
 
   try {
-    const result = await authService.signUpUser(formData);
+    const result = await authService.signUpUser({
+      user_id,
+      password,
+      name,
+      nick_name,
+      email,
+      phone_number,
+    });
 
     if (result.statusCode === 400)
       return next(new AppError(400, result.message));
@@ -38,9 +51,9 @@ const signUp = async (req, res, next) => {
 
 //[ 유저 로그인 ]
 const logIn = async (req, res, next) => {
-  const { userId, password } = req.body;
+  const { user_id, password } = req.body;
 
-  if (!userId) {
+  if (!user_id) {
     return next(new AppError(400, '아이디를 입력해주세요.'));
   }
   if (!password) {
@@ -48,7 +61,7 @@ const logIn = async (req, res, next) => {
   }
 
   try {
-    const result = await authService.logInUser(userId, password);
+    const result = await authService.logInUser(user_id, password);
 
     if (result.statusCode === 400) {
       return next(new AppError(400, result.message));
@@ -57,8 +70,10 @@ const logIn = async (req, res, next) => {
     } else if (result) {
       const { accessToken, refreshToken, userData } = result;
       const {
-        userName,
-        userEmail,
+        nick_name,
+        name,
+        email,
+        phone_number,
         favoritePlaygrounds,
         isBanned,
         banEndDate,
@@ -74,9 +89,11 @@ const logIn = async (req, res, next) => {
       res.status(200).json({
         message: '로그인 성공',
         userData: {
-          userId: userData.userId,
-          userName: userName,
-          userEmail: userEmail,
+          user_id: userData.user_id,
+          name: name,
+          nick_name: nick_name,
+          email: email,
+          phone_number: phone_number,
           favoritePlaygrounds: favoritePlaygrounds,
           isBanned: isBanned,
           banEndDate: banEndDate,
