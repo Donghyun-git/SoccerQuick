@@ -104,6 +104,7 @@ const addFavorites = async (groundId, userId) => {
 };
 
 // [ 풋볼장 즐겨찾기에서 삭제 ]
+/*
 const removeFavorites = async (groundId, userId) => {
   try {
     const foundUser = await User.findOne({ userId });
@@ -137,10 +138,11 @@ const removeFavorites = async (groundId, userId) => {
     return new AppError(500, '즐겨찾기 삭제 중 오류 발생');
   }
 };
+*/
 
 module.exports = {
   getAllGrounds,
   getFilteredGrounds,
   addFavorites,
-  removeFavorites,
+  // removeFavorites,
 };
