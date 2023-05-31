@@ -1,7 +1,7 @@
 const authService = require('../services/authService');
 const { AppError, errorHandler } = require('../middlewares/errorHandler');
 const errorMessageHandler = require('../validator/errorMessageHandler');
-const { signUpSchema, logInSchema } = require('../validator/validatorSchema');
+const { signUpSchema, logInSchema } = require('../validator/authValidator');
 
 //[ 유저 회원가입 ]
 const signUp = async (req, res, next) => {
