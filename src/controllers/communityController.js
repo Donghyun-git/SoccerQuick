@@ -1,5 +1,13 @@
 const communityService = require('../services/communityService');
-const { AppError } = require('../middlewares/errorHandler');
+const {
+  AppError,
+  errorMessageHandler,
+} = require('../middlewares/errorHandler');
+const {
+  addPostSchema,
+  updatePostSchema,
+  deletePostSchema,
+} = require('../validator/communityValidator');
 
 //[ 커뮤니티 전체 게시글 조회 ]
 const getAllPosts = async (req, res, next) => {
@@ -20,9 +28,12 @@ const getAllPosts = async (req, res, next) => {
 const addPost = async (req, res, next) => {
   const { userId, title, description, isNotice } = req.body;
 
-  if (!userId) return next(new AppError(400, '작성자 아이디를 입력해주세요.'));
-  if (!title) return next(new AppError(400, '글 제목을 입력해주세요.'));
-  if (!description) return next(new AppError(400, '본문 내용을 입력해주세요.'));
+  const { error } = addPostSchema.validate(req.body);
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
 
   try {
     const result = await communityService.addPost({
@@ -52,18 +63,19 @@ const addPost = async (req, res, next) => {
 const updatePost = async (req, res, next) => {
   const { postId } = req.params;
   const { userId, title, description, isNotice } = req.body;
-  console.log(postId);
-  if (!postId)
-    return next(
-      new AppError(400, '게시글 번호를 URL 파라미터에 포함 시켜주세요. ㅎㅎ')
-    );
-  if (!userId)
-    return next(
-      new AppError(400, '유저 아이디를 바디에 넣어서 같이 보내주세용 ㅎㅎ')
-    );
-  if (!title) return next(new AppError(400, '수정할 제목을 입력해주세요.'));
-  if (!description)
-    return next(new AppError(400, '수정할 본문을 입력해주세요.'));
+
+  const { error } = updatePostSchema.validate({
+    postId,
+    userId,
+    title,
+    description,
+    isNotice,
+  });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
 
   try {
     const result = await communityService.updatePost({
@@ -94,8 +106,14 @@ const deletePost = async (req, res, next) => {
   const { postId } = req.params;
   const { userId } = req.body;
 
-  if (!postId) return next(new AppError(400, '게시물 번호를 같이 보내주세요'));
-  if (!userId) return next(new AppError(400, '존재하지 않는 아이디입니다.'));
+  const { error, value } = deletePostSchema.validate({ postId, userId });
+
+  console.log(value);
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
 
   try {
     const result = await communityService.deletePost(postId, userId);
@@ -113,6 +131,7 @@ const deletePost = async (req, res, next) => {
     console.error(error);
   }
 };
+
 module.exports = {
   addPost,
   getAllPosts,

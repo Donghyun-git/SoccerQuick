@@ -1,16 +1,16 @@
 const Joi = require('joi');
 
-const signUpSchema = Joi.object({
+//[ 유저정보 조회 ]
+const getUserInfoSchema = Joi.object({
+  id: Joi.string().label('아이디').required(),
+});
+
+// [ 유저정보 수정 ]
+const updateUserInfoSchema = Joi.object({
   user_id: Joi.string().label('아이디').alphanum().min(3).max(20).required(),
   password: Joi.string()
     .label('비밀번호')
     .pattern(/^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,16}$/)
-    .required(),
-  name: Joi.string()
-    .label('이름')
-    .pattern(/^[가-힣]+$/)
-    .min(2)
-    .max(10)
     .required(),
   nick_name: Joi.string()
     .label('닉네임')
@@ -28,13 +28,14 @@ const signUpSchema = Joi.object({
     .required(),
 });
 
-const logInSchema = Joi.object({
+//[ 유저 회원탈퇴 ]
+const deleteUserInfoSchema = Joi.object({
   user_id: Joi.string().label('아이디').required(),
   password: Joi.string().label('비밀번호').required(),
 });
 
-const validateUniqueUserIdSchema = Joi.object({
-  user_id: Joi.string().label('아이디').alphanum().min(3).max(20).required(),
-});
-
-module.exports = { signUpSchema, logInSchema, validateUniqueUserIdSchema };
+module.exports = {
+  getUserInfoSchema,
+  updateUserInfoSchema,
+  deleteUserInfoSchema,
+};

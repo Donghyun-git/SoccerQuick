@@ -1,7 +1,13 @@
 const authService = require('../services/authService');
-const { AppError, errorHandler } = require('../middlewares/errorHandler');
-const errorMessageHandler = require('../validator/errorMessageHandler');
-const { signUpSchema, logInSchema } = require('../validator/authValidator');
+const {
+  AppError,
+  errorMessageHandler,
+} = require('../middlewares/errorHandler');
+const {
+  signUpSchema,
+  logInSchema,
+  validateUniqueUserIdSchema,
+} = require('../validator/authValidator');
 
 //[ 유저 회원가입 ]
 const signUp = async (req, res, next) => {
@@ -92,4 +98,26 @@ const logIn = async (req, res, next) => {
   }
 };
 
-module.exports = { logIn, signUp };
+//[ 회원가입 아이디 중복 체크]
+const validateUniqueUserId = async (req, res, next) => {
+  const { user_id } = req.body;
+
+  const { error } = validateUniqueUserIdSchema.validate({ user_id });
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await authService.validateUniqueUserId(user_id);
+
+    res.status(200).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '아이디 중복체크 실패'));
+  }
+};
+
+module.exports = { logIn, signUp, validateUniqueUserId };

@@ -1,9 +1,23 @@
 const userService = require('../services/userService');
-const { AppError } = require('../middlewares/errorHandler');
+const {
+  AppError,
+  errorMessageHandler,
+} = require('../middlewares/errorHandler');
+const {
+  getUserInfoSchema,
+  updateUserInfoSchema,
+  deleteUserInfoSchema,
+} = require('../validator/userValidator');
 
 //[ 유저정보 조회 ]
 const getUserInfo = async (req, res, next) => {
   const { id } = req.params;
+  const { error } = getUserInfoSchema.validate({ id });
+
+  if (error) {
+    const message = errorMessageHandler(error, value);
+    return next(new AppError(400, message));
+  }
 
   if (!id) return next(new AppError(400, '아이디가 입력되지 않았습니다.'));
 
@@ -31,20 +45,17 @@ const updateUserInfo = async (req, res, next) => {
 
   const { user_id, password, nick_name, email, phone_number } = req.body;
 
-  if (!user_id) {
-    return next(new AppError(400, '아이디를 입력해주세요'));
-  }
+  const { error } = updateUserInfoSchema.validate({
+    user_id,
+    password,
+    nick_name,
+    email,
+    phone_number,
+  });
 
-  if (!password) {
-    return next(new AppError(400, '수정된 패스워드 입력은 필수 사항입니다!'));
-  }
-
-  if (!nick_name) {
-    return next(new AppError(400, '닉네임을 입력해주세요.'));
-  }
-
-  if (!email) {
-    return next(new AppError(400, '이메일을 입력해주세요.'));
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
   }
 
   try {
@@ -74,9 +85,12 @@ const updateUserInfo = async (req, res, next) => {
 const deleteUserInfo = async (req, res, next) => {
   const { user_id, password } = req.body;
 
-  if (!user_id) return next(new AppError(400, '아이디를 입력해주세요.'));
+  const { error } = deleteUserInfoSchema.validate({ user_id, password });
 
-  if (!password) return next(new AppError(400, '비밀번호를 입력해주세요.'));
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
 
   try {
     const result = await userService.deleteUser(user_id, password);

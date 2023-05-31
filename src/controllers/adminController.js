@@ -1,11 +1,13 @@
 const adminService = require('../services/adminService');
-const { AppError } = require('../middlewares/errorHandler');
+const {
+  AppError,
+  errorMessageHandler,
+} = require('../middlewares/errorHandler');
 const {
   getAllUserInfoSchema,
   adminBanUserSchema,
   updateUserRoleSchema,
 } = require('../validator/adminValidator');
-const errorMessageHandler = require('../validator/errorMessageHandler');
 
 // [ 관리자 ] 유저 전체 정보 조회
 const getAllUserInfo = async (req, res, next) => {

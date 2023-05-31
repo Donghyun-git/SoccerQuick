@@ -141,4 +141,18 @@ const logInUser = async (user_id, password) => {
   }
 };
 
-module.exports = { logInUser, signUpUser };
+//[ 회원가입 아이디 중복 체크 ]
+const validateUniqueUserId = async (user_id) => {
+  try {
+    const foundUser = await User.findOne({ user_id });
+
+    if (foundUser) return new AppError(400, '이미 존재하는 아이디입니다.');
+
+    return { message: '사용할 수 있는 아이디입니다!' };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, '아이디 중복 체크 실패');
+  }
+};
+
+module.exports = { logInUser, signUpUser, validateUniqueUserId };
