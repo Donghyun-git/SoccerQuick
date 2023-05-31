@@ -76,6 +76,7 @@ const addFavorites = async (groundId, userId) => {
     // 즐겨찾기에 추가
     usersFavorites.push(user_id);
 
+    // 데이터 업데이트
     const updateData = {
       groundId: groundId,
       name: foundGround.name,
@@ -103,18 +104,34 @@ const addFavorites = async (groundId, userId) => {
 };
 
 // [ 풋볼장 즐겨찾기에서 삭제 ]
-const removeFavorites = async (req, res) => {
+const removeFavorites = async (groundId, userId) => {
   try {
-    const { groundId } = req.params;
-    const userId = req.user.id; //로그인된 사용자 ID
-    const ground = await Ground.findById(groundId);
-    if (!ground) {
-      return new AppError(404, '풋볼장을 찾을 수 없습니다.');
-    }
+    const foundUser = await User.findOne({ userId });
+
+    if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
+
+    const user_id = foundUser._id;
+
+    // 풋볼장 조회
+    const foundGround = await Ground.findOne({ groundId });
+    if (!foundGround) return new AppError(400, '풋볼장을 찾을 수 없습니다.');
+
+    // 유저아디랑 일치하지 않는 즐찾찾고 이 배열을 통째로 업데이트  
+
+    const usersFavorites = foundGround.usersFavorites;
+    const favoritesFiltered = usersFavorites.filter(
+      (v) => toString(v) !== toString(user_id)
+    );
+    
+    const updatedFavorites = await foundGround.save
     // 즐겨찾기에서 삭제
-    ground.usersFavorites.pull(userId);
-    await ground.save();
-    return { statusCode: 200, message: '즐겨찾기에서 삭제되었습니다.' };
+
+    );
+    return {
+      statusCode: 204,
+      message: '즐겨찾기에서 삭제되었습니다.',
+      data: deletedFavorites,
+    };
   } catch (error) {
     console.log('즐겨찾기 삭제 중에 오류 발생', error);
     return new AppError(500, '즐겨찾기 삭제 중 오류 발생');
