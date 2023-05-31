@@ -1,32 +1,17 @@
 const authService = require('../services/authService');
-const { AppError } = require('../middlewares/errorHandler');
+const { AppError, errorHandler } = require('../middlewares/errorHandler');
+const errorMessageHandler = require('../validator/errorMessageHandler');
+const { signUpSchema, logInSchema } = require('../validator/validatorSchema');
 
 //[ 유저 회원가입 ]
 const signUp = async (req, res, next) => {
   const { user_id, password, name, nick_name, email, phone_number } = req.body;
 
-  if (!user_id) {
-    return next(new AppError(400, '아이디는 필수 입력 사항입니다.'));
-  }
+  const { error } = signUpSchema.validate(req.body);
 
-  if (!password) {
-    return next(new AppError(400, '비밀번호는 필수 입력 사항입니다.'));
-  }
-
-  if (!nick_name) {
-    return next(new AppError(400, '이름은 필수 입력 사항입니다.'));
-  }
-
-  if (!email) {
-    return next(new AppError(400, '이메일은 필수 입력 사항입니다.'));
-  }
-
-  if (!name) {
-    return next(new AppError(400, '이름은 필수 입력 사항입니다.'));
-  }
-
-  if (!phone_number) {
-    return next(new AppError(400, '연락처는 필수 입력 사항입니다.'));
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
   }
 
   try {
@@ -53,11 +38,11 @@ const signUp = async (req, res, next) => {
 const logIn = async (req, res, next) => {
   const { user_id, password } = req.body;
 
-  if (!user_id) {
-    return next(new AppError(400, '아이디를 입력해주세요.'));
-  }
-  if (!password) {
-    return next(new AppError(400, '비밀번호를 입력해주세요.'));
+  const { error } = logInSchema.validate(req.body);
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
   }
 
   try {
