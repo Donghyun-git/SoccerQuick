@@ -21,22 +21,22 @@ const signUpUser = async (formData) => {
     // 이미 사용 중이라면 데이터 추가 안하고 에러를 반환하기 위해 겹치는 요소 컨트롤러로.
     if (foundUser) {
       if (foundUser.user_id === user_id) {
-        return new AppError(400, '이미 존재하는 아이디입니다.');
+        return new AppError(404, '이미 존재하는 아이디입니다.');
       }
 
       if (foundUser.nick_name === nick_name) {
-        return new AppError(400, '이미 존재하는 닉네임입니다.');
+        return new AppError(404, '이미 존재하는 닉네임입니다.');
       }
 
       if (foundUser.email === email) {
-        return new AppError(400, '이미 존재하는 이메일입니다.');
+        return new AppError(404, '이미 존재하는 이메일입니다.');
       }
     }
 
     const hashedPassword = await hashPassword(password);
 
     const addUser = await User.create({
-      user_id: user_id,
+      user_id,
       password: hashedPassword,
       name,
       nick_name,
@@ -46,7 +46,7 @@ const signUpUser = async (formData) => {
 
     await addUser.save();
 
-    return { statusCode: 201, message: '회원가입에 성공하였습니다.' };
+    return { message: '회원가입에 성공하였습니다.' };
   } catch (error) {
     console.error(error);
     throw new AppError(500, '회원가입에 실패하였습니다.');
@@ -60,7 +60,7 @@ const logInUser = async (user_id, password) => {
     const foundUser = await User.findOne({ user_id });
 
     if (!foundUser) {
-      return new AppError(400, '존재하지 않는 아이디입니다.');
+      return new AppError(404, '존재하지 않는 아이디입니다.');
     }
 
     const isMatched = await bcrypt.compare(password, foundUser.password);
@@ -70,12 +70,13 @@ const logInUser = async (user_id, password) => {
     }
 
     if (foundUser.isBanned) {
-      const { isBanned, banEndDate } = foundUser;
+      const { banEndDate } = foundUser;
       const currentDate = new Date();
 
       if (banEndDate && banEndDate <= currentDate) {
         foundUser.isBanned = false;
         foundUser.banEndDate = null;
+
         await foundUser.save();
       } else {
         const dateString = banEndDate.toString();

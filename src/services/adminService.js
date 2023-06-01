@@ -8,7 +8,7 @@ const getAllUserInfo = async (user_id) => {
   try {
     const foundUser = await User.findOne({ user_id });
 
-    if (!foundUser) return new AppError(400, '유효하지 않은 아이디입니다.');
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
     if (!foundUser.admin_id)
       return new AppError(403, '관리자가 아닙니다. 접근 권한이 없습니다.');
 
@@ -47,7 +47,7 @@ const banUser = async (user_id, banUserId) => {
     const foundBanUser = await User.findOne({ user_id: banUserId });
 
     if (!foundBanUser)
-      return new AppError(400, '존재하지 않는 유저입니다. 다시 선택해 주세요.');
+      return new AppError(404, '존재하지 않는 유저입니다. 다시 선택해 주세요.');
 
     if (foundBanUser.admin_id)
       return new AppError(
@@ -78,7 +78,7 @@ const updateUserRole = async (user_id, updateUser) => {
   try {
     const foundUser = await User.findOne({ user_id });
     console.log(foundUser);
-    if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
     if (!foundUser.admin_id) return new AppError(403, '권한이 없습니다.');
 
     const foundAdmin = await Admin.findOne({ _id: foundUser.admin_id });
@@ -87,7 +87,7 @@ const updateUserRole = async (user_id, updateUser) => {
 
     const foundUpdateUser = await User.findOne({ user_id: updateUser });
 
-    if (!foundUpdateUser) return new AppError(400, '유저를 찾을 수 없습니다.');
+    if (!foundUpdateUser) return new AppError(404, '유저를 찾을 수 없습니다.');
 
     if (foundUpdateUser.admin_id)
       return new AppError(400, '이미 관리자 권한이 있습니다.');

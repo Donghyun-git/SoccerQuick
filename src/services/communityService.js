@@ -9,7 +9,6 @@ const getAllPosts = async () => {
     const posts = await Post.find();
 
     return {
-      statusCode: 200,
       message: '전체 게시글 조회 성공',
       posts: posts,
     };
@@ -27,20 +26,20 @@ const addPost = async (posts) => {
   try {
     const foundUser = await User.findOne({ user_id: userId });
 
-    if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
 
     const admin_id = foundUser.admin_id;
 
     if (isNotice === '공지사항' && !admin_id)
       return new AppError(403, '관리자만 공지사항을 등록할 수 있습니다.');
 
-    const user_id = foundUser._id;
+    const userObjectId = foundUser._id;
 
     const post_id = await createPostId();
 
     const newPostField = {
-      user_id: user_id,
-      post_id: post_id,
+      user_id: userObjectId,
+      post_id,
       title,
       description,
       isNotice,
@@ -93,7 +92,7 @@ const updatePost = async (post) => {
       { new: true }
     );
 
-    return { statusCode: 201, message: '게시물 수정 성공', data: updatedPost };
+    return { message: '게시물 수정 성공', data: updatedPost };
   } catch (error) {
     console.error(error);
     return new AppError(500, '게시글 수정 실패');
@@ -123,7 +122,7 @@ const deletePost = async (post_id, userId) => {
 
     if (toString(user_id) === toString(foundPost.user_id)) {
       await Post.deleteOne({ post_id });
-      return { statusCode: 204, message: '게시물이 삭제되었습니다.' };
+      return { message: '게시물이 삭제되었습니다.' };
     }
 
     return new AppError(403, '삭제 권한이 없습니다.');

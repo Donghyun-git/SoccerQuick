@@ -9,7 +9,7 @@ const getUser = async (user_id) => {
   try {
     const foundUser = await User.findOne({ user_id });
 
-    if (!foundUser) return new AppError(400, '존재하지 않는 아이디 입니다.');
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디 입니다.');
 
     return {
       message: '마이페이지 조회 성공',
@@ -40,7 +40,7 @@ const updateUser = async (formData) => {
     });
 
     if (!foundUser) {
-      return new AppError(400, '존재하지 않는 아이디입니다.');
+      return new AppError(404, '존재하지 않는 아이디입니다.');
     }
 
     if (foundUser.nick_name === nick_name) {
@@ -84,7 +84,7 @@ const deleteUser = async (user_id, password) => {
   try {
     const foundUser = await User.findOne({ user_id });
 
-    if (!foundUser) return new AppError(400, '존재하지 않는 정보 입니다.');
+    if (!foundUser) return new AppError(404, '존재하지 않는 정보 입니다.');
 
     const isMatched = await bcrypt.compare(password, foundUser.password);
     if (!isMatched) {

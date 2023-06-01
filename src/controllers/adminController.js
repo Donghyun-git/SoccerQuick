@@ -23,7 +23,7 @@ const getAllUserInfo = async (req, res, next) => {
   try {
     const result = await adminService.getAllUserInfo(id);
 
-    if (result.statusCode === 400 || result.statusCode === 403)
+    if (result.statusCode === 404 || result.statusCode === 403)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(200).json({
@@ -50,7 +50,11 @@ const adminBanUser = async (req, res, next) => {
   try {
     const result = await adminService.banUser(user_id, banUserId);
 
-    if (result.statusCode === 400 || result.statusCode === 403)
+    if (
+      result.statusCode === 400 ||
+      result.statusCode === 403 ||
+      result.statusCode === 404
+    )
       return next(new AppError(result.statusCode, result.message));
 
     res.status(200).json({
@@ -76,7 +80,11 @@ const updateUserRole = async (req, res, next) => {
   try {
     const result = await adminService.updateUserRole(user_id, updateUser);
 
-    if (result.statusCode === 400 || result.statusCode === 403)
+    if (
+      result.statusCode === 400 ||
+      result.statusCode === 403 ||
+      result.statusCode === 404
+    )
       return next(new AppError(result.statusCode, result.message));
 
     res.status(200).json({

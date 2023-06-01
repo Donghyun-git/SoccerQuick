@@ -37,8 +37,8 @@ const signUp = async (req, res, next) => {
       phone_number,
     });
 
-    if (result.statusCode === 400)
-      return next(new AppError(400, result.message));
+    if (result.statusCode === 404)
+      return next(new AppError(404, result.message));
 
     res.status(201).json({ message: result.message });
   } catch (error) {
@@ -61,7 +61,11 @@ const logIn = async (req, res, next) => {
   try {
     const result = await authService.logInUser(user_id, password);
 
-    if (result.statusCode === 400 || result.statusCode === 403) {
+    if (
+      result.statusCode === 400 ||
+      result.statusCode === 403 ||
+      result.statusCode === 404
+    ) {
       return next(new AppError(result.message, result.message));
     }
 
@@ -87,14 +91,14 @@ const logIn = async (req, res, next) => {
       message: '로그인 성공',
       userData: {
         user_id: userData.user_id,
-        name: name,
-        nick_name: nick_name,
-        email: email,
-        phone_number: phone_number,
-        favoritePlaygrounds: favoritePlaygrounds,
-        isBanned: isBanned,
-        banEndDate: banEndDate,
-        createdAt: createdAt,
+        name,
+        nick_name,
+        email,
+        phone_number,
+        favoritePlaygrounds,
+        isBanned,
+        banEndDate,
+        createdAt,
       },
     });
   } catch (error) {

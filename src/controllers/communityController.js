@@ -48,7 +48,7 @@ const addPost = async (req, res, next) => {
       isNotice,
     });
 
-    if (result.statusCode === 400 || result.statusCode === 403)
+    if (result.statusCode === 403 || result.statusCode === 404)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(201).json({
