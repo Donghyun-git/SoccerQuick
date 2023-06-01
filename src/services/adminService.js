@@ -26,7 +26,6 @@ const getAllUserInfo = async (user_id) => {
       };
     });
     return {
-      statusCode: 200,
       message: '모든 유저 정보 조회 성공',
       data: allUserData,
     };
@@ -65,7 +64,7 @@ const banUser = async (user_id, banUserId) => {
       foundBanUser.banEndDate = banEndDate;
       await foundBanUser.save();
 
-      return { statusCode: 201, message: '정지 성공' };
+      return { message: '정지 성공' };
     }
   } catch (error) {
     console.error(error);
@@ -111,7 +110,6 @@ const updateUserRole = async (user_id, updateUser) => {
     await foundUpdateUser.save();
 
     return {
-      statusCode: 201,
       message: '유저 직위 변경 성공',
     };
   } catch (error) {

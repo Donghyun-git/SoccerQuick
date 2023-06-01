@@ -19,16 +19,14 @@ const getUserInfo = async (req, res, next) => {
     return next(new AppError(400, message));
   }
 
-  if (!id) return next(new AppError(400, '아이디가 입력되지 않았습니다.'));
-
   try {
     const result = await userService.getUser(id);
 
-    if (result.status === 400) {
-      return next(new AppError(result.status, result.message));
+    if (result.statusCode === 400) {
+      return next(new AppError(result.statusCode, result.message));
     }
 
-    res.status(result.statusCode).json({
+    res.status(200).json({
       message: result.message,
       userData: result.userData,
     });
@@ -96,10 +94,10 @@ const deleteUserInfo = async (req, res, next) => {
     const result = await userService.deleteUser(user_id, password);
 
     if (result.statusCode === 400) {
-      return next(new AppError(result.statusCode, result.message));
+      return next(new AppError(400, result.message));
     }
 
-    res.status(result.statusCode).json({
+    res.status(204).json({
       message: result.message,
     });
   } catch (error) {

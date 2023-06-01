@@ -12,7 +12,6 @@ const getUser = async (user_id) => {
     if (!foundUser) return new AppError(400, '존재하지 않는 아이디 입니다.');
 
     return {
-      statusCode: 200,
       message: '마이페이지 조회 성공',
       userData: {
         user_id: foundUser.user_id,
@@ -80,6 +79,8 @@ const updateUser = async (formData) => {
 // [ 유저 회원탈퇴 ]
 /** (유저아이디, 패스워드) */
 const deleteUser = async (user_id, password) => {
+  const { nanoid } = await import('nanoid');
+
   try {
     const foundUser = await User.findOne({ user_id });
 
@@ -91,8 +92,10 @@ const deleteUser = async (user_id, password) => {
     }
 
     //탈퇴 db 저장
+    const nano_id = nanoid(4);
+
     const withdrawnUserData = {
-      user_id: foundUser.user_id,
+      user_id: foundUser.user_id + nano_id,
       email: foundUser.email,
       name: foundUser.name,
       withdrawalDate: new Date(),
@@ -102,7 +105,7 @@ const deleteUser = async (user_id, password) => {
 
     await User.deleteOne({ user_id });
 
-    return { statusCode: 204, message: '회원탈퇴 되었습니다.' };
+    return { message: '회원탈퇴 되었습니다.' };
   } catch (error) {
     console.error(error);
     return new AppError(500, '회원탈퇴 실패');

@@ -43,12 +43,10 @@ const addPost = async (req, res, next) => {
       isNotice,
     });
 
-    if (result.statusCode === 400)
-      return next(new AppError(400, result.message));
-    if (result.statusCode === 403)
-      return next(new AppError(403, result.message));
+    if (result.statusCode === 400 || result.statusCode === 403)
+      return next(new AppError(result.statusCode, result.message));
 
-    res.status(result.statusCode).json({
+    res.status(201).json({
       message: result.message,
       data: result.newPost,
     });
@@ -86,12 +84,10 @@ const updatePost = async (req, res, next) => {
       isNotice,
     });
 
-    if (result.statusCode === 400)
-      return next(new AppError(400, result.message));
-    if (result.statusCode === 403)
-      return next(new AppError(403, result.message));
+    if (result.statusCode === 400 || result.statusCode === 403)
+      return next(new AppError(result.statusCode, result.message));
 
-    res.status(201).json({
+    res.status(200).json({
       message: result.message,
       data: result.data,
     });
@@ -118,11 +114,8 @@ const deletePost = async (req, res, next) => {
   try {
     const result = await communityService.deletePost(postId, userId);
 
-    if (result.statusCode === 400)
-      return next(new AppError(400, result.message));
-
-    if (result.statusCode === 403)
-      return next(new AppError(403, result.message));
+    if (result.statusCode === 400 || result.statusCode === 403)
+      return next(new AppError(result.statusCode, result.message));
 
     res.status(204).json({
       message: result.message,

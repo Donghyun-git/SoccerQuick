@@ -49,7 +49,6 @@ const addPost = async (posts) => {
     const newPost = await Post.create(newPostField);
 
     return {
-      statusCode: 201,
       message: '게시글이 등록되었습니다.',
       newPost: newPost,
     };

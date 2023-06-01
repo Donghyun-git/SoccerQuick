@@ -54,44 +54,42 @@ const logIn = async (req, res, next) => {
   try {
     const result = await authService.logInUser(user_id, password);
 
-    if (result.statusCode === 400) {
-      return next(new AppError(400, result.message));
-    } else if (result.statusCode === 403) {
-      return next(new AppError(403, result.message));
-    } else if (result) {
-      const { accessToken, refreshToken, userData } = result;
-      const {
-        nick_name,
-        name,
-        email,
-        phone_number,
-        favoritePlaygrounds,
-        isBanned,
-        banEndDate,
-        createdAt,
-      } = userData;
-
-      //[accessToken, refreshToken 각각 response 헤더, 쿠키 세팅]
-      res.setHeader('Authorization', `Bearer ${accessToken}`);
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: false,
-      });
-
-      res.status(200).json({
-        message: '로그인 성공',
-        userData: {
-          user_id: userData.user_id,
-          name: name,
-          nick_name: nick_name,
-          email: email,
-          phone_number: phone_number,
-          favoritePlaygrounds: favoritePlaygrounds,
-          isBanned: isBanned,
-          banEndDate: banEndDate,
-          createdAt: createdAt,
-        },
-      });
+    if (result.statusCode === 400 || result.statusCode === 403) {
+      return next(new AppError(result.message, result.message));
     }
+
+    const { accessToken, refreshToken, userData } = result;
+    const {
+      nick_name,
+      name,
+      email,
+      phone_number,
+      favoritePlaygrounds,
+      isBanned,
+      banEndDate,
+      createdAt,
+    } = userData;
+
+    //[accessToken, refreshToken 각각 response 헤더, 쿠키 세팅]
+    res.setHeader('Authorization', `Bearer ${accessToken}`);
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: false,
+    });
+
+    res.status(200).json({
+      message: '로그인 성공',
+      userData: {
+        user_id: userData.user_id,
+        name: name,
+        nick_name: nick_name,
+        email: email,
+        phone_number: phone_number,
+        favoritePlaygrounds: favoritePlaygrounds,
+        isBanned: isBanned,
+        banEndDate: banEndDate,
+        createdAt: createdAt,
+      },
+    });
   } catch (error) {
     console.error(error);
     return next(new AppError(500, '로그인 실패'));
@@ -103,6 +101,7 @@ const validateUniqueUserId = async (req, res, next) => {
   const { user_id } = req.body;
 
   const { error } = validateUniqueUserIdSchema.validate({ user_id });
+
   if (error) {
     const message = errorMessageHandler(error);
     return next(new AppError(400, message));
@@ -110,6 +109,9 @@ const validateUniqueUserId = async (req, res, next) => {
 
   try {
     const result = await authService.validateUniqueUserId(user_id);
+
+    if (result.statusCode === 400)
+      return next(new AppError(400, result.message));
 
     res.status(200).json({
       message: result.message,

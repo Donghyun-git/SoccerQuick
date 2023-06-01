@@ -7,7 +7,7 @@ const groundController = require('../controllers/groundController');
 router.get('/', groundController.getAllGrounds);
 
 // [ 위치, 날짜 풋볼장 필터링 ]
-router.get('/filter', groundController.getFilteredGrounds);
+// router.get('/filter', groundController.getFilteredGrounds);
 
 /* POST */
 // [ 풋볼장 즐겨찾기에 추가 ]
