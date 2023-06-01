@@ -13,7 +13,7 @@ const {
 const getAllUserInfo = async (req, res, next) => {
   const { id } = req.params;
 
-  const { error } = getAllUserInfoSchema.validate(id);
+  const { error } = getAllUserInfoSchema.validate({ id });
 
   if (error) {
     const message = errorMessageHandler(error);
@@ -40,7 +40,7 @@ const getAllUserInfo = async (req, res, next) => {
 const adminBanUser = async (req, res, next) => {
   const { user_id, banUserId } = req.body;
 
-  const { error } = adminBanUserSchema.validate(req.body);
+  const { error } = adminBanUserSchema.validate({ user_id, banUserId });
 
   if (error) {
     const message = errorMessageHandler(error);
@@ -66,7 +66,7 @@ const adminBanUser = async (req, res, next) => {
 const updateUserRole = async (req, res, next) => {
   const { user_id, updateUser } = req.body;
 
-  const { error } = updateUserRoleSchema.validate(req.body);
+  const { error } = updateUserRoleSchema.validate({ user_id, updateUser });
 
   if (error) {
     const message = errorMessageHandler(error);

@@ -13,7 +13,14 @@ const {
 const signUp = async (req, res, next) => {
   const { user_id, password, name, nick_name, email, phone_number } = req.body;
 
-  const { error } = signUpSchema.validate(req.body);
+  const { error } = signUpSchema.validate({
+    user_id,
+    password,
+    name,
+    nick_name,
+    email,
+    phone_number,
+  });
 
   if (error) {
     const message = errorMessageHandler(error);
@@ -44,7 +51,7 @@ const signUp = async (req, res, next) => {
 const logIn = async (req, res, next) => {
   const { user_id, password } = req.body;
 
-  const { error } = logInSchema.validate(req.body);
+  const { error } = logInSchema.validate({ user_id, password });
 
   if (error) {
     const message = errorMessageHandler(error);

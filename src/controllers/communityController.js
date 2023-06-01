@@ -28,7 +28,12 @@ const getAllPosts = async (req, res, next) => {
 const addPost = async (req, res, next) => {
   const { userId, title, description, isNotice } = req.body;
 
-  const { error } = addPostSchema.validate(req.body);
+  const { error } = addPostSchema.validate({
+    userId,
+    title,
+    description,
+    isNotice,
+  });
 
   if (error) {
     const message = errorMessageHandler(error);
