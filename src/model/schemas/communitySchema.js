@@ -21,7 +21,7 @@ const PostSchema = new Schema(
       type: String,
       required: true,
     },
-    isNotice: {
+    notice: {
       type: String,
       enum: ['공지사항', '일반 게시글'],
       default: '일반 게시글',

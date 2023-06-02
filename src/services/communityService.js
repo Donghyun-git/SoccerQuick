@@ -21,7 +21,7 @@ const getAllPosts = async () => {
 //[ 커뮤니티 게시글 등록 ]
 /** ([유저아이디, 제목, 본분, 공지사항여부] 객체) */
 const addPost = async (posts) => {
-  const { userId, title, description, isNotice } = posts;
+  const { userId, title, description, notice } = posts;
 
   try {
     const foundUser = await User.findOne({ user_id: userId });
@@ -30,7 +30,7 @@ const addPost = async (posts) => {
 
     const admin_id = foundUser.admin_id;
 
-    if (isNotice === '공지사항' && !admin_id)
+    if (notice === '공지사항' && !admin_id)
       return new AppError(403, '관리자만 공지사항을 등록할 수 있습니다.');
 
     const userObjectId = foundUser._id;
@@ -42,7 +42,7 @@ const addPost = async (posts) => {
       post_id,
       title,
       description,
-      isNotice,
+      notice,
     };
 
     const newPost = await Post.create(newPostField);
@@ -60,12 +60,12 @@ const addPost = async (posts) => {
 //[ 커뮤니티 게시글 수정 ]
 /** (게시물 수정 목록 객체) */
 const updatePost = async (post) => {
-  const { postId, userId, title, description, isNotice } = post;
+  const { postId, userId, title, description, notice } = post;
   try {
     const foundUser = await User.findOne({ user_id: userId });
     console.log(postId);
     if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
-    if (isNotice === '공지사항' && !foundUser.admin_id)
+    if (notice === '공지사항' && !foundUser.admin_id)
       return new AppError(403, '관리자만 공지사항으로 변경 가능합니다.');
 
     const user_id = foundUser._id;
@@ -83,7 +83,7 @@ const updatePost = async (post) => {
       user_id: user_id,
       title: title,
       description: description,
-      isNotice: isNotice,
+      notice: notice,
     };
 
     const updatedPost = await Post.findOneAndUpdate(
@@ -131,6 +131,8 @@ const deletePost = async (post_id, userId) => {
     return new AppError(500, '게시물 삭제 실패');
   }
 };
+
+//[ 커뮤니티 댓글 등록 ]
 
 module.exports = {
   addPost,

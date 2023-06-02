@@ -26,13 +26,13 @@ const getAllPosts = async (req, res, next) => {
 
 //[ 커뮤니티 게시글 등록 ]
 const addPost = async (req, res, next) => {
-  const { userId, title, description, isNotice } = req.body;
+  const { userId, title, description, notice } = req.body;
 
   const { error } = addPostSchema.validate({
     userId,
     title,
     description,
-    isNotice,
+    notice,
   });
 
   if (error) {
@@ -45,7 +45,7 @@ const addPost = async (req, res, next) => {
       userId,
       title,
       description,
-      isNotice,
+      notice,
     });
 
     if (result.statusCode === 403 || result.statusCode === 404)
@@ -65,14 +65,14 @@ const addPost = async (req, res, next) => {
 // [admin, manager] 는 게시글 공지사항 변경 가능.
 const updatePost = async (req, res, next) => {
   const { postId } = req.params;
-  const { userId, title, description, isNotice } = req.body;
+  const { userId, title, description, notice } = req.body;
 
   const { error } = updatePostSchema.validate({
     postId,
     userId,
     title,
     description,
-    isNotice,
+    notice,
   });
 
   if (error) {
@@ -86,7 +86,7 @@ const updatePost = async (req, res, next) => {
       userId,
       title,
       description,
-      isNotice,
+      notice,
     });
 
     if (result.statusCode === 400 || result.statusCode === 403)

@@ -5,7 +5,7 @@ const addPostSchema = Joi.object({
   userId: Joi.string().label('아이디').required(),
   title: Joi.string().label('제목').required(),
   description: Joi.string().label('본문').required(),
-  isNotice: Joi.string()
+  notice: Joi.string()
     .label('공지사항')
     .pattern(/^(공지사항|일반 게시글)$/)
     .required(),
@@ -17,7 +17,7 @@ const updatePostSchema = Joi.object({
   userId: Joi.string().label('아이디').required(),
   title: Joi.string().label('제목').required(),
   description: Joi.string().label('본문').required(),
-  isNotice: Joi.string()
+  notice: Joi.string()
     .label('공지사항')
     .pattern(/^(공지사항|일반 게시글)$/)
     .required(),
