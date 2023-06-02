@@ -1,6 +1,6 @@
 const { Review, User, Ground } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
-const { createGroundId } = require('../utils/createIndex');
+const { createGroundId, createReviewId } = require('../utils/createIndex');
 
 // [ 리뷰 전체 조회 ]
 const getAllReviews = async () => {
@@ -20,7 +20,7 @@ const getAllReviews = async () => {
 // [ 리뷰 등록 ]
 /** ([유저아이디, 풋볼장번호, 작성자이름, 평점, 리뷰내용 ]) */
 const addReview = async (reviews) => {
-  const { user_id, ground_id, name, rating, comment } = reviews;
+  const { user_id, ground_id, rating, comment } = reviews;
 
   try {
     const foundUser = await User.findOne({ user_id });
@@ -31,7 +31,10 @@ const addReview = async (reviews) => {
     if (!foundGround) return new AppError(404, '존재하지 않는 풋볼장입니다.');
     const groundObjectId = foundGround._id;
 
+    const review_id = await createReviewId();
+
     const newReviewField = {
+      review_id,
       user_id: userObjectId,
       ground_id: groundObjectId,
       name: foundUser.name,
@@ -51,7 +54,41 @@ const addReview = async (reviews) => {
   }
 };
 
+// [ 리뷰 수정]
+const updateReview = async (review) => {
+  const { reviewId, user_id, rating, comment } = review;
+
+  try {
+    const foundReview = await Review.findOne({ review_id: reviewId });
+    if (!foundReview) return new AppError(404, '존재하지 않는 리뷰입니다.');
+
+    const foundUser = await User.findOne({ user_id });
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
+    const userObjectId = toString(foundUser._id);
+
+    if (toString(user_id) !== userObjectId) {
+      return new AppError(404, '본인이 작성한 리뷰만 수정 가능합니다.');
+    }
+
+    const updatedReviewObj = {
+      rating,
+      comment,
+    };
+
+    const updatedReview = await Review.findOneAndUpdate(
+      { review_id: reviewId },
+      { $set: updatedReviewObj },
+      { new: true }
+    );
+    return { message: '리뷰 수정 성공', data: updatedReview };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, '리뷰 수정 실패');
+  }
+};
+
 module.exports = {
   getAllReviews,
   addReview,
+  updateReview,
 };

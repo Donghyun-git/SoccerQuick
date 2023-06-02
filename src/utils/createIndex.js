@@ -12,10 +12,21 @@ const createGroundId = async () => {
   return `ground${index}`;
 };
 
+const createReviewId = async () => {
+  const { nanoid } = await import('nanoid');
+  const index = nanoid(4);
+  return `review${index}`;
+};
+
 const createCommentId = async () => {
   const { nanoid } = await import('nanoid');
   const index = nanoid(4);
   return `comment${index}`;
 };
 
-module.exports = { createPostId, createGroundId, createCommentId };
+module.export = {
+  createPostId,
+  createGroundId,
+  createReviewId,
+  createCommentId,
+};

@@ -3,8 +3,11 @@ const {
   AppError,
   errorMessageHandler,
 } = require('../middlewares/errorHandler');
-const { Review } = require('../model/models');
-const { addReviewSchema } = require('../validator/reviewValidator');
+
+const {
+  addReviewSchema,
+  updateReviewSchema,
+} = require('../validator/reviewValidator');
 
 // [ 리뷰 전체 조회]
 const getAllReviews = async (req, res, next) => {
@@ -32,8 +35,6 @@ const addReview = async (req, res, next) => {
     comment,
   });
   if (error) {
-    // const message = errorMessageHandler(error);
-    // return next(new AppError(400, message));
     const message = errorMessageHandler(error);
     return next(new AppError(400, message));
   }
@@ -60,11 +61,47 @@ const addReview = async (req, res, next) => {
 };
 
 // [ 리뷰 수정 ]
-// const updateReview = async (req, res, next) => {
-//   const { rating, comment } = req.body;
-// };
+const updateReview = async (req, res, next) => {
+  const { reviewId } = req.params;
+  const { user_id, rating, comment } = req.body;
+  console.log(reviewId)
+  const { error } = updateReviewSchema.validate({
+    reviewId,
+    user_id,
+    rating,
+    comment,
+  });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await reviewService.updateReview({
+      reviewId,
+      user_id,
+      rating,
+      comment,
+    });
+
+    if (result.statusCode === 400 || result.statusCode === 403)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '리뷰 수정 실패'));
+  }
+};
+
+// [ 리뷰 삭제 ]
 
 module.exports = {
   getAllReviews,
   addReview,
+  updateReview,
 };
