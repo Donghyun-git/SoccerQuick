@@ -7,6 +7,7 @@ const {
 const {
   addReviewSchema,
   updateReviewSchema,
+  deleteReviewSchema,
 } = require('../validator/reviewValidator');
 
 // [ 리뷰 전체 조회]
@@ -64,7 +65,7 @@ const addReview = async (req, res, next) => {
 const updateReview = async (req, res, next) => {
   const { reviewId } = req.params;
   const { user_id, rating, comment } = req.body;
-  console.log(reviewId)
+
   const { error } = updateReviewSchema.validate({
     reviewId,
     user_id,
@@ -99,9 +100,40 @@ const updateReview = async (req, res, next) => {
 };
 
 // [ 리뷰 삭제 ]
+const deleteReview = async (req, res, next) => {
+  const { reviewId } = req.params;
+  const { user_id } = req.body;
+
+  const { error } = deleteReviewSchema.validate({
+    reviewId,
+    user_id,
+  });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await reviewService.deleteReview({
+      reviewId,
+      user_id,
+    });
+
+    if (result.statusCode === 403 || result.statusCode === 404)
+      return next(new AppError(result.statusCode, result.message));
+    res.status(204).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '리뷰 삭제 실패'));
+  }
+};
 
 module.exports = {
   getAllReviews,
   addReview,
   updateReview,
+  deleteReview, 
 };

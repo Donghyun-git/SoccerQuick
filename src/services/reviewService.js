@@ -1,6 +1,6 @@
 const { Review, User, Ground } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
-const { createGroundId, createReviewId } = require('../utils/createIndex');
+const { createReviewId } = require('../utils/createIndex');
 
 // [ 리뷰 전체 조회 ]
 const getAllReviews = async () => {
@@ -54,7 +54,8 @@ const addReview = async (reviews) => {
   }
 };
 
-// [ 리뷰 수정]
+// [ 리뷰 수정 ]
+/** ([리뷰번호, 유저아이디, 평점, 리뷰내용 ]) */
 const updateReview = async (review) => {
   const { reviewId, user_id, rating, comment } = review;
 
@@ -87,8 +88,38 @@ const updateReview = async (review) => {
   }
 };
 
+// [ 리뷰 삭제 ]
+const deleteReview = async (review) => {
+  const { reviewId, user_id } = review;
+  console.log(reviewId,user_id);
+  try {
+    const foundReview = await Review.findOne({ review_id: reviewId });
+    if (!foundReview) return new AppError(404, '존재하지 않는 리뷰입니다.');
+
+    const foundUser = await User.findOne({ user_id });
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
+    const userObjectId = toString(foundUser._id);
+
+    if (toString(foundReview.user_id) !== userObjectId)
+      return new AppError(403, '리뷰 작성자만 삭제 가능합니다.');
+
+    const deletedReview = await Review.findOneAndDelete({
+      review_id: reviewId,
+    });
+    if (!deletedReview) {
+      return new AppError(500, '리뷰 삭제 실패');
+    }
+
+    return { message: '리뷰 삭제 성공' };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, '리뷰 삭제 실패');
+  }
+};
+
 module.exports = {
   getAllReviews,
   addReview,
   updateReview,
+  deleteReview,
 };

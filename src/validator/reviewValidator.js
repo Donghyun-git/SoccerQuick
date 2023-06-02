@@ -14,4 +14,9 @@ const updateReviewSchema = Joi.object({
   comment: Joi.string().label('리뷰내용').required(),
 });
 
-module.exports = { addReviewSchema, updateReviewSchema };
+const deleteReviewSchema = Joi.object({
+  reviewId: Joi.string().label('리뷰번호').required(),
+  user_id: Joi.string().label('아이디').required(),
+});
+
+module.exports = { addReviewSchema, updateReviewSchema, deleteReviewSchema };
