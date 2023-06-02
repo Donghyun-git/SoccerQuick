@@ -15,6 +15,7 @@ const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter');
 const communityRouter = require('./routes/communityRouter');
 const groundRouter = require('./routes/groundRouter');
+const reviewRouter = require('./routes/reviewRouter');
 
 const origins = ['http://localhost:8800'];
 const corsOptions = {
@@ -52,4 +53,5 @@ app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 app.use('/community', communityRouter);
 app.use('/ground', groundRouter);
+app.use('/review', reviewRouter);
 app.use(errorHandler);
