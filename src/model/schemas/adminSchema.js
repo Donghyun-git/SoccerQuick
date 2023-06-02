@@ -6,7 +6,7 @@ const AdminSchema = new Schema({
     ref: 'User',
     required: true,
   },
-  give_role: {
+  role: {
     type: Boolean,
     default: false,
     required: true,
