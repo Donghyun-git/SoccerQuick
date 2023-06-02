@@ -8,14 +8,14 @@ router.get('/', reviewController.getAllReviews);
 
 /* POST */
 // [ 리뷰 생성 ]
-router.post('/:id', reviewController.addReview);
+router.post('/:reviewId', reviewController.addReview);
 
 /* PATCH */
 // [ 리뷰 수정 ]
-// router.patch('/:id', reviewController.updateReview);
+router.patch('/:reviewId', reviewController.updateReview);
 
 /* DELETE */
 // [ 리뷰 삭제 ]
-// router.delete('/:id', reviewController.deleteReview);
+// router.delete('/:reviewId', reviewController.deleteReview);
 
 module.exports = router;
