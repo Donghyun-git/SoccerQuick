@@ -26,6 +26,7 @@ const PostSchema = new Schema(
       enum: ['공지사항', '일반 게시글'],
       default: '일반 게시글',
     },
+    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   },
   { timestamps: true }
 );
@@ -33,6 +34,10 @@ const PostSchema = new Schema(
 // [ 커뮤니티 댓글 스키마 ]
 const CommentSchema = new Schema(
   {
+    comment_id: {
+      type: String,
+      required: true,
+    },
     user_id: {
       type: Schema.Types.ObjectId,
       ref: 'User',
