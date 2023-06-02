@@ -7,6 +7,9 @@ const {
   addPostSchema,
   updatePostSchema,
   deletePostSchema,
+  addCommentSchema,
+  updateCommentSchema,
+  deleteCommentSchema,
 } = require('../validator/communityValidator');
 
 //[ 커뮤니티 전체 게시글 조회 ]
@@ -107,9 +110,7 @@ const deletePost = async (req, res, next) => {
   const { postId } = req.params;
   const { userId } = req.body;
 
-  const { error, value } = deletePostSchema.validate({ postId, userId });
-
-  console.log(value);
+  const { error } = deletePostSchema.validate({ postId, userId });
 
   if (error) {
     const message = errorMessageHandler(error);
@@ -130,9 +131,112 @@ const deletePost = async (req, res, next) => {
   }
 };
 
+// [ 커뮤니티 게시글 댓글 등록 ]
+const addComment = async (req, res, next) => {
+  const { postId } = req.params;
+  const { user_id, content } = req.body;
+
+  const { error } = addCommentSchema.validate({ postId, user_id, content });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await communityService.addComment(postId, user_id, content);
+
+    if (result.statusCode === 404)
+      return next(new AppError(404, result.message));
+
+    res.status(201).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// [ 커뮤니티 게시글 댓글 수정 ]
+const updateComment = async (req, res, next) => {
+  const { postId, commentId } = req.params;
+  const { user_id, content } = req.body;
+
+  const { error } = updateCommentSchema.validate({
+    postId,
+    commentId,
+    user_id,
+    content,
+  });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await communityService.updateComment({
+      postId,
+      commentId,
+      user_id,
+      content,
+    });
+
+    if (result.statusCode === 403 || result.statusCode === 404)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '댓글 수정 실패'));
+  }
+};
+
+// [ 커뮤니티 댓글 삭제 ]
+const deleteComment = async (req, res, next) => {
+  const { postId, commentId } = req.params;
+  const { user_id } = req.body;
+
+  const { error } = deleteCommentSchema.validate({
+    postId,
+    commentId,
+    user_id,
+  });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await communityService.deleteComment({
+      postId,
+      commentId,
+      user_id,
+    });
+
+    if (result.statusCode === 403 || result.statusCode === 404)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(204).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '댓글 삭제 실패'));
+  }
+};
+
 module.exports = {
   addPost,
   getAllPosts,
   updatePost,
   deletePost,
+  addComment,
+  updateComment,
+  deleteComment,
 };
