@@ -11,7 +11,8 @@ const {
 
 //[ 유저 회원가입 ]
 const signUp = async (req, res, next) => {
-  const { user_id, password, name, nick_name, email, phone_number } = req.body;
+  const { user_id, password, name, nick_name, email, phone_number, gender } =
+    req.body;
 
   const { error } = signUpSchema.validate({
     user_id,
@@ -20,6 +21,7 @@ const signUp = async (req, res, next) => {
     nick_name,
     email,
     phone_number,
+    gender,
   });
 
   if (error) {
@@ -35,6 +37,7 @@ const signUp = async (req, res, next) => {
       nick_name,
       email,
       phone_number,
+      gender,
     });
 
     if (result.statusCode === 404)

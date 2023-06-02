@@ -26,6 +26,7 @@ const signUpSchema = Joi.object({
     .label('연락처')
     .pattern(/^010\d{8}$/)
     .required(),
+  gender: Joi.string().label('성별').valid('남', '여').required(),
 });
 
 const logInSchema = Joi.object({

@@ -13,7 +13,8 @@ const {
 //[ 유저 회원가입 ]
 /** (유저 입력 formdata) */
 const signUpUser = async (formData) => {
-  const { user_id, password, name, nick_name, email, phone_number } = formData;
+  const { user_id, password, name, nick_name, email, phone_number, gender } =
+    formData;
   try {
     const foundUser = await User.findOne({
       $or: [{ user_id }, { name }, { email }],
@@ -42,6 +43,7 @@ const signUpUser = async (formData) => {
       nick_name,
       email,
       phone_number,
+      gender,
     });
 
     await addUser.save();
