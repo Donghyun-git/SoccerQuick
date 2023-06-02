@@ -22,6 +22,9 @@ const Review = mongoose.model('Review', ReviewSchema);
 const GroundSchema = require('../schemas/groundSchema');
 const Ground = mongoose.model('Ground', GroundSchema);
 
+// [ 팀 관련 모델 ]
+const TeamSchema = require('../schemas/teamSchema');
+const Team = mongoose.model('Team', TeamSchema);
 module.exports = {
   User,
   Admin,
@@ -30,4 +33,5 @@ module.exports = {
   Comment,
   Review,
   Ground,
+  Team,
 };
