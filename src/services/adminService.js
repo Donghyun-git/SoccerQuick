@@ -83,7 +83,7 @@ const updateUserRole = async (user_id, updateUser) => {
 
     const foundAdmin = await Admin.findOne({ _id: foundUser.admin_id });
     console.log(foundAdmin);
-    if (!foundAdmin.give_role) return new AppError(403, '권한이 없습니다.');
+    if (!foundAdmin.role) return new AppError(403, '권한이 없습니다.');
 
     const foundUpdateUser = await User.findOne({ user_id: updateUser });
 
@@ -94,7 +94,7 @@ const updateUserRole = async (user_id, updateUser) => {
 
     const newAdmin = await Admin.create({
       user_id: foundUpdateUser._id,
-      give_role: false,
+      role: false,
       create_notice: true,
       suspend_user_login: true,
       suspend_posting: true,

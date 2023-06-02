@@ -6,7 +6,7 @@ const adminController = require('../controllers/adminController');
 router.get('/:id', adminController.getAllUserInfo); // admin/:id
 
 //[ 관리자 - 유저 로그인 정지 ]
-router.patch('/login-ban', adminController.adminBanUser); // admin/login-ban
+router.patch('/ban/login', adminController.adminBanUser); // admin/login-ban
 
 //[ 관리자 - 유저 직위 변경 ]
 router.patch('/role', adminController.updateUserRole); //admin/role
