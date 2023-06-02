@@ -24,7 +24,7 @@ const createCommentId = async () => {
   return `comment${index}`;
 };
 
-module.export = {
+module.exports = {
   createPostId,
   createGroundId,
   createReviewId,
