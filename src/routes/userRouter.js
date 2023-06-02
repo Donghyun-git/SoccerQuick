@@ -6,9 +6,9 @@ const userController = require('../controllers/userController');
 router.get('/:id', userController.getUserInfo); // user/:id
 
 //[ 회원정보 수정 ]
-router.patch('/update', userController.updateUserInfo); // user/update
+router.patch('/', userController.updateUserInfo); // user/update
 
 // [ 회원 탈퇴 ]
-router.delete('/delete', userController.deleteUserInfo); //  user/delete
+router.delete('/', userController.deleteUserInfo); //  user/delete
 
 module.exports = router;

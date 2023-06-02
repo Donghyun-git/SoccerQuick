@@ -8,14 +8,14 @@ router.get('/', communityController.getAllPosts);
 
 /* POST */
 // [ 커뮤니티 게시글 등록 ]
-router.post('/posts', communityController.addPost);
+router.post('/', communityController.addPost);
 
 /* PATCH */
 // [ 커뮤니티 게시글 수정 ]
-router.patch('/posts/:postId', communityController.updatePost);
+router.patch('/:postId', communityController.updatePost);
 
 /* DELETE*/
 // [ 커뮤니티 게시글 삭제 ]
-router.delete('/posts/:postId', communityController.deletePost);
+router.delete('/:postId', communityController.deletePost);
 
 module.exports = router;
