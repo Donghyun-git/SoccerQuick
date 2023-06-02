@@ -43,11 +43,19 @@ const UserSchema = new Schema(
       default: 'user',
     },
     favoritePlaygrounds: [{ type: Schema.Types.ObjectId, ref: 'Ground' }],
-    isBanned: {
+    login_banned: {
       type: Boolean,
       default: false,
     },
-    banEndDate: {
+    login_banEndDate: {
+      type: Date,
+      default: null,
+    },
+    community_banned: {
+      type: Boolean,
+      dafault: false,
+    },
+    community_banEndDate: {
       type: Date,
       default: null,
     },

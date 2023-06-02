@@ -60,15 +60,52 @@ const banUser = async (user_id, banUserId) => {
       const banEndDate = getBanTime(currentDate, 2000);
       // 시간 1000 단위, 1000당 1일, 프론트에서 받아야될듯
 
-      foundBanUser.isBanned = true;
-      foundBanUser.banEndDate = banEndDate;
+      foundBanUser.login_banned = true;
+      foundBanUser.login_banEndDate = banEndDate;
       await foundBanUser.save();
 
-      return { message: '정지 성공' };
+      return { message: '로그인 정지 성공' };
     }
   } catch (error) {
     console.error(error);
-    throw new AppError(500, '회원 정지 실패');
+    throw new AppError(500, '로그인 정지 실패');
+  }
+};
+
+// [ 관리자 ] 유저 커뮤니티 정지
+/**(아이디, 유저 유형, 정지 대상 아이디) */
+const banCommunity = async (user_id, banUserId) => {
+  try {
+    const foundUser = await User.findOne({ user_id });
+
+    if (!foundUser.admin_id)
+      return new AppError(403, '관리자 권한이 없습니다.');
+
+    const foundBanUser = await User.findOne({ user_id: banUserId });
+
+    if (!foundBanUser)
+      return new AppError(404, '존재하지 않는 유저입니다. 다시 선택해 주세요.');
+
+    if (foundBanUser.admin_id)
+      return new AppError(
+        400,
+        '총 관리자 및 매니저는 서로 정지 시킬 수 없습니다.'
+      );
+
+    if (foundBanUser) {
+      const currentDate = new Date();
+      const banEndDate = getBanTime(currentDate, 2000);
+      // 시간 1000 단위, 1000당 1일, 프론트에서 받아야될듯
+
+      foundBanUser.community_banned = true;
+      foundBanUser.community_banEndDate = banEndDate;
+      await foundBanUser.save();
+
+      return { message: '커뮤니티 정지 성공' };
+    }
+  } catch (error) {
+    console.error(error);
+    throw new AppError(500, '커뮤니티 정지 실패');
   }
 };
 
@@ -118,4 +155,4 @@ const updateUserRole = async (user_id, updateUser) => {
   }
 };
 
-module.exports = { getAllUserInfo, banUser, updateUserRole };
+module.exports = { getAllUserInfo, banUser, banCommunity, updateUserRole };

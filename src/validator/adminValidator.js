@@ -4,7 +4,7 @@ const getAllUserInfoSchema = Joi.object({
   id: Joi.string().label('id 파라미터').required(),
 });
 
-const adminBanUserSchema = Joi.object({
+const adminBanSchema = Joi.object({
   user_id: Joi.string().label('아이디').required(),
   banUserId: Joi.string().label('정지 할 아이디').required(),
 });
@@ -16,6 +16,6 @@ const updateUserRoleSchema = Joi.object({
 
 module.exports = {
   getAllUserInfoSchema,
-  adminBanUserSchema,
+  adminBanSchema,
   updateUserRoleSchema,
 };

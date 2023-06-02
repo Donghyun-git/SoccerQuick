@@ -71,17 +71,17 @@ const logInUser = async (user_id, password) => {
       return new AppError(400, '비밀번호가 일치하지 않습니다.');
     }
 
-    if (foundUser.isBanned) {
-      const { banEndDate } = foundUser;
+    if (foundUser.login_banned) {
+      const { login_banEndDate } = foundUser;
       const currentDate = new Date();
 
-      if (banEndDate && banEndDate <= currentDate) {
-        foundUser.isBanned = false;
-        foundUser.banEndDate = null;
+      if (login_banEndDate && login_banEndDate <= currentDate) {
+        foundUser.login_banned = false;
+        foundUser.login_banEndDate = null;
 
         await foundUser.save();
       } else {
-        const dateString = banEndDate.toString();
+        const dateString = login_banEndDate.toString();
         const newDate = new Date(dateString);
 
         const options = {

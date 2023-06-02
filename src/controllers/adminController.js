@@ -5,7 +5,7 @@ const {
 } = require('../middlewares/errorHandler');
 const {
   getAllUserInfoSchema,
-  adminBanUserSchema,
+  adminBanSchema,
   updateUserRoleSchema,
 } = require('../validator/adminValidator');
 
@@ -40,7 +40,7 @@ const getAllUserInfo = async (req, res, next) => {
 const adminBanUser = async (req, res, next) => {
   const { user_id, banUserId } = req.body;
 
-  const { error } = adminBanUserSchema.validate({ user_id, banUserId });
+  const { error } = adminBanSchema.validate({ user_id, banUserId });
 
   if (error) {
     const message = errorMessageHandler(error);
@@ -62,7 +62,37 @@ const adminBanUser = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '정지 실패, 서버 에러'));
+    return next(new AppError(500, '로그인 정지 실패, 서버 에러'));
+  }
+};
+
+// [ 관리자 ] 유저 커뮤니티 정지
+const adminBanCommunity = async (req, res, next) => {
+  const { user_id, banUserId } = req.body;
+  console.log(user_id, banUserId);
+  const { error } = adminBanSchema.validate({ user_id, banUserId });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await adminService.banCommunity(user_id, banUserId);
+
+    if (
+      result.statusCode === 400 ||
+      result.statusCode === 403 ||
+      result.statusCode === 404
+    )
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, '커뮤니티 정지 실패, 서버 에러'));
   }
 };
 
@@ -96,4 +126,9 @@ const updateUserRole = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllUserInfo, adminBanUser, updateUserRole };
+module.exports = {
+  getAllUserInfo,
+  adminBanUser,
+  updateUserRole,
+  adminBanCommunity,
+};
