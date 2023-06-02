@@ -29,4 +29,33 @@ const deletePostSchema = Joi.object({
   userId: Joi.string().label('아이디').required(),
 });
 
-module.exports = { addPostSchema, updatePostSchema, deletePostSchema };
+// [ 댓글 등록 ]
+const addCommentSchema = Joi.object({
+  postId: Joi.string().label('게시글 번호').required(),
+  user_id: Joi.string().label('아이디').required(),
+  content: Joi.string().label('댓글 본문').required(),
+});
+
+//[ 댓글 수정 ]
+const updateCommentSchema = Joi.object({
+  postId: Joi.string().label('게시글 번호').required(),
+  commentId: Joi.string().label('댓글 번호').required(),
+  user_id: Joi.string().label('아이디').required(),
+  content: Joi.string().label('댓글 본문').required(),
+});
+
+// [ 댓글 삭제 ]
+const deleteCommentSchema = Joi.object({
+  postId: Joi.string().label('게시글 번호').required(),
+  commentId: Joi.string().label('댓글 번호').required(),
+  user_id: Joi.string().label('아이디').required(),
+});
+
+module.exports = {
+  addPostSchema,
+  updatePostSchema,
+  deletePostSchema,
+  addCommentSchema,
+  updateCommentSchema,
+  deleteCommentSchema,
+};
