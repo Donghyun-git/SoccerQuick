@@ -91,19 +91,19 @@ const updateReview = async (review) => {
 // [ 리뷰 삭제 ]
 const deleteReview = async (review) => {
   const { reviewId, user_id } = review;
-  console.log(reviewId, user_id);
+
   try {
     const foundReview = await Review.findOne({ review_id: reviewId });
 
     if (!foundReview) return new AppError(404, '존재하지 않는 리뷰입니다.');
 
-    const reviewUserObjectId = toString(foundReview.user_id);
+    const reviewUserObjectId = foundReview.user_id.toString();
 
     const foundUser = await User.findOne({ user_id });
 
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
 
-    const userObjectId = toString(foundUser._id);
+    const userObjectId = foundUser._id.toString();
 
     if (reviewUserObjectId !== userObjectId)
       return new AppError(403, '리뷰 작성자만 삭제 가능합니다.');

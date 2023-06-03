@@ -122,7 +122,7 @@ const logInUser = async (user_id, password) => {
     const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
       expiresIn: REFRESH_TOKEN_EXPIRES_IN,
     });
-
+    console.log(foundUser);
     return {
       accessToken,
       refreshToken,
@@ -132,6 +132,8 @@ const logInUser = async (user_id, password) => {
         nick_name: foundUser.nick_name,
         email: foundUser.email,
         phone_number: foundUser.phone_number,
+        role: foundUser.role,
+        gender: foundUser.gender,
         favoritePlaygrounds: foundUser.favoritePlaygrounds,
         isBanned: foundUser.isBanned,
         banEndDate: foundUser.banEndDate,

@@ -63,13 +63,12 @@ const logIn = async (req, res, next) => {
 
   try {
     const result = await authService.logInUser(user_id, password);
-
     if (
       result.statusCode === 400 ||
       result.statusCode === 403 ||
       result.statusCode === 404
     ) {
-      return next(new AppError(result.message, result.message));
+      return next(new AppError(result.statusCode, result.message));
     }
 
     const { accessToken, refreshToken, userData } = result;
@@ -79,6 +78,8 @@ const logIn = async (req, res, next) => {
       email,
       phone_number,
       favoritePlaygrounds,
+      role,
+      gender,
       isBanned,
       banEndDate,
       createdAt,
@@ -98,6 +99,8 @@ const logIn = async (req, res, next) => {
         nick_name,
         email,
         phone_number,
+        role,
+        gender,
         favoritePlaygrounds,
         isBanned,
         banEndDate,
