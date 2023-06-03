@@ -1,11 +1,18 @@
 const { Router } = require('express');
 const router = Router();
-const userController = require('../controllers/user.ctrl');
+const authController = require('../controllers/authController');
+
+/* GET */
+
+/* POST */
 
 //[ 회원가입 ]
-router.post('/signup', userController.signUp);
+router.post('/signup', authController.signUp);
 
 // [ 로그인 ]
-router.post('/login', userController.logIn);
+router.post('/login', authController.logIn);
+
+//[회원가입 아이디 중복체크]
+router.post('/id', authController.validateUniqueUserId);
 
 module.exports = router;

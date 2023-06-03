@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const cron = require('node-cron');
+const deleteExpiredWithdrawnUsers = require('./utils/deleteExpiredWithdrawnUsers');
 const { connectToDatabase } = require('./database/db');
 const { PORT, DB_HOST, DB_NAME } = require('./envconfig');
 const { errorHandler } = require('./middlewares/errorHandler');
@@ -9,6 +11,11 @@ const { errorHandler } = require('./middlewares/errorHandler');
 //router
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/authRouter');
+const userRouter = require('./routes/userRouter');
+const adminRouter = require('./routes/adminRouter');
+const communityRouter = require('./routes/communityRouter');
+const groundRouter = require('./routes/groundRouter');
+const reviewRouter = require('./routes/reviewRouter');
 
 const origins = ['http://localhost:8800'];
 const corsOptions = {
@@ -22,6 +29,11 @@ app.use(cookieParser());
 
 connectToDatabase()
   .then(async () => {
+    cron.schedule('0 0 * * *', async () => {
+      console.log('탈퇴 후 6개월 지난 회원들을 삭제중입니다..');
+      await deleteExpiredWithdrawnUsers();
+    });
+
     app.use('/', indexRouter);
 
     app.listen(PORT, () => {
@@ -37,4 +49,9 @@ connectToDatabase()
   });
 
 app.use('/auth', authRouter);
+app.use('/user', userRouter);
+app.use('/admin', adminRouter);
+app.use('/community', communityRouter);
+app.use('/ground', groundRouter);
+app.use('/review', reviewRouter);
 app.use(errorHandler);
