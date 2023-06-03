@@ -21,6 +21,7 @@ const getUser = async (user_id) => {
         phone_number: foundUser.phone_number,
         favoritePlaygrounds: foundUser.favoritePlaygrounds,
         role: foundUser.role,
+        gender: foundUser.gender,
         createdAt: foundUser.createdAt,
       },
     };
@@ -66,7 +67,6 @@ const updateUser = async (formData) => {
     );
 
     return {
-      statusCode: 201,
       message: '회원정보 수정 성공',
       data: updatedUser,
     };
@@ -95,7 +95,7 @@ const deleteUser = async (user_id, password) => {
     const nano_id = nanoid(4);
 
     const withdrawnUserData = {
-      user_id: foundUser.user_id + nano_id,
+      user_id: `${foundUser.user_id}${nano_id}`,
       email: foundUser.email,
       name: foundUser.name,
       withdrawalDate: new Date(),

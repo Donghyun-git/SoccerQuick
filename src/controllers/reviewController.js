@@ -16,7 +16,7 @@ const getAllReviews = async (req, res, next) => {
     const result = await reviewService.getAllReviews();
     res.status(200).json({
       message: result.message,
-      reviews: result.reviews,
+      data: result.data,
     });
   } catch (error) {
     console.error(error);
@@ -53,7 +53,7 @@ const addReview = async (req, res, next) => {
 
     res.status(201).json({
       message: result.message,
-      data: result.newReview,
+      data: result.data,
     });
   } catch (error) {
     console.error(error);
@@ -122,6 +122,7 @@ const deleteReview = async (req, res, next) => {
 
     if (result.statusCode === 403 || result.statusCode === 404)
       return next(new AppError(result.statusCode, result.message));
+
     res.status(204).json({
       message: result.message,
     });
@@ -135,5 +136,5 @@ module.exports = {
   getAllReviews,
   addReview,
   updateReview,
-  deleteReview, 
+  deleteReview,
 };

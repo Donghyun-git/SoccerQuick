@@ -6,7 +6,11 @@ const playerSchema = {
   position: { type: String, required: true },
   skill: { type: String, required: true },
   body: { type: String, required: true },
-  status: { type: String, enum: ['추가 가능', '추가 불가능'] },
+  status: {
+    type: String,
+    enum: ['기존 선수', '추가 가능', '추가 불가능'],
+    default: '기존 선수',
+  },
 };
 
 const TeamSchema = new Schema({

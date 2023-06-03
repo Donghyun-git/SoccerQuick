@@ -14,14 +14,25 @@ const getAllUserInfo = async (user_id) => {
 
     const foundAllUser = await User.find();
     const allUserData = foundAllUser.map((user) => {
+      const {
+        admin_id,
+        user_id,
+        name,
+        nick_name,
+        email,
+        role,
+        gender,
+        phone_number,
+      } = user;
       return {
-        admin_id: user.admin_id,
-        user_id: user.user_id,
-        name: user.name,
-        nick_name: user.nick_name,
-        email: user.email,
-        phone_number: user.phone_number,
-        role: user.role,
+        admin_id,
+        user_id,
+        name,
+        nick_name,
+        email,
+        phone_number,
+        role,
+        gender,
         createdAt: user.createdAt,
       };
     });
@@ -114,18 +125,17 @@ const banCommunity = async (user_id, banUserId) => {
 const updateUserRole = async (user_id, updateUser) => {
   try {
     const foundUser = await User.findOne({ user_id });
-    console.log(foundUser);
+
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
     if (!foundUser.admin_id) return new AppError(403, '권한이 없습니다.');
 
     const foundAdmin = await Admin.findOne({ _id: foundUser.admin_id });
-    console.log(foundAdmin);
+
     if (!foundAdmin.role) return new AppError(403, '권한이 없습니다.');
 
     const foundUpdateUser = await User.findOne({ user_id: updateUser });
 
     if (!foundUpdateUser) return new AppError(404, '유저를 찾을 수 없습니다.');
-
     if (foundUpdateUser.admin_id)
       return new AppError(400, '이미 관리자 권한이 있습니다.');
 

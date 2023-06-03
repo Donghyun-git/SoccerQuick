@@ -7,14 +7,12 @@ const authController = require('../controllers/authController');
 /* POST */
 
 //[ 회원가입 ]
-router.post('/signup', authController.signUp); //auth/signup
+router.post('/signup', authController.signUp);
 
 // [ 로그인 ]
-router.post('/login', authController.logIn); // auth/login
+router.post('/login', authController.logIn);
 
 //[회원가입 아이디 중복체크]
-router.post('/id', authController.validateUniqueUserId); //auth/id-check
-
-/* PATCH */
+router.post('/id', authController.validateUniqueUserId);
 
 module.exports = router;

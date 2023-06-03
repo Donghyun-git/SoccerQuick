@@ -100,7 +100,7 @@ const updatePost = async (post) => {
   const { postId, userId, title, description, notice } = post;
   try {
     const foundUser = await User.findOne({ user_id: userId });
-    console.log(postId);
+
     if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
     if (notice === '공지사항' && !foundUser.admin_id)
       return new AppError(403, '관리자만 공지사항으로 변경 가능합니다.');
@@ -118,9 +118,9 @@ const updatePost = async (post) => {
     const updatedPostObj = {
       post_id: foundPost.post_id,
       user_id: userObjectId,
-      title: title,
-      description: description,
-      notice: notice,
+      title,
+      description,
+      notice,
     };
 
     const updatedPost = await Post.findOneAndUpdate(
@@ -141,6 +141,7 @@ const updatePost = async (post) => {
 const deletePost = async (post_id, userId) => {
   try {
     const foundUser = await User.findOne({ user_id: userId });
+
     if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
 
     const user_id = foundUser._id;
@@ -148,10 +149,9 @@ const deletePost = async (post_id, userId) => {
     const foundPost = await Post.findOne({ post_id });
 
     if (!foundPost) return new AppError(400, '존재하지 않는 게시물 입니다.');
-
     if (foundUser.admin_id) {
       await Post.deleteOne({ post_id });
-      return { statusCode: 204, message: '게시물이 삭제되었습니다.' };
+      return { message: '게시물이 삭제되었습니다.' };
     }
 
     if (toString(user_id) !== toString(foundPost.user_id))
@@ -261,7 +261,7 @@ const deleteComment = async (comment) => {
   const foundComment = await Comment.findOne({ comment_id: commentId });
   if (!foundComment) return new AppError(404, '존재하지 않는 댓글입니다.');
 
-  const commnetObjectId = foundComment._id;
+  const commentObjectId = foundComment._id;
   const commentUserId = toString(foundComment.user_id);
 
   const foundUser = await User.findOne({ user_id });
@@ -273,15 +273,15 @@ const deleteComment = async (comment) => {
     return new AppError(403, '댓글 작성자만 삭제 가능합니다.');
 
   const foundUserComment = postCommentsArray.find(
-    (comment) => toString(comment) === toString(commnetObjectId)
+    (comment) => toString(comment) === toString(commentObjectId)
   );
 
   if (!foundUserComment)
     return new AppError(404, '댓글이 삭제되었거나 존재하지 않습니다!');
 
-  const updateComment = await Comment.deleteOne({ comment_id: commentId });
+  await Comment.deleteOne({ comment_id: commentId });
 
-  foundPost.comments.pull(commnetObjectId);
+  foundPost.comments.pull(commentObjectId);
   await foundPost.save();
 
   return { message: '댓글 삭제 성공' };

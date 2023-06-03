@@ -8,7 +8,7 @@ router.get('/', reviewController.getAllReviews);
 
 /* POST */
 // [ 리뷰 생성 ]
-router.post('/:reviewId', reviewController.addReview); //
+router.post('/', reviewController.addReview); //
 
 /* PATCH */
 // [ 리뷰 수정 ]

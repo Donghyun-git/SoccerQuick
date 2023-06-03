@@ -65,7 +65,7 @@ const updateUserInfo = async (req, res, next) => {
       phone_number,
     });
 
-    if (result.statusCode === 404 || result.statusCode === 400) {
+    if (result.statusCode === 400 || result.statusCode === 404) {
       return next(new AppError(result.statusCode, result.message));
     }
 

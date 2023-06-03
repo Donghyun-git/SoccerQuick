@@ -69,7 +69,7 @@ const adminBanUser = async (req, res, next) => {
 // [ 관리자 ] 유저 커뮤니티 정지
 const adminBanCommunity = async (req, res, next) => {
   const { user_id, banUserId } = req.body;
-  console.log(user_id, banUserId);
+
   const { error } = adminBanSchema.validate({ user_id, banUserId });
 
   if (error) {

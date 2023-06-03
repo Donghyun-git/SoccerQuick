@@ -9,7 +9,7 @@ const getAllReviews = async () => {
 
     return {
       message: '전체 리뷰 조회 성공',
-      reviews,
+      data: reviews,
     };
   } catch (error) {
     console.error(error);
@@ -46,7 +46,7 @@ const addReview = async (reviews) => {
 
     return {
       message: '리뷰가 등록되었습니다.',
-      newReview,
+      data: newReview,
     };
   } catch (error) {
     console.error(error);
@@ -91,24 +91,24 @@ const updateReview = async (review) => {
 // [ 리뷰 삭제 ]
 const deleteReview = async (review) => {
   const { reviewId, user_id } = review;
-  console.log(reviewId,user_id);
+  console.log(reviewId, user_id);
   try {
     const foundReview = await Review.findOne({ review_id: reviewId });
+
     if (!foundReview) return new AppError(404, '존재하지 않는 리뷰입니다.');
 
+    const reviewUserObjectId = toString(foundReview.user_id);
+
     const foundUser = await User.findOne({ user_id });
+
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
+
     const userObjectId = toString(foundUser._id);
 
-    if (toString(foundReview.user_id) !== userObjectId)
+    if (reviewUserObjectId !== userObjectId)
       return new AppError(403, '리뷰 작성자만 삭제 가능합니다.');
 
-    const deletedReview = await Review.findOneAndDelete({
-      review_id: reviewId,
-    });
-    if (!deletedReview) {
-      return new AppError(500, '리뷰 삭제 실패');
-    }
+    await Review.deleteOne({ review_id: reviewId });
 
     return { message: '리뷰 삭제 성공' };
   } catch (error) {
