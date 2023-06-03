@@ -30,7 +30,7 @@ app.use(cookieParser());
 connectToDatabase()
   .then(async () => {
     cron.schedule('0 0 * * *', async () => {
-      console.log('스케줄러 실행중.');
+      console.log('탈퇴 후 6개월 지난 회원들을 삭제중입니다..');
       await deleteExpiredWithdrawnUsers();
     });
 
