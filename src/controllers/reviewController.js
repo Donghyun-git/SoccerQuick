@@ -14,6 +14,10 @@ const {
 const getAllReviews = async (req, res, next) => {
   try {
     const result = await reviewService.getAllReviews();
+
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
+
     res.status(200).json({
       message: result.message,
       data: result.data,
@@ -48,7 +52,7 @@ const addReview = async (req, res, next) => {
       comment,
     });
 
-    if (result.statusCode === 403 || result.statusCode === 404)
+    if (result.statusCode !== 201)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(201).json({
@@ -86,7 +90,7 @@ const updateReview = async (req, res, next) => {
       comment,
     });
 
-    if (result.statusCode === 400 || result.statusCode === 403)
+    if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(200).json({
@@ -120,7 +124,7 @@ const deleteReview = async (req, res, next) => {
       user_id,
     });
 
-    if (result.statusCode === 403 || result.statusCode === 404)
+    if (result.statusCode !== 204)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(204).json({

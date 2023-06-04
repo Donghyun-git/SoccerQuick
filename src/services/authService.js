@@ -48,7 +48,7 @@ const signUpUser = async (formData) => {
 
     await addUser.save();
 
-    return { message: '회원가입에 성공하였습니다.' };
+    return { statusCode: 201, message: '회원가입에 성공하였습니다.' };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');
@@ -124,6 +124,7 @@ const logInUser = async (user_id, password) => {
     });
     console.log(foundUser);
     return {
+      statusCode: 200,
       accessToken,
       refreshToken,
       userData: {
@@ -153,7 +154,7 @@ const validateUniqueUserId = async (user_id) => {
 
     if (foundUser) return new AppError(400, '이미 존재하는 아이디입니다.');
 
-    return { message: '사용할 수 있는 아이디입니다!' };
+    return { statusCode: 200, message: '사용할 수 있는 아이디입니다!' };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');

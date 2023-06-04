@@ -22,8 +22,8 @@ const getUserInfo = async (req, res, next) => {
   try {
     const result = await userService.getUser(id);
 
-    if (result.statusCode === 404) {
-      return next(new AppError(404, result.message));
+    if (result.statusCode !== 200) {
+      return next(new AppError(result.statusCode, result.message));
     }
 
     res.status(200).json({
@@ -65,7 +65,7 @@ const updateUserInfo = async (req, res, next) => {
       phone_number,
     });
 
-    if (result.statusCode === 400 || result.statusCode === 404) {
+    if (result.statusCode !== 200) {
       return next(new AppError(result.statusCode, result.message));
     }
 
@@ -93,7 +93,7 @@ const deleteUserInfo = async (req, res, next) => {
   try {
     const result = await userService.deleteUser(user_id, password);
 
-    if (result.statusCode === 400 || result.statusCode === 404) {
+    if (result.statusCode !== 204) {
       return next(new AppError(result.statusCode, result.message));
     }
 

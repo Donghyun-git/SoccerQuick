@@ -7,7 +7,10 @@ const getAllReviews = async () => {
   try {
     const reviews = await Review.find();
 
+    if (!reviews) return new AppError(404, '등록된 리뷰가 존재하지 않습니다!');
+
     return {
+      statusCode: 200,
       message: '전체 리뷰 조회 성공',
       data: reviews,
     };
@@ -45,6 +48,7 @@ const addReview = async (reviews) => {
     const newReview = await Review.create(newReviewField);
 
     return {
+      statusCode: 201,
       message: '리뷰가 등록되었습니다.',
       data: newReview,
     };
@@ -81,7 +85,7 @@ const updateReview = async (review) => {
       { $set: updatedReviewObj },
       { new: true }
     );
-    return { message: '리뷰 수정 성공', data: updatedReview };
+    return { statusCode: 200, message: '리뷰 수정 성공', data: updatedReview };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');
@@ -110,7 +114,7 @@ const deleteReview = async (review) => {
 
     await Review.deleteOne({ review_id: reviewId });
 
-    return { message: '리뷰 삭제 성공' };
+    return { statusCode: 204, message: '리뷰 삭제 성공' };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');

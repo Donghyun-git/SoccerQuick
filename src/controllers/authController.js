@@ -40,8 +40,8 @@ const signUp = async (req, res, next) => {
       gender,
     });
 
-    if (result.statusCode === 404)
-      return next(new AppError(404, result.message));
+    if (result.statusCode !== 201)
+      return next(new AppError(result.statusCode, result.message));
 
     res.status(201).json({ message: result.message });
   } catch (error) {
@@ -63,13 +63,9 @@ const logIn = async (req, res, next) => {
 
   try {
     const result = await authService.logInUser(user_id, password);
-    if (
-      result.statusCode === 400 ||
-      result.statusCode === 403 ||
-      result.statusCode === 404
-    ) {
+
+    if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
-    }
 
     const { accessToken, refreshToken, userData } = result;
     const {
@@ -127,8 +123,8 @@ const validateUniqueUserId = async (req, res, next) => {
   try {
     const result = await authService.validateUniqueUserId(user_id);
 
-    if (result.statusCode === 400)
-      return next(new AppError(400, result.message));
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
 
     res.status(200).json({
       message: result.message,

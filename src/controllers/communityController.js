@@ -17,6 +17,9 @@ const getAllPosts = async (req, res, next) => {
   try {
     const result = await communityService.getAllPosts();
 
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
+
     res.status(200).json({
       message: result.message,
       posts: result.posts,
@@ -51,7 +54,7 @@ const addPost = async (req, res, next) => {
       notice,
     });
 
-    if (result.statusCode === 403 || result.statusCode === 404)
+    if (result.statusCode !== 201)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(201).json({
@@ -92,7 +95,7 @@ const updatePost = async (req, res, next) => {
       notice,
     });
 
-    if (result.statusCode === 400 || result.statusCode === 403)
+    if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(200).json({
@@ -120,7 +123,7 @@ const deletePost = async (req, res, next) => {
   try {
     const result = await communityService.deletePost(postId, userId);
 
-    if (result.statusCode === 400 || result.statusCode === 403)
+    if (result.statusCode !== 204)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(204).json({
@@ -147,8 +150,8 @@ const addComment = async (req, res, next) => {
   try {
     const result = await communityService.addComment(postId, user_id, content);
 
-    if (result.statusCode === 404)
-      return next(new AppError(404, result.message));
+    if (result.statusCode !== 201)
+      return next(new AppError(result.statusCode, result.message));
 
     res.status(201).json({
       message: result.message,
@@ -185,7 +188,7 @@ const updateComment = async (req, res, next) => {
       content,
     });
 
-    if (result.statusCode === 403 || result.statusCode === 404)
+    if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(200).json({
@@ -221,7 +224,7 @@ const deleteComment = async (req, res, next) => {
       user_id,
     });
 
-    if (result.statusCode === 403 || result.statusCode === 404)
+    if (result.statusCode !== 204)
       return next(new AppError(result.statusCode, result.message));
 
     res.status(204).json({

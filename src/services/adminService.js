@@ -37,6 +37,7 @@ const getAllUserInfo = async (user_id) => {
       };
     });
     return {
+      statusCode: 200,
       message: '모든 유저 정보 조회 성공',
       data: allUserData,
     };
@@ -74,7 +75,7 @@ const banUser = async (user_id, banUserId) => {
 
       await foundBanUser.save();
 
-      return { message: '로그인 정지 성공' };
+      return { statusCode: 200, message: '로그인 정지 성공' };
     }
   } catch (error) {
     console.error(error);
@@ -110,7 +111,7 @@ const banCommunity = async (user_id, banUserId) => {
 
       await foundBanUser.save();
 
-      return { message: '커뮤니티 정지 성공' };
+      return { statusCode: 200, message: '커뮤니티 정지 성공' };
     }
   } catch (error) {
     console.error(error);
@@ -154,9 +155,7 @@ const updateUserRole = async (user_id, updateUser) => {
 
     await foundUpdateUser.save();
 
-    return {
-      message: '유저 직위 변경 성공',
-    };
+    return { statusCode: 200, message: '유저 직위 변경 성공' };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');

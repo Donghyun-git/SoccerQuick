@@ -12,6 +12,7 @@ const getUser = async (user_id) => {
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디 입니다.');
 
     return {
+      statusCode: 200,
       message: '마이페이지 조회 성공',
       userData: {
         user_id: foundUser.user_id,
@@ -67,6 +68,7 @@ const updateUser = async (formData) => {
     );
 
     return {
+      statusCode: 200,
       message: '회원정보 수정 성공',
       data: updatedUser,
     };
@@ -105,7 +107,7 @@ const deleteUser = async (user_id, password) => {
 
     await User.deleteOne({ user_id });
 
-    return { message: '회원탈퇴 되었습니다.' };
+    return { statusCode: 204, message: '회원탈퇴 되었습니다.' };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');

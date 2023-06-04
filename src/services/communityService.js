@@ -8,7 +8,11 @@ const getAllPosts = async () => {
   try {
     const posts = await Post.find();
 
+    if (!posts)
+      return new AppError(404, '게시글을 등록해주세요! 존재하지 않습니다.');
+
     return {
+      statusCode: 200,
       message: '전체 게시글 조회 성공',
       posts: posts,
     };
@@ -85,6 +89,7 @@ const addPost = async (posts) => {
     const newPost = await Post.create(newPostField);
 
     return {
+      statusCode: 201,
       message: '게시글이 등록되었습니다.',
       newPost: newPost,
     };
@@ -129,7 +134,7 @@ const updatePost = async (post) => {
       { new: true }
     );
 
-    return { message: '게시물 수정 성공', data: updatedPost };
+    return { statusCode: 200, message: '게시물 수정 성공', data: updatedPost };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');
@@ -159,7 +164,7 @@ const deletePost = async (post_id, userId) => {
 
     if (toString(user_id) === toString(foundPost.user_id)) {
       await Post.deleteOne({ post_id });
-      return { message: '게시물이 삭제되었습니다.' };
+      return { statusCode: 204, message: '게시물이 삭제되었습니다.' };
     }
 
     return new AppError(403, '삭제 권한이 없습니다.');
@@ -199,7 +204,11 @@ const addComment = async (postId, user_id, content) => {
 
     await foundPost.save();
 
-    return { message: '댓글이 등록되었습니다.', data: createComment };
+    return {
+      statusCode: 201,
+      message: '댓글이 등록되었습니다.',
+      data: createComment,
+    };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');
@@ -247,7 +256,7 @@ const updateComment = async (comment) => {
       { new: true }
     );
 
-    return { message: '댓글 수정 성공', data: updateComment };
+    return { statusCode: 200, message: '댓글 수정 성공', data: updateComment };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');
@@ -289,7 +298,7 @@ const deleteComment = async (comment) => {
     foundPost.comments.pull(commentObjectId);
     await foundPost.save();
 
-    return { message: '댓글 삭제 성공' };
+    return { statusCode: 204, message: '댓글 삭제 성공' };
   } catch (error) {
     console.error(error);
     return new AppError(500, 'Internal Server Error');

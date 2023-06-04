@@ -93,6 +93,7 @@ const addFavorites = async (groundId, userId) => {
     );
 
     return {
+      statusCode: 201,
       message: '즐겨찾기에 추가되었습니다.',
       data: updatedFavorites,
     };
@@ -103,41 +104,39 @@ const addFavorites = async (groundId, userId) => {
 };
 
 // [ 풋볼장 즐겨찾기에서 삭제 ]
-/*
-const removeFavorites = async (groundId, userId) => {
-  try {
-    const foundUser = await User.findOne({ userId });
 
-    if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
+// const removeFavorites = async (groundId, userId) => {
+//   try {
+//     const foundUser = await User.findOne({ userId });
 
-    const user_id = foundUser._id;
+//     if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
 
-    // 풋볼장 조회
-    const foundGround = await Ground.findOne({ groundId });
-    if (!foundGround) return new AppError(400, '풋볼장을 찾을 수 없습니다.');
+//     const user_id = foundUser._id;
 
-    // 유저아디랑 일치하지 않는 즐찾찾고 이 배열을 통째로 업데이트  
+//     // 풋볼장 조회
+//     const foundGround = await Ground.findOne({ groundId });
+//     if (!foundGround) return new AppError(400, '풋볼장을 찾을 수 없습니다.');
 
-    const usersFavorites = foundGround.usersFavorites;
-    const favoritesFiltered = usersFavorites.filter(
-      (v) => toString(v) !== toString(user_id)
-    );
-    
-    const updatedFavorites = await foundGround.save
-    // 즐겨찾기에서 삭제
+//     // 유저아디랑 일치하지 않는 즐찾찾고 이 배열을 통째로 업데이트
 
-    );
-    return {
-      statusCode: 204,
-      message: '즐겨찾기에서 삭제되었습니다.',
-      data: deletedFavorites,
-    };
-  } catch (error) {
-    console.log('즐겨찾기 삭제 중에 오류 발생', error);
-    return new AppError(500, 'Internal Server Error');, '즐겨찾기 삭제 중 오류 발생');
-  }
-};
-*/
+//     const usersFavorites = foundGround.usersFavorites;
+//     const favoritesFiltered = usersFavorites.filter(
+//       (v) => toString(v) !== toString(user_id)
+//     );
+
+//     const updatedFavorites = await foundGround.save
+//     // 즐겨찾기에서 삭제
+
+//     return {
+//       statusCode: 204,
+//       message: '즐겨찾기에서 삭제되었습니다.',
+//       data: deletedFavorites,
+//     };
+//   } catch (error) {
+//     console.log('즐겨찾기 삭제 중에 오류 발생', error);
+//     return new AppError(500, 'Internal Server Error');
+//   }
+// };
 
 module.exports = {
   getAllGrounds,

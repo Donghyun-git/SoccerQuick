@@ -33,8 +33,8 @@ const addFavorites = async (req, res, next) => {
   try {
     const result = await groundService.addFavorites(groundId, userId);
 
-    if (result.statusCode === 400)
-      return next(new AppError(400, result.message));
+    if (result.statusCode !== 201)
+      return next(new AppError(result.statusCode, result.message));
 
     res.status(201).json({
       message: result.message,
@@ -46,7 +46,7 @@ const addFavorites = async (req, res, next) => {
   }
 };
 
-// [ 풋볼장 즐겨찾기 삭제]
+// [ 풋볼장 즐겨찾기 삭제 ]
 const removeFavorites = async (req, res, next) => {
   const { groundId } = req.params;
   const { userId } = req.body;
@@ -54,12 +54,11 @@ const removeFavorites = async (req, res, next) => {
   try {
     const result = await groundService.removeFavorites(groundId, userId);
 
-    if (result.statusCode === 400)
-      return next(new AppError(400, result.message));
+    if (result.statusCode !== 204)
+      return next(new AppError(result.statusCode, result.message));
 
-    res.status(201).json({
+    res.status(204).json({
       message: result.message,
-      data: result.data,
     });
   } catch (error) {
     console.error(error);
