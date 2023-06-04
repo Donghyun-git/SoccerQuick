@@ -17,7 +17,11 @@ const communityRouter = require('./routes/communityRouter');
 const groundRouter = require('./routes/groundRouter');
 const reviewRouter = require('./routes/reviewRouter');
 
-const origins = ['http://localhost:8800'];
+const origins = [
+  'http://localhost:8800',
+  'http://localhost:3000',
+  'http://kdt-sw-4-team02.elicecoding.com',
+];
 const corsOptions = {
   origin: origins,
   credentials: true,
