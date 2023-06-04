@@ -68,11 +68,10 @@ const banUser = async (user_id, banUserId) => {
 
     if (foundBanUser) {
       const currentDate = new Date();
-      const banEndDate = getBanTime(currentDate, 2000);
-      // 시간 1000 단위, 1000당 1일, 프론트에서 받아야될듯
 
       foundBanUser.login_banned = true;
-      foundBanUser.login_banEndDate = banEndDate;
+      foundBanUser.login_banEndDate = getBanTime(currentDate, 2000); // 시간 1000 단위, 1000당 1일
+
       await foundBanUser.save();
 
       return { message: '로그인 정지 성공' };
@@ -105,11 +104,10 @@ const banCommunity = async (user_id, banUserId) => {
 
     if (foundBanUser) {
       const currentDate = new Date();
-      const banEndDate = getBanTime(currentDate, 2000);
-      // 시간 1000 단위, 1000당 1일, 프론트에서 받아야될듯
 
       foundBanUser.community_banned = true;
-      foundBanUser.community_banEndDate = banEndDate;
+      foundBanUser.community_banEndDate = getBanTime(currentDate, 2000); // 시간 1000 단위, 1000당 1일
+
       await foundBanUser.save();
 
       return { message: '커뮤니티 정지 성공' };
