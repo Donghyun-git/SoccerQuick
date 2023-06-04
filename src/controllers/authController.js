@@ -46,7 +46,7 @@ const signUp = async (req, res, next) => {
     res.status(201).json({ message: result.message });
   } catch (error) {
     console.error(error);
-    next(new AppError(500, '회원가입 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -109,7 +109,7 @@ const logIn = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '로그인 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -135,7 +135,7 @@ const validateUniqueUserId = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '아이디 중복체크 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 

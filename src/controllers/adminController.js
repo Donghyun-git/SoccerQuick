@@ -32,7 +32,7 @@ const getAllUserInfo = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(500, '관리자 정보 조회 실패');
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -62,7 +62,7 @@ const adminBanUser = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '로그인 정지 실패, 서버 에러'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -72,6 +72,7 @@ const adminBanCommunity = async (req, res, next) => {
 
   const { error } = adminBanSchema.validate({ user_id, banUserId });
 
+  //안 바꾼 부분
   if (error) {
     const message = errorMessageHandler(error);
     return next(new AppError(400, message));
@@ -92,7 +93,7 @@ const adminBanCommunity = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '커뮤니티 정지 실패, 서버 에러'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -122,7 +123,7 @@ const updateUserRole = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '직위 변경 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 

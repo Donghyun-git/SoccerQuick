@@ -20,7 +20,7 @@ const getAllReviews = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '리뷰 조회 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -57,7 +57,7 @@ const addReview = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '리뷰 등록 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -95,7 +95,7 @@ const updateReview = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '리뷰 수정 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -128,7 +128,7 @@ const deleteReview = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '리뷰 삭제 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 

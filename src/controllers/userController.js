@@ -32,7 +32,7 @@ const getUserInfo = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '마이페이지 조회 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -75,7 +75,7 @@ const updateUserInfo = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '회원 정보 수정 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -102,7 +102,7 @@ const deleteUserInfo = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '회원탈퇴 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 

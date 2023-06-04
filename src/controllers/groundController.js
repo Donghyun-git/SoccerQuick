@@ -7,7 +7,7 @@ const getAllGrounds = async (req, res, next) => {
     const grounds = await groundService.getAllGrounds();
     res.status(200).json(grounds);
   } catch (error) {
-    return next(new AppError(500, '전체 구장 조회 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -21,7 +21,7 @@ const getFilteredGrounds = async (req, res, next) => {
     );
     res.json(filteredGrounds);
   } catch (error) {
-    return next(new AppError(500, '구장 위치와 날짜 조회 실패 '));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -41,8 +41,8 @@ const addFavorites = async (req, res, next) => {
       data: result.data,
     });
   } catch (error) {
-    console.error('즐겨찾기 추가 중에 오류 발생', error);
-    return new AppError(500, '즐겨찾기 추가 중에 오류 발생');
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -62,8 +62,8 @@ const removeFavorites = async (req, res, next) => {
       data: result.data,
     });
   } catch (error) {
-    console.error('즐겨찾기 삭제 중에 오류 발생', error);
-    return new AppError(500, '즐겨찾기 삭제 중에 오류 발생');
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 

@@ -23,7 +23,7 @@ const getAllPosts = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '전체 게시글 조회 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -60,7 +60,7 @@ const addPost = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '게시글 등록 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -101,7 +101,7 @@ const updatePost = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '게시물 수정 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -128,6 +128,7 @@ const deletePost = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -155,6 +156,7 @@ const addComment = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -192,7 +194,7 @@ const updateComment = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '댓글 수정 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
@@ -227,7 +229,7 @@ const deleteComment = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    return next(new AppError(500, '댓글 삭제 실패'));
+    return next(new AppError(500, 'Internal Server Error'));
   }
 };
 
