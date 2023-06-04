@@ -51,7 +51,7 @@ const signUpUser = async (formData) => {
     return { message: '회원가입에 성공하였습니다.' };
   } catch (error) {
     console.error(error);
-    throw new AppError(500, '회원가입에 실패하였습니다.');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -142,7 +142,7 @@ const logInUser = async (user_id, password) => {
     };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '로그인에 실패하였습니다');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -156,7 +156,7 @@ const validateUniqueUserId = async (user_id) => {
     return { message: '사용할 수 있는 아이디입니다!' };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '아이디 중복 체크 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 

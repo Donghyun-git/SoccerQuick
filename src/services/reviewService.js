@@ -13,7 +13,7 @@ const getAllReviews = async () => {
     };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '전체 리뷰 조회 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -31,10 +31,10 @@ const addReview = async (reviews) => {
     if (!foundGround) return new AppError(404, '존재하지 않는 풋볼장입니다.');
     const groundObjectId = foundGround._id;
 
-    const review_id = await createReviewId();
+    const reviewId = await createReviewId();
 
     const newReviewField = {
-      review_id,
+      review_id: reviewId,
       user_id: userObjectId,
       ground_id: groundObjectId,
       name: foundUser.name,
@@ -50,7 +50,7 @@ const addReview = async (reviews) => {
     };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '리뷰 등록 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -84,7 +84,7 @@ const updateReview = async (review) => {
     return { message: '리뷰 수정 성공', data: updatedReview };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '리뷰 수정 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -113,7 +113,7 @@ const deleteReview = async (review) => {
     return { message: '리뷰 삭제 성공' };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '리뷰 삭제 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 

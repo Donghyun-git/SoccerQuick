@@ -27,7 +27,7 @@ const getUser = async (user_id) => {
     };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '마이페이지 조회 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -72,7 +72,7 @@ const updateUser = async (formData) => {
     };
   } catch (error) {
     console.error(error);
-    throw new AppError(500, '회원정보 수정 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -108,7 +108,7 @@ const deleteUser = async (user_id, password) => {
     return { message: '회원탈퇴 되었습니다.' };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '회원탈퇴 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 

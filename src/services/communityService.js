@@ -14,7 +14,7 @@ const getAllPosts = async () => {
     };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '전체 게시글 조회 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -90,7 +90,7 @@ const addPost = async (posts) => {
     };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '게시글 등록 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -132,7 +132,7 @@ const updatePost = async (post) => {
     return { message: '게시물 수정 성공', data: updatedPost };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '게시글 수정 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -165,7 +165,7 @@ const deletePost = async (post_id, userId) => {
     return new AppError(403, '삭제 권한이 없습니다.');
   } catch (error) {
     console.error(error);
-    return new AppError(500, '게시물 삭제 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -202,7 +202,7 @@ const addComment = async (postId, user_id, content) => {
     return { message: '댓글이 등록되었습니다.', data: createComment };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '댓글 등록 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 

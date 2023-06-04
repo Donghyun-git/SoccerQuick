@@ -14,7 +14,7 @@ const getAllGrounds = async () => {
     };
   } catch (error) {
     console.error('풋볼장 전체 목록을 가져오는 중에 오류 발생', error);
-    return new AppError(500, '풋볼장 전체 목록을 가져오지 못했습니다.');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -45,7 +45,7 @@ const getFilteredGrounds = async (location, date) => {
     };
   } catch (error) {
     console.error('풋볼장 필터링중에 오류 발생', error);
-    return new AppError(500, '풋볼장 필터링 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -69,7 +69,7 @@ const addFavorites = async (groundId, userId) => {
     const favoritesFiltered = usersFavorites.filter(
       (v) => toString(v) === toString(user_id)
     );
-    console.log('? 엥?', favoritesFiltered);
+
     if (favoritesFiltered.length > 0)
       return new AppError(400, '이미 즐겨찾기에 추가되어있습니다.');
 
@@ -93,13 +93,12 @@ const addFavorites = async (groundId, userId) => {
     );
 
     return {
-      statusCode: 201,
       message: '즐겨찾기에 추가되었습니다.',
       data: updatedFavorites,
     };
   } catch (error) {
     console.error('즐겨찾기 추가 중에 오류 발생', error);
-    return new AppError(500, '즐겨찾기 추가 중 오류 발생');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -135,7 +134,7 @@ const removeFavorites = async (groundId, userId) => {
     };
   } catch (error) {
     console.log('즐겨찾기 삭제 중에 오류 발생', error);
-    return new AppError(500, '즐겨찾기 삭제 중 오류 발생');
+    return new AppError(500, 'Internal Server Error');, '즐겨찾기 삭제 중 오류 발생');
   }
 };
 */

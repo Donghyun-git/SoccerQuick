@@ -42,7 +42,7 @@ const getAllUserInfo = async (user_id) => {
     };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '관리자 정보 조회 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -78,7 +78,7 @@ const banUser = async (user_id, banUserId) => {
     }
   } catch (error) {
     console.error(error);
-    throw new AppError(500, '로그인 정지 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -114,7 +114,7 @@ const banCommunity = async (user_id, banUserId) => {
     }
   } catch (error) {
     console.error(error);
-    throw new AppError(500, '커뮤니티 정지 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
@@ -159,7 +159,7 @@ const updateUserRole = async (user_id, updateUser) => {
     };
   } catch (error) {
     console.error(error);
-    return new AppError(500, '유저 직위 변경 실패');
+    return new AppError(500, 'Internal Server Error');
   }
 };
 
