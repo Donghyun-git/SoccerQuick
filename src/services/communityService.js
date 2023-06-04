@@ -210,81 +210,90 @@ const addComment = async (postId, user_id, content) => {
 const updateComment = async (comment) => {
   const { postId, commentId, user_id, content } = comment;
 
-  const foundPost = await Post.findOne({ post_id: postId });
-  if (!foundPost) return new AppError(404, '존재하지 않는 게시글 입니다.');
+  try {
+    const foundPost = await Post.findOne({ post_id: postId });
+    if (!foundPost) return new AppError(404, '존재하지 않는 게시글 입니다.');
 
-  const postCommentsArray = foundPost.comments;
+    const postCommentsArray = foundPost.comments;
 
-  const foundComment = await Comment.findOne({ comment_id: commentId });
-  if (!foundComment) return new AppError(404, '존재하지 않는 댓글입니다.');
+    const foundComment = await Comment.findOne({ comment_id: commentId });
+    if (!foundComment) return new AppError(404, '존재하지 않는 댓글입니다.');
 
-  const commnetObjectId = foundComment._id;
-  const commentUserId = toString(foundComment.user_id);
+    const commnetObjectId = foundComment._id;
+    const commentUserId = toString(foundComment.user_id);
 
-  const foundUser = await User.findOne({ user_id });
-  if (!foundUser) return new AppError(404, '존재하지 않는 사용자입니다.');
+    const foundUser = await User.findOne({ user_id });
+    if (!foundUser) return new AppError(404, '존재하지 않는 사용자입니다.');
 
-  const userObjectId = toString(foundUser._id);
+    const userObjectId = toString(foundUser._id);
 
-  if (commentUserId !== userObjectId)
-    return new AppError(403, '댓글 작성자만 수정 가능합니다.');
+    if (commentUserId !== userObjectId)
+      return new AppError(403, '댓글 작성자만 수정 가능합니다.');
 
-  const foundUserComment = postCommentsArray.find(
-    (comment) => toString(comment) === toString(commnetObjectId)
-  );
+    const foundUserComment = postCommentsArray.find(
+      (comment) => toString(comment) === toString(commnetObjectId)
+    );
 
-  if (!foundUserComment)
-    return new AppError(404, '댓글이 삭제되었거나 존재하지 않습니다!');
+    if (!foundUserComment)
+      return new AppError(404, '댓글이 삭제되었거나 존재하지 않습니다!');
 
-  const updateCommentObj = {
-    content: content,
-  };
+    const updateCommentObj = {
+      content: content,
+    };
 
-  const updateComment = await Comment.findOneAndUpdate(
-    { comment_id: commentId },
-    { $set: updateCommentObj },
-    { new: true }
-  );
+    const updateComment = await Comment.findOneAndUpdate(
+      { comment_id: commentId },
+      { $set: updateCommentObj },
+      { new: true }
+    );
 
-  return { message: '댓글 수정 성공', data: updateComment };
+    return { message: '댓글 수정 성공', data: updateComment };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
 };
 
 // [ 커뮤니티 댓글 삭제 ]
 const deleteComment = async (comment) => {
   const { postId, commentId, user_id } = comment;
+  try {
+    const foundPost = await Post.findOne({ post_id: postId });
+    if (!foundPost) return new AppError(404, '존재하지 않는 게시글 입니다.');
 
-  const foundPost = await Post.findOne({ post_id: postId });
-  if (!foundPost) return new AppError(404, '존재하지 않는 게시글 입니다.');
+    const postCommentsArray = foundPost.comments;
 
-  const postCommentsArray = foundPost.comments;
+    const foundComment = await Comment.findOne({ comment_id: commentId });
+    if (!foundComment) return new AppError(404, '존재하지 않는 댓글입니다.');
 
-  const foundComment = await Comment.findOne({ comment_id: commentId });
-  if (!foundComment) return new AppError(404, '존재하지 않는 댓글입니다.');
+    const commentObjectId = foundComment._id;
+    const commentUserId = toString(foundComment.user_id);
 
-  const commentObjectId = foundComment._id;
-  const commentUserId = toString(foundComment.user_id);
+    const foundUser = await User.findOne({ user_id });
+    if (!foundUser) return new AppError(404, '존재하지 않는 사용자입니다.');
 
-  const foundUser = await User.findOne({ user_id });
-  if (!foundUser) return new AppError(404, '존재하지 않는 사용자입니다.');
+    const userObjectId = toString(foundUser._id);
 
-  const userObjectId = toString(foundUser._id);
+    if (commentUserId !== userObjectId)
+      return new AppError(403, '댓글 작성자만 삭제 가능합니다.');
 
-  if (commentUserId !== userObjectId)
-    return new AppError(403, '댓글 작성자만 삭제 가능합니다.');
+    const foundUserComment = postCommentsArray.find(
+      (comment) => toString(comment) === toString(commentObjectId)
+    );
 
-  const foundUserComment = postCommentsArray.find(
-    (comment) => toString(comment) === toString(commentObjectId)
-  );
+    if (!foundUserComment)
+      return new AppError(404, '댓글이 삭제되었거나 존재하지 않습니다!');
 
-  if (!foundUserComment)
-    return new AppError(404, '댓글이 삭제되었거나 존재하지 않습니다!');
+    await Comment.deleteOne({ comment_id: commentId });
 
-  await Comment.deleteOne({ comment_id: commentId });
+    foundPost.comments.pull(commentObjectId);
+    await foundPost.save();
 
-  foundPost.comments.pull(commentObjectId);
-  await foundPost.save();
-
-  return { message: '댓글 삭제 성공' };
+    return { message: '댓글 삭제 성공' };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
 };
 
 module.exports = {
