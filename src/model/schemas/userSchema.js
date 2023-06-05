@@ -19,6 +19,7 @@ const UserSchema = new Schema(
     name: {
       type: String,
       required: true,
+      unique: true,
     },
     nick_name: {
       type: String,
@@ -27,6 +28,7 @@ const UserSchema = new Schema(
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     phone_number: {
       type: String,
