@@ -16,6 +16,7 @@ const adminRouter = require('./routes/adminRouter');
 const communityRouter = require('./routes/communityRouter');
 const groundRouter = require('./routes/groundRouter');
 const reviewRouter = require('./routes/reviewRouter');
+const groupRouter = require('./routes/groupRouter');
 
 const origins = [
   'http://localhost:8800',
@@ -39,7 +40,6 @@ connectToDatabase()
     });
 
     app.use('/', indexRouter);
-
     app.listen(PORT, () => {
       console.log('PORT:', PORT);
       console.log('DB_HOST:', DB_HOST);
@@ -58,4 +58,5 @@ app.use('/admin', adminRouter);
 app.use('/community', communityRouter);
 app.use('/ground', groundRouter);
 app.use('/review', reviewRouter);
+app.use('/group', groupRouter);
 app.use(errorHandler);

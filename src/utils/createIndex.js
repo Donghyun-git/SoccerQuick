@@ -24,9 +24,16 @@ const createCommentId = async () => {
   return `comment${index}`;
 };
 
+const createGroupId = async () => {
+  const { nanoid } = await import('nanoid');
+  const index = nanoid(4);
+  return `group${index}`;
+};
+
 module.exports = {
   createPostId,
   createGroundId,
   createReviewId,
   createCommentId,
+  createGroupId,
 };
