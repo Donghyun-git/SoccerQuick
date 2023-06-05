@@ -26,16 +26,16 @@ const getAllGroups = async () => {
 const addGroup = async (group) => {
   console.log('group:', group);
   const {
-    leaderId,
+    leader_id,
     location,
-    playDate,
-    gkCount,
-    playerCount,
-    currentCount,
+    play_date,
+    gk_count,
+    player_count,
+    current_count,
     contents,
   } = group;
   try {
-    const foundLeader = await User.findOne({ user_id: leaderId });
+    const foundLeader = await User.findOne({ user_id: leader_id });
 
     if (!foundLeader) return new AppError(404, '존재하지 않는 아이디입니다.');
 
@@ -51,11 +51,11 @@ const addGroup = async (group) => {
         leader_name: leaderName,
       },
       location: location,
-      play_date: playDate,
+      play_date,
       recruitment_count: {
-        gk_count: Number(gkCount),
-        player_count: Number(playerCount),
-        current_count: Number(currentCount),
+        gk_count: Number(gk_count),
+        player_count: Number(player_count),
+        current_count: Number(current_count),
       },
       contents,
     };

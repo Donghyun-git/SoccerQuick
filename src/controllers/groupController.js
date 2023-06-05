@@ -26,22 +26,22 @@ const getAllGroups = async (req, res, next) => {
 // [ 팀 그룹 등록 ]
 const addGroup = async (req, res, next) => {
   const {
-    leaderId,
+    leader_id,
     location,
-    playDate,
-    gkCount,
-    playerCount,
-    currentCount,
+    play_date,
+    gk_count,
+    player_count,
+    current_count,
     contents,
   } = req.body;
 
   const { error } = addGroupSchema.validate({
-    leaderId,
+    leader_id,
     location,
-    playDate,
-    gkCount,
-    playerCount,
-    currentCount,
+    play_date,
+    gk_count,
+    player_count,
+    current_count,
     contents,
   });
 
@@ -52,12 +52,12 @@ const addGroup = async (req, res, next) => {
 
   try {
     const result = await groupService.addGroup({
-      leaderId,
+      leader_id,
       location,
-      playDate,
-      gkCount,
-      playerCount,
-      currentCount,
+      play_date,
+      gk_count,
+      player_count,
+      current_count,
       contents,
     });
 
