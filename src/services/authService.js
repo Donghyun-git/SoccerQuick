@@ -159,4 +159,31 @@ const validateUniqueUserId = async (user_id) => {
   }
 };
 
-module.exports = { logInUser, signUpUser, validateUniqueUserId };
+//[비밀번호 체크]
+const validatePassword = async (user_id, password) => {
+  try {
+    const foundUser = await User.findOne({ user_id });
+
+    if (!foundUser) {
+      return new AppError(404, '존재하지 않는 아이디입니다.');
+    }
+
+    const isMatched = await bcrypt.compare(password, foundUser.password);
+
+    if (!isMatched) {
+      return new AppError(400, '비밀번호가 일치하지 않습니다.');
+    }
+
+    return { statusCode: 200, message: '비밀번호가 확인되었습니다.' };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
+module.exports = {
+  logInUser,
+  signUpUser,
+  validateUniqueUserId,
+  validatePassword,
+};

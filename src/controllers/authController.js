@@ -7,6 +7,7 @@ const {
   signUpSchema,
   logInSchema,
   validateUniqueUserIdSchema,
+  validatePasswordSchema,
 } = require('../validator/authValidator');
 
 //[ 유저 회원가입 ]
@@ -135,4 +136,30 @@ const validateUniqueUserId = async (req, res, next) => {
   }
 };
 
-module.exports = { logIn, signUp, validateUniqueUserId };
+// [비밀번호 체크]   유저 아이디는 나중에 토큰으로 받는다.
+const validatePassword = async (req, res, next) => {
+  const { user_id, password } = req.body;
+
+  const { error } = validatePasswordSchema.validate({ user_id, password });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await authService.validatePassword(user_id, password);
+
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
+module.exports = { logIn, signUp, validateUniqueUserId, validatePassword };

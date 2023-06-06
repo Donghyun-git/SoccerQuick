@@ -15,4 +15,7 @@ router.post('/login', authController.logIn);
 //[회원가입 아이디 중복체크]
 router.post('/id', authController.validateUniqueUserId);
 
+// [ 비밀번호 체크 ]
+router.post('/password', authController.validatePassword);
+
 module.exports = router;

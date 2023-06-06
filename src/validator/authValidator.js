@@ -38,4 +38,14 @@ const validateUniqueUserIdSchema = Joi.object({
   user_id: Joi.string().label('아이디').alphanum().min(3).max(20).required(),
 });
 
-module.exports = { signUpSchema, logInSchema, validateUniqueUserIdSchema };
+const validatePasswordSchema = Joi.object({
+  user_id: Joi.string().label('아이디').required(),
+  password: Joi.string().label('비밀번호').required(),
+});
+
+module.exports = {
+  signUpSchema,
+  logInSchema,
+  validateUniqueUserIdSchema,
+  validatePasswordSchema,
+};
