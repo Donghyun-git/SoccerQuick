@@ -53,6 +53,10 @@ const GroupSchema = new Schema(
       type: [playerSchema],
       default: [],
     },
+    accept: {
+      type: [playerSchema],
+      default: [],
+    },
     contents: {
       type: String,
     },
