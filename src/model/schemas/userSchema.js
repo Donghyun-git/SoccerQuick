@@ -44,6 +44,11 @@ const UserSchema = new Schema(
       enum: ['admin', 'manager', 'user'],
       default: 'user',
     },
+    applicant_status: {
+      type: String,
+      enum: ['모집 가능', '모집 불가능'],
+      default: '모집 가능',
+    },
     favoritePlaygrounds: [{ type: Schema.Types.ObjectId, ref: 'Ground' }],
     login_banned: {
       type: Boolean,

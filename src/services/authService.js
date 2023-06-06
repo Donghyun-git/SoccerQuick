@@ -19,17 +19,17 @@ const signUpUser = async (formData) => {
   try {
     const foundUserId = await User.findOne({ user_id });
 
-    if (foundUserId) return new AppError(404, '이미 존재하는 아이디입니다.');
+    if (foundUserId) return new AppError(400, '이미 존재하는 아이디입니다.');
 
     const foundUserEmail = await User.findOne({ email });
 
     if (foundUserEmail) {
-      return new AppError(404, '이미 존재하는 이메일입니다.');
+      return new AppError(400, '이미 존재하는 이메일입니다.');
     }
 
     const foundUserNickName = await User.findOne({ nick_name });
     if (foundUserNickName) {
-      return new AppError(404, '이미 존재하는 닉네임입니다.');
+      return new AppError(400, '이미 존재하는 닉네임입니다.');
     }
 
     const hashedPassword = await hashPassword(password);
