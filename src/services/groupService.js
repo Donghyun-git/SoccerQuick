@@ -89,7 +89,7 @@ const userApplicantGroup = async (user) => {
     const foundGroup = await Group.findOne({ group_id });
     if (!foundGroup) return new AppError(404, '존재하지 않는 팀 그룹입니다.');
 
-    if (!foundGroup.status === '모집 완료')
+    if (foundGroup.status === '모집 완료')
       return new AppError(403, '이미 모집이 완료 된 팀입니다.');
 
     const applicants = foundGroup.applicant;
