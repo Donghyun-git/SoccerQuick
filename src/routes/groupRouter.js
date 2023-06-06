@@ -11,4 +11,10 @@ router.get('/', groupController.getAllGroups);
 // [ 팀 등록 ]
 router.post('/', groupController.addGroup);
 
+// [ 팀 신청 ]
+router.post('/:group_id', groupController.userApplicantGroup);
+
+// [ 팀 수락 ]
+router.patch('/:group_id', groupController.leaderApplicantAccept);
+
 module.exports = router;
