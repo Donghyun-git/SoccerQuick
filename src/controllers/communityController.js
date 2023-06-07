@@ -14,6 +14,7 @@ const {
 
 //[ 커뮤니티 전체 게시글 조회 ]
 const getAllPosts = async (req, res, next) => {
+  console.log('저 req객체에 있는 유저아이디임 ㅋ', req.user);
   try {
     const result = await communityService.getAllPosts();
 
