@@ -1,10 +1,11 @@
 const { Router } = require('express');
 const router = Router();
+const tokenValidator = require('../middlewares/tokenValidator');
 const communityController = require('../controllers/communityController');
 
 /* GET */
 // [ 커뮤니티 게시글 조회 ]
-router.get('/', communityController.getAllPosts);
+router.get('/', tokenValidator, communityController.getAllPosts);
 
 /* POST */
 // [ 커뮤니티 게시글 등록 ]

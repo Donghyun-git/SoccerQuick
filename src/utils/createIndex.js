@@ -30,10 +30,17 @@ const createGroupId = async () => {
   return `group${index}`;
 };
 
+const createGuestId = async () => {
+  const { nanoid } = await import('nanoid');
+  const index = nanoid(3);
+  return `guest${index}`;
+};
+
 module.exports = {
   createPostId,
   createGroundId,
   createReviewId,
   createCommentId,
   createGroupId,
+  createGuestId,
 };
