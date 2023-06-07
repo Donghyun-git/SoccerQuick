@@ -19,11 +19,11 @@ const UserSchema = new Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
     },
     nick_name: {
       type: String,
       required: true,
+      unique: true,
     },
     email: {
       type: String,
