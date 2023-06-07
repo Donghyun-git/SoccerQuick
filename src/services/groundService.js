@@ -50,16 +50,17 @@ const getFilteredGrounds = async (location, date) => {
 };
 
 // [ 풋볼장 즐겨찾기에 추가 ]
-const addFavorites = async (groundId, userId) => {
+const addFavorites = async (user) => {
+  const { groundId, userId } = user;
   try {
-    const foundUser = await User.findOne({ userId });
+    const foundUser = await User.findOne({ user_id: userId });
 
     if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
 
-    const user_id = foundUser._id;
+    const userObjectId = foundUser._id;
 
     // 풋볼장 조회
-    const foundGround = await Ground.findOne({ groundId });
+    const foundGround = await Ground.findOne({ ground_id: groundId });
 
     if (!foundGround) return new AppError(400, '풋볼장을 찾을 수 없습니다.');
 
@@ -67,18 +68,18 @@ const addFavorites = async (groundId, userId) => {
     const usersFavorites = foundGround.usersFavorites;
 
     const favoritesFiltered = usersFavorites.filter(
-      (v) => toString(v) === toString(user_id)
+      (v) => toString(v) === toString(userObjectId)
     );
 
     if (favoritesFiltered.length > 0)
       return new AppError(400, '이미 즐겨찾기에 추가되어있습니다.');
 
     // 즐겨찾기에 추가
-    usersFavorites.push(user_id);
+    usersFavorites.push(userObjectId);
 
     // 데이터 업데이트
     const updateData = {
-      groundId: groundId,
+      ground_id: groundId,
       name: foundGround.name,
       location: foundGround.location,
       price: foundGround.price,
@@ -87,7 +88,7 @@ const addFavorites = async (groundId, userId) => {
     };
 
     const updatedFavorites = await Ground.findOneAndUpdate(
-      { groundId },
+      { ground_id: groundId },
       { $set: updateData },
       { new: true }
     );
@@ -105,42 +106,42 @@ const addFavorites = async (groundId, userId) => {
 
 // [ 풋볼장 즐겨찾기에서 삭제 ]
 
-// const removeFavorites = async (groundId, userId) => {
-//   try {
-//     const foundUser = await User.findOne({ userId });
+const removeFavorites = async (user) => {
+  const { groundId, userId } = user;
+  try {
+    const foundUser = await User.findOne({ user_id: userId });
 
-//     if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
+    if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
 
-//     const user_id = foundUser._id;
+    const userObjectId = foundUser._id;
 
-//     // 풋볼장 조회
-//     const foundGround = await Ground.findOne({ groundId });
-//     if (!foundGround) return new AppError(400, '풋볼장을 찾을 수 없습니다.');
+    // 풋볼장 조회
+    const foundGround = await Ground.findOne({ ground_id: groundId });
+    if (!foundGround) return new AppError(400, '풋볼장을 찾을 수 없습니다.');
 
-//     // 유저아디랑 일치하지 않는 즐찾찾고 이 배열을 통째로 업데이트
+    // 유저 아이디와 일치하지 않는 즐겨찾기만 남기기
+    const updatedFavorites = foundGround.usersFavorites.filter(
+      (v) => toString(v) !== toString(userObjectId)
+    );
 
-//     const usersFavorites = foundGround.usersFavorites;
-//     const favoritesFiltered = usersFavorites.filter(
-//       (v) => toString(v) !== toString(user_id)
-//     );
+    // 즐겨찾기 업데이트
+    foundGround.usersFavorites = updatedFavorites;
+    await foundGround.save();
 
-//     const updatedFavorites = await foundGround.save
-//     // 즐겨찾기에서 삭제
-
-//     return {
-//       statusCode: 204,
-//       message: '즐겨찾기에서 삭제되었습니다.',
-//       data: deletedFavorites,
-//     };
-//   } catch (error) {
-//     console.log('즐겨찾기 삭제 중에 오류 발생', error);
-//     return new AppError(500, 'Internal Server Error');
-//   }
-// };
+    return {
+      statusCode: 204,
+      message: '즐겨찾기에서 삭제되었습니다.',
+      data: updatedFavorites,
+    };
+  } catch (error) {
+    console.log('즐겨찾기 삭제 중에 오류 발생', error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
 
 module.exports = {
   getAllGrounds,
   getFilteredGrounds,
   addFavorites,
-  // removeFavorites,
+  removeFavorites,
 };

@@ -18,4 +18,6 @@ router.post('/:groundId', tokenValidator, groundController.addFavorites);
 // [ 풋볼장 즐겨찾기에서 삭제]
 router.delete('/:groundId', tokenValidator, groundController.removeFavorites);
 
+// [ 풋볼장 예약 ]
+// router.post ('/ground/:ground_id/reserve', )
 module.exports = router;
