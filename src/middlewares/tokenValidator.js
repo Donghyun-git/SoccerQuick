@@ -3,7 +3,6 @@ const {
   ACCESS_TOKEN_SECRET,
   REFRESH_TOKEN_SECRET,
   ACCESS_TOKEN_EXPIRES_IN,
-  REFRESH_TOKEN_EXPIRES_IN,
 } = require('../envconfig');
 const { AppError } = require('./errorHandler');
 const { createGuestId } = require('../utils/createIndex');
@@ -42,6 +41,7 @@ const refreshTokenValidator = (req, res, next) => {
     if (!refreshToken) throw new AppError(401, 'jwt malformed');
 
     const decodedRefreshToken = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
+
     // RefreshToken 검증 완료 시 만료시간 검사
     if (decodedRefreshToken.exp >= Math.floor(Date.now() / 1000)) {
       const newAccessToken = generateNewAccessToken(decodedRefreshToken);
@@ -68,7 +68,7 @@ const refreshTokenValidator = (req, res, next) => {
   }
 };
 
-// [ accessToken 검증 ] - 로그인, 회원가입 제외 모든 api 함수의 미들웨어.
+// [ accessToken 검증 ]
 
 const accessTokenValidator = (req, res, next) => {
   try {
