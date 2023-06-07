@@ -83,7 +83,9 @@ const logIn = async (req, res, next) => {
     } = userData;
 
     //[accessToken, refreshToken 각각 response 헤더, 쿠키 세팅]
-    res.setHeader('Authorization', `Bearer ${accessToken}`);
+    res.cookie('accessToken', accessToken, {
+      httpOnly: false,
+    });
     res.cookie('refreshToken', refreshToken, {
       httpOnly: false, //배포 시 httpOnly: true, secure: true,
     });
