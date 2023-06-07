@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const getAllUserInfoSchema = Joi.object({
-  id: Joi.string().label('id 파라미터').required(),
+  user_id: Joi.string().label('아이디').required(),
 });
 
 const adminBanSchema = Joi.object({

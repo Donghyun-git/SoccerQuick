@@ -28,10 +28,10 @@ const getFilteredGrounds = async (req, res, next) => {
 // [ 풋볼장 즐겨찾기 추가 ]
 const addFavorites = async (req, res, next) => {
   const { groundId } = req.params;
-  const { userId } = req.body;
+  const { user_id } = req.body;
 
   try {
-    const result = await groundService.addFavorites(groundId, userId);
+    const result = await groundService.addFavorites(groundId, user_id);
 
     if (result.statusCode !== 201)
       return next(new AppError(result.statusCode, result.message));

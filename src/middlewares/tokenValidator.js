@@ -47,7 +47,9 @@ const refreshTokenValidator = (req, res, next) => {
       const newAccessToken = generateNewAccessToken(decodedRefreshToken);
 
       res.cookie('accessToken', newAccessToken);
-      req.user = decodedRefreshToken.user_id;
+      req.user = {
+        user_id: decodedRefreshToken.user_id,
+      };
       return next();
     }
 
@@ -87,7 +89,9 @@ const accessTokenValidator = (req, res, next) => {
 
     //accessToken 만료시간 검증.
     if (decodedAccessToken.exp >= currentTime) {
-      req.user = decodedAccessToken.user_id;
+      req.user = {
+        user_id: decodedAccessToken.user_id,
+      };
 
       return next();
     }

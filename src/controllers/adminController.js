@@ -11,9 +11,9 @@ const {
 
 // [ 관리자 ] 유저 전체 정보 조회
 const getAllUserInfo = async (req, res, next) => {
-  const { id } = req.params;
-
-  const { error } = getAllUserInfoSchema.validate({ id });
+  const { user_id } = req.user;
+  console.log('@@@@@@@@@', user_id);
+  const { error } = getAllUserInfoSchema.validate({ user_id });
 
   if (error) {
     const message = errorMessageHandler(error);
@@ -21,7 +21,7 @@ const getAllUserInfo = async (req, res, next) => {
   }
 
   try {
-    const result = await adminService.getAllUserInfo(id);
+    const result = await adminService.getAllUserInfo(user_id);
 
     if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
@@ -38,7 +38,8 @@ const getAllUserInfo = async (req, res, next) => {
 
 // [ 관리자 ] 유저 로그인 정지
 const adminBanUser = async (req, res, next) => {
-  const { user_id, banUserId } = req.body;
+  const { user_id } = req.user;
+  const { banUserId } = req.body;
 
   const { error } = adminBanSchema.validate({ user_id, banUserId });
 
@@ -64,7 +65,8 @@ const adminBanUser = async (req, res, next) => {
 
 // [ 관리자 ] 유저 커뮤니티 정지
 const adminBanCommunity = async (req, res, next) => {
-  const { user_id, banUserId } = req.body;
+  const { user_id } = req.user;
+  const { banUserId } = req.body;
 
   const { error } = adminBanSchema.validate({ user_id, banUserId });
 
@@ -91,7 +93,8 @@ const adminBanCommunity = async (req, res, next) => {
 
 // [ 관리자 ] 일반 유저 직위 변경 user -> manager
 const updateUserRole = async (req, res, next) => {
-  const { user_id, updateUser } = req.body;
+  const { user_id } = req.user;
+  const { updateUser } = req.body;
 
   const { error } = updateUserRoleSchema.validate({ user_id, updateUser });
 

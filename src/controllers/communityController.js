@@ -14,7 +14,6 @@ const {
 
 //[ 커뮤니티 전체 게시글 조회 ]
 const getAllPosts = async (req, res, next) => {
-  console.log('저 req객체에 있는 유저아이디임 ㅋ', req.user);
   try {
     const result = await communityService.getAllPosts();
 
@@ -33,10 +32,11 @@ const getAllPosts = async (req, res, next) => {
 
 //[ 커뮤니티 게시글 등록 ]
 const addPost = async (req, res, next) => {
-  const { userId, title, description, notice } = req.body;
+  const { user_id } = req.user;
+  const { title, description, notice } = req.body;
 
   const { error } = addPostSchema.validate({
-    userId,
+    user_id,
     title,
     description,
     notice,
@@ -49,7 +49,7 @@ const addPost = async (req, res, next) => {
 
   try {
     const result = await communityService.addPost({
-      userId,
+      user_id,
       title,
       description,
       notice,
@@ -71,12 +71,13 @@ const addPost = async (req, res, next) => {
 //[ (유저,관리자) 커뮤니티 게시글 수정 ]
 // [admin, manager] 는 게시글 공지사항 변경 가능.
 const updatePost = async (req, res, next) => {
+  const { user_id } = req.user;
   const { postId } = req.params;
-  const { userId, title, description, notice } = req.body;
+  const { title, description, notice } = req.body;
 
   const { error } = updatePostSchema.validate({
     postId,
-    userId,
+    user_id,
     title,
     description,
     notice,
@@ -90,7 +91,7 @@ const updatePost = async (req, res, next) => {
   try {
     const result = await communityService.updatePost({
       postId,
-      userId,
+      user_id,
       title,
       description,
       notice,
@@ -112,9 +113,9 @@ const updatePost = async (req, res, next) => {
 //[ (유저, 관리자) 커뮤니티 게시글 삭제 ]
 const deletePost = async (req, res, next) => {
   const { postId } = req.params;
-  const { userId } = req.body;
+  const { user_id } = req.user;
 
-  const { error } = deletePostSchema.validate({ postId, userId });
+  const { error } = deletePostSchema.validate({ postId, user_id });
 
   if (error) {
     const message = errorMessageHandler(error);
@@ -122,7 +123,7 @@ const deletePost = async (req, res, next) => {
   }
 
   try {
-    const result = await communityService.deletePost(postId, userId);
+    const result = await communityService.deletePost(postId, user_id);
 
     if (result.statusCode !== 204)
       return next(new AppError(result.statusCode, result.message));
@@ -139,7 +140,8 @@ const deletePost = async (req, res, next) => {
 // [ 커뮤니티 게시글 댓글 등록 ]
 const addComment = async (req, res, next) => {
   const { postId } = req.params;
-  const { user_id, content } = req.body;
+  const { user_id } = req.user;
+  const { content } = req.body;
 
   const { error } = addCommentSchema.validate({ postId, user_id, content });
 
@@ -167,7 +169,8 @@ const addComment = async (req, res, next) => {
 // [ 커뮤니티 게시글 댓글 수정 ]
 const updateComment = async (req, res, next) => {
   const { postId, commentId } = req.params;
-  const { user_id, content } = req.body;
+  const { user_id } = req.user;
+  const { content } = req.body;
 
   const { error } = updateCommentSchema.validate({
     postId,
@@ -205,7 +208,7 @@ const updateComment = async (req, res, next) => {
 // [ 커뮤니티 댓글 삭제 ]
 const deleteComment = async (req, res, next) => {
   const { postId, commentId } = req.params;
-  const { user_id } = req.body;
+  const { user_id } = req.user;
 
   const { error } = deleteCommentSchema.validate({
     postId,

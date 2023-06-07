@@ -4,7 +4,7 @@ const tokenValidator = require('../middlewares/tokenValidator');
 const adminController = require('../controllers/adminController');
 
 // [ 관리자 - 전체 유저 정보 조회]
-router.get('/:id', tokenValidator, adminController.getAllUserInfo);
+router.get('/', tokenValidator, adminController.getAllUserInfo);
 
 //[ 관리자 - 유저 로그인 정지 ]
 router.patch('/bans/login', tokenValidator, adminController.adminBanUser);

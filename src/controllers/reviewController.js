@@ -30,9 +30,9 @@ const getAllReviews = async (req, res, next) => {
 
 // [ 리뷰 등록 ]
 const addReview = async (req, res, next) => {
-  const { user_id, ground_id, rating, comment } = req.body;
+  const { user_id } = req.user;
+  const { ground_id, rating, comment } = req.body;
 
-  //validate
   const { error } = addReviewSchema.validate({
     user_id,
     ground_id,
@@ -68,7 +68,8 @@ const addReview = async (req, res, next) => {
 // [ 리뷰 수정 ]
 const updateReview = async (req, res, next) => {
   const { reviewId } = req.params;
-  const { user_id, rating, comment } = req.body;
+  const { user_id } = req.user;
+  const { rating, comment } = req.body;
 
   const { error } = updateReviewSchema.validate({
     reviewId,
@@ -106,7 +107,7 @@ const updateReview = async (req, res, next) => {
 // [ 리뷰 삭제 ]
 const deleteReview = async (req, res, next) => {
   const { reviewId } = req.params;
-  const { user_id } = req.body;
+  const { user_id } = req.user;
 
   const { error } = deleteReviewSchema.validate({
     reviewId,

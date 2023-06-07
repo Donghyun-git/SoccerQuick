@@ -29,9 +29,9 @@ const getAllGroups = async (req, res, next) => {
 
 // [ 팀 그룹 등록 ]
 const addGroup = async (req, res, next) => {
+  const leader_id = req.user.user_id;
   const {
     title,
-    leader_id,
     location,
     play_date,
     gk_count,
@@ -41,7 +41,7 @@ const addGroup = async (req, res, next) => {
     contents,
   } = req.body;
 
-  const { error, value } = addGroupSchema.validate({
+  const { error } = addGroupSchema.validate({
     title,
     leader_id,
     location,
@@ -52,8 +52,6 @@ const addGroup = async (req, res, next) => {
     player_current_count,
     contents,
   });
-
-  console.log('나는 벨류', value);
 
   if (error) {
     const message = errorMessageHandler(error);
@@ -87,7 +85,8 @@ const addGroup = async (req, res, next) => {
 // 유저 - [ 팀 그룹 신청 ]
 const userApplicantGroup = async (req, res, next) => {
   const { group_id } = req.params;
-  const { user_id, position, level, contents } = req.body;
+  const { user_id } = req.user;
+  const { position, level, contents } = req.body;
 
   const { error } = userApplicantGroupSchema.validate({
     group_id,
@@ -127,7 +126,8 @@ const userApplicantGroup = async (req, res, next) => {
 // 팀 그룹 리더 - 팀 수락
 const leaderApplicantAccept = async (req, res, next) => {
   const { group_id } = req.params;
-  const { leaderId, user_id } = req.body;
+  const { user_id } = req.body;
+  const leaderId = req.user.user_id;
 
   const { error } = leaderApplicantAcceptSchema.validate({
     group_id,
