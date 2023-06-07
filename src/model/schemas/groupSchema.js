@@ -43,7 +43,12 @@ const GroupSchema = new Schema(
         default: 0,
         required: true,
       },
-      current_count: {
+      gk_current_count: {
+        type: Number,
+        default: 0,
+        required: true,
+      },
+      player_current_count: {
         type: Number,
         default: 0,
         required: true,
@@ -57,8 +62,17 @@ const GroupSchema = new Schema(
       type: [playerSchema],
       default: [],
     },
+    title: {
+      type: String,
+      required: true,
+    },
     contents: {
       type: String,
+      required: true,
+    },
+    random_matched: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

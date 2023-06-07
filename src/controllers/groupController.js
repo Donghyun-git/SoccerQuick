@@ -30,24 +30,30 @@ const getAllGroups = async (req, res, next) => {
 // [ 팀 그룹 등록 ]
 const addGroup = async (req, res, next) => {
   const {
+    title,
     leader_id,
     location,
     play_date,
     gk_count,
     player_count,
-    current_count,
+    gk_current_count,
+    player_current_count,
     contents,
   } = req.body;
 
-  const { error } = addGroupSchema.validate({
+  const { error, value } = addGroupSchema.validate({
+    title,
     leader_id,
     location,
     play_date,
     gk_count,
     player_count,
-    current_count,
+    gk_current_count,
+    player_current_count,
     contents,
   });
+
+  console.log('나는 벨류', value);
 
   if (error) {
     const message = errorMessageHandler(error);
@@ -61,7 +67,9 @@ const addGroup = async (req, res, next) => {
       play_date,
       gk_count,
       player_count,
-      current_count,
+      gk_current_count,
+      player_current_count,
+      title,
       contents,
     });
 
