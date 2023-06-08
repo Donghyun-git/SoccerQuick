@@ -12,9 +12,9 @@ const ReviewSchema = new Schema(
       ref: 'User',
       required: true,
     },
-    ground_id: {
+    dom_id: {
       type: Schema.Types.ObjectId,
-      ref: 'Ground',
+      ref: 'Dom',
       required: true,
     },
     name: {
