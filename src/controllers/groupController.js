@@ -6,7 +6,7 @@ const {
 const {
   addGroupSchema,
   userApplicantGroupSchema,
-  leaderApplicantAcceptSchema,
+  leaderApplicantSchema,
   updateMyGroupSchema,
 } = require('../validator/groupValidator');
 
@@ -113,7 +113,6 @@ const addGroup = async (req, res, next) => {
   const {
     title,
     location,
-    play_date,
     gk_count,
     player_count,
     gk_current_count,
@@ -125,7 +124,6 @@ const addGroup = async (req, res, next) => {
     title,
     leader_id,
     location,
-    play_date,
     gk_count,
     player_count,
     gk_current_count,
@@ -142,7 +140,6 @@ const addGroup = async (req, res, next) => {
     const result = await groupService.addGroup({
       leader_id,
       location,
-      play_date,
       gk_count,
       player_count,
       gk_current_count,
@@ -203,13 +200,13 @@ const userApplicantGroup = async (req, res, next) => {
   }
 };
 
-// 팀 그룹 리더 - 팀 수락
+// [ 리더 ] - 유저 신청 수락
 const leaderApplicantAccept = async (req, res, next) => {
   const { group_id } = req.params;
   const { user_id } = req.body;
   const leaderId = req.user.user_id;
 
-  const { error } = leaderApplicantAcceptSchema.validate({
+  const { error } = leaderApplicantSchema.validate({
     group_id,
     leaderId,
     user_id,
@@ -241,6 +238,44 @@ const leaderApplicantAccept = async (req, res, next) => {
   }
 };
 
+//[ 리더 ] - 유저 신청 거절
+const leaderApplicantReject = async (req, res, next) => {
+  const { group_id } = req.params;
+  const { user_id } = req.body;
+  const leaderId = req.user.user_id;
+
+  const { error } = leaderApplicantSchema.validate({
+    group_id,
+    leaderId,
+    user_id,
+  });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await groupService.leaderApplicantReject(
+      group_id,
+      leaderId,
+      user_id
+    );
+
+    if (result.statusCode !== 200) {
+      return next(new AppError(result.statusCode, result.message));
+    }
+
+    res.status(200).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
 module.exports = {
   getAllGroups,
   getOneGroup,
@@ -248,4 +283,5 @@ module.exports = {
   addGroup,
   userApplicantGroup,
   leaderApplicantAccept,
+  leaderApplicantReject,
 };

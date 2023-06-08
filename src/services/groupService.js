@@ -19,7 +19,6 @@ const getAllGroups = async () => {
       contents: group.contents,
       location: group.location,
       status: group.status,
-      play_date: group.play_date,
       gk_count: group.recruitment_count.gk_count,
       player_count: group.recruitment_count.player_count,
       gk_current_count: group.recruitment_count.gk_current_count,
@@ -55,7 +54,6 @@ const getOneGroup = async (group_id) => {
       contents: foundGroup.contents,
       location: foundGroup.location,
       status: foundGroup.status,
-      play_date: foundGroup.play_date,
       gk_count: foundGroup.recruitment_count.gk_count,
       player_count: foundGroup.recruitment_count.player_count,
       gk_current_count: foundGroup.recruitment_count.gk_current_count,
@@ -130,7 +128,6 @@ const updateMyGroup = async (myGroup) => {
       contents: newGroup.contents,
       location: newGroup.location,
       status: newGroup.status,
-      play_date: newGroup.play_date,
       gk_count: newGroup.recruitment_count.gk_count,
       player_count: newGroup.recruitment_count.player_count,
       gk_current_count: newGroup.recruitment_count.gk_current_count,
@@ -159,7 +156,6 @@ const addGroup = async (group) => {
     title,
     leader_id,
     location,
-    play_date,
     gk_count,
     player_count,
     gk_current_count,
@@ -184,7 +180,6 @@ const addGroup = async (group) => {
         leader_name: leaderName,
       },
       location: location,
-      play_date,
       recruitment_count: {
         gk_count: Number(gk_count),
         player_count: Number(player_count),
@@ -205,7 +200,6 @@ const addGroup = async (group) => {
       contents: createGroup.contents,
       location: createGroup.location,
       status: createGroup.status,
-      play_date: createGroup.play_date,
       gk_count: createGroup.recruitment_count.gk_count,
       player_count: createGroup.recruitment_count.player_count,
       gk_current_count: createGroup.recruitment_count.gk_current_count,
@@ -278,7 +272,7 @@ const userApplicantGroup = async (user) => {
   }
 };
 
-// 팀 그룹 리더 - 유저 신청 수락
+// [ 리더 ] - 유저 신청 수락
 const leaderApplicantAccept = async (group_id, leaderId, user_id) => {
   try {
     const foundLeader = await User.findOne({ user_id: leaderId });
@@ -385,7 +379,6 @@ const leaderApplicantAccept = async (group_id, leaderId, user_id) => {
       contents: foundGroup.contents,
       location: foundGroup.location,
       status: foundGroup.status,
-      play_date: foundGroup.play_date,
       gk_count: foundGroup.recruitment_count.gk_count,
       player_count: foundGroup.recruitment_count.player_count,
       gk_current_count: foundGroup.recruitment_count.gk_current_count,
@@ -409,6 +402,67 @@ const leaderApplicantAccept = async (group_id, leaderId, user_id) => {
   }
 };
 
+// [ 리더 ] - 유저 신청 거절
+const leaderApplicantReject = async (group_id, leaderId, user_id) => {
+  try {
+    const foundLeader = await User.findOne({ user_id: leaderId });
+    if (!foundLeader)
+      return new AppError(404, '존재하지 않는 리더 아이디입니다.');
+
+    const foundGroup = await Group.findOne({ group_id });
+    if (!foundGroup) return new AppError(404, '존재하지 않는 팀 그룹 입니다.');
+
+    const foundUser = await User.findOne({ _id: user_id });
+    if (!foundUser)
+      return new AppError(404, '존재하지 않거나 탈퇴한 유저 입니다.');
+
+    const leaderObjectId = toString(foundLeader._id);
+    const userObjectId = toString(foundUser._id);
+    const groupLeaderObjectId = toString(foundGroup.leader.leader_id);
+
+    if (leaderObjectId !== groupLeaderObjectId)
+      return new AppError(403, '팀 리더만 거절 가능합니다.');
+
+    const applicants = foundGroup.applicant;
+
+    const filteredApplicants = applicants.filter(
+      (user) => user.id !== userObjectId
+    );
+
+    if (filteredApplicants.length === applicants.length)
+      return new AppError(404, '신청목록에 유저가 존재하지 않습니다.');
+
+    foundGroup.applicant = filteredApplicants;
+
+    await foundGroup.save();
+
+    const groupFormatData = {
+      group_id: foundGroup.group_id,
+      title: foundGroup.title,
+      leader_id: foundGroup.leader.leader_id,
+      leader_name: foundGroup.leader.leader_name,
+      contents: foundGroup.contents,
+      location: foundGroup.location,
+      status: foundGroup.status,
+      gk_count: foundGroup.recruitment_count.gk_count,
+      player_count: foundGroup.recruitment_count.player_count,
+      gk_current_count: foundGroup.recruitment_count.gk_current_count,
+      player_current_count: foundGroup.recruitment_count.player_current_count,
+      random_matched: foundGroup.random_matched,
+      applicant: foundGroup.applicant,
+      accept: foundGroup.accept,
+    };
+
+    return {
+      statusCode: 200,
+      message: '팀원 거절 성공',
+      data: groupFormatData,
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
 module.exports = {
   getAllGroups,
   getOneGroup,
@@ -416,4 +470,5 @@ module.exports = {
   addGroup,
   userApplicantGroup,
   leaderApplicantAccept,
+  leaderApplicantReject,
 };
