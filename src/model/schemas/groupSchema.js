@@ -28,10 +28,6 @@ const GroupSchema = new Schema(
       required: true,
       default: '모집중',
     },
-    play_date: {
-      type: String,
-      required: true,
-    },
     recruitment_count: {
       gk_count: {
         type: Number,
