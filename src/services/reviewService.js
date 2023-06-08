@@ -1,4 +1,4 @@
-const { Review, User, Ground } = require('../model/models/index');
+const { Review, User, Dom } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
 const { createReviewId } = require('../utils/createIndex');
 
@@ -23,23 +23,23 @@ const getAllReviews = async () => {
 // [ 리뷰 등록 ]
 /** ([유저아이디, 풋볼장번호, 작성자이름, 평점, 리뷰내용 ]) */
 const addReview = async (reviews) => {
-  const { user_id, ground_id, rating, comment } = reviews;
+  const { user_id, dom_id, rating, comment } = reviews;
 
   try {
-    const foundUser = await User.findOne({ user_id });
+    const foundUser = await User.findOne({ user_id});
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
     const userObjectId = foundUser._id;
 
-    const foundGround = await Ground.findOne({ ground_id });
-    if (!foundGround) return new AppError(404, '존재하지 않는 풋볼장입니다.');
-    const groundObjectId = foundGround._id;
+    const foundDom = await Dom.findOne({ dom_id });
+    if (!foundDom) return new AppError(404, '존재하지 않는 풋볼장입니다.');
+    const domObjectId = foundDom._id;
 
     const reviewId = await createReviewId();
 
     const newReviewField = {
       review_id: reviewId,
       user_id: userObjectId,
-      ground_id: groundObjectId,
+      dom_id: domObjectId,
       name: foundUser.name,
       rating,
       comment,
