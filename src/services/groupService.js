@@ -179,7 +179,7 @@ const leaderApplicantAccept = async (group_id, leaderId, user_id) => {
     if (foundGroup.status === '모집 완료')
       return new AppError(400, '이미 모집 완료 되었습니다.');
 
-    const foundUser = await User.findOne({ user_id });
+    const foundUser = await User.findOne({ _id: user_id });
     if (!foundUser)
       return new AppError(404, '존재하지 않거나 탈퇴한 유저 입니다.');
 
