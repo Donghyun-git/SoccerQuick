@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const tokenValidator = require('../middlewares/tokenValidator');
+const tokenValidator = require('../validator/jwt/tokenValidator');
 const communityController = require('../controllers/communityController');
 
 /* GET */

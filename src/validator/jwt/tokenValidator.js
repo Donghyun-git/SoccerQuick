@@ -3,9 +3,9 @@ const {
   ACCESS_TOKEN_SECRET,
   REFRESH_TOKEN_SECRET,
   ACCESS_TOKEN_EXPIRES_IN,
-} = require('../envconfig');
-const { AppError } = require('./errorHandler');
-const { createGuestId } = require('../utils/createIndex');
+} = require('../../envconfig');
+const { AppError } = require('../../middlewares/errorHandler');
+const { createGuestId } = require('../../utils/createIndex');
 
 // [ 게스트 ] 유저, 유저 객체 발급.
 const nextForGuest = async (req, next) => {

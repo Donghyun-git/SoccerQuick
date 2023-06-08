@@ -1,10 +1,9 @@
 const { Router } = require('express');
 const router = Router();
-const tokenValidator = require('../middlewares/tokenValidator');
+const tokenValidator = require('../validator/jwt/tokenValidator');
 const groupController = require('../controllers/groupController');
 
 // GET
-
 // [ 전체 팀 그룹 조회 ]
 router.get('/', tokenValidator, groupController.getAllGroups);
 
@@ -18,6 +17,7 @@ router.post('/', tokenValidator, groupController.addGroup);
 // [ 팀 신청 ]
 router.post('/:group_id', tokenValidator, groupController.userApplicantGroup);
 
+// PATCH
 // [ 팀 정보 수정 ]
 router.patch('/:group_id/info', tokenValidator, groupController.updateMyGroup);
 
@@ -34,5 +34,9 @@ router.patch(
   tokenValidator,
   groupController.leaderApplicantReject
 );
+
+// DELETE
+// [ 팀 삭제 ]
+router.delete('/:group_id', tokenValidator, groupController.deleteGroup);
 
 module.exports = router;

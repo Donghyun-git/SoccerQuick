@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const tokenValidator = require('../middlewares/tokenValidator');
+const tokenValidator = require('../validator/jwt/tokenValidator');
 const userController = require('../controllers/userController');
 
 // [ 유저 정보 조회 ] - 마이페이지
