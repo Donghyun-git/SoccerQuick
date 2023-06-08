@@ -276,6 +276,26 @@ const leaderApplicantReject = async (req, res, next) => {
   }
 };
 
+//[ 리더, 관리자 ] - 팀 그룹 삭제
+const deleteGroup = async (req, res, next) => {
+  const { group_id } = req.params;
+  const { user_id } = req.user;
+
+  try {
+    const result = await groupService.deleteGroup(group_id, user_id);
+
+    if (result.statusCode !== 204)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(204).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
 module.exports = {
   getAllGroups,
   getOneGroup,
@@ -284,4 +304,5 @@ module.exports = {
   userApplicantGroup,
   leaderApplicantAccept,
   leaderApplicantReject,
+  deleteGroup,
 };

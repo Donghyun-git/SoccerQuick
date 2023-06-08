@@ -465,6 +465,49 @@ const leaderApplicantReject = async (group_id, leaderId, user_id) => {
     return new AppError(500, 'Internal Server Error');
   }
 };
+
+// [ 리더, 관리자 ] - 팀 그룹 삭제
+const deleteGroup = async (group_id, user_id) => {
+  try {
+    const foundUser = await User.findOne({ user_id });
+    if (!foundUser) return new AppError(404, '존재하지 않는 사용자입니다.');
+
+    const foundGroup = await Group.findOne({ group_id });
+    if (!foundGroup) return new AppError(404, '존재하지 않는 팀 그룹입니다.');
+
+    const userObjectId = toString(foundUser._id);
+    const groupleaderObjectId = toString(foundGroup.leader.leader_id);
+
+    if (foundUser.role === 'user' && userObjectId !== groupleaderObjectId)
+      return new AppError(403, '팀 리더 및 관리자만 삭제 가능합니다.');
+
+    const acceptArray = foundGroup.accept;
+
+    for (idx = 0; idx < acceptArray.length; idx++) {
+      const user = acceptArray[idx];
+      const userObjectId = user.id;
+
+      const foundUser = await User.findOne({ _id: userObjectId });
+      if (!foundUser) continue;
+
+      foundUser.applicant_status = '모집 가능';
+      await foundUser.save();
+
+      await Group.updateMany(
+        { 'applicant.id': userObjectId },
+        { $set: { 'applicant.$[elem].status': '모집 가능' } },
+        { arrayFilters: [{ 'elem.id': userObjectId }] }
+      ).exec();
+    }
+
+    await Group.deleteOne({ group_id });
+
+    return { statusCode: 204, message: '팀 그룹이 삭제되었습니다.' };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
 module.exports = {
   getAllGroups,
   getOneGroup,
@@ -473,4 +516,5 @@ module.exports = {
   userApplicantGroup,
   leaderApplicantAccept,
   leaderApplicantReject,
+  deleteGroup,
 };
