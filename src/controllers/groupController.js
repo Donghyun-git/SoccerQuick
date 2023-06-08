@@ -95,7 +95,7 @@ const userApplicantGroup = async (req, res, next) => {
     level,
     contents,
   });
-  console.log('나 그룹아이디', group_id);
+
   if (error) {
     const message = errorMessageHandler(error);
     return next(new AppError(400, message));
