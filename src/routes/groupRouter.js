@@ -23,9 +23,16 @@ router.patch('/:group_id/info', tokenValidator, groupController.updateMyGroup);
 
 // [ 팀 수락 ]
 router.patch(
-  '/:group_id',
+  '/:group_id/accept',
   tokenValidator,
   groupController.leaderApplicantAccept
+);
+
+//[ 팀 거절 ]
+router.patch(
+  '/:group_id/reject',
+  tokenValidator,
+  groupController.leaderApplicantReject
 );
 
 module.exports = router;
