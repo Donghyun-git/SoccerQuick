@@ -13,6 +13,20 @@ const addGroupSchema = Joi.object({
   contents: Joi.string().label('팀 모집 본문').required(),
 });
 
+//자기 팀 정보 수정
+const updateMyGroupSchema = Joi.object({
+  group_id: Joi.string().label('그룹 아이디').required(),
+  user_id: Joi.string().label('리더 아이디').required(),
+  location: Joi.string().label('경기 위치'),
+  status: Joi.string().label('모집 상태'),
+  gk_count: Joi.string().label('모집하는 골키퍼 수'),
+  player_count: Joi.string().label('모집하는 플레이어 수'),
+  gk_current_count: Joi.string().label('현재 팀 골키퍼 수'),
+  player_current_count: Joi.string().label('현재 팀 플레이어 수'),
+  title: Joi.string().label('모집글 제목'),
+  contents: Joi.string().label('모집글 본문'),
+});
+
 //유저 - 팀 신청
 const userApplicantGroupSchema = Joi.object({
   group_id: Joi.string().label('팀 id').required(),
@@ -31,6 +45,7 @@ const leaderApplicantAcceptSchema = Joi.object({
 
 module.exports = {
   addGroupSchema,
+  updateMyGroupSchema,
   userApplicantGroupSchema,
   leaderApplicantAcceptSchema,
 };

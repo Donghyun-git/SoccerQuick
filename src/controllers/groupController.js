@@ -7,12 +7,92 @@ const {
   addGroupSchema,
   userApplicantGroupSchema,
   leaderApplicantAcceptSchema,
+  updateMyGroupSchema,
 } = require('../validator/groupValidator');
 
 // [ 전체 팀 그룹 조회 ]
 const getAllGroups = async (req, res, next) => {
   try {
     const result = await groupService.getAllGroups();
+
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
+// [ 단일 팀 조회 ]
+const getOneGroup = async (req, res, next) => {
+  const { group_id } = req.params;
+  try {
+    const result = await groupService.getOneGroup(group_id);
+
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
+//[ 리더 - 팀 정보 수정 ]
+const updateMyGroup = async (req, res, next) => {
+  const { group_id } = req.params;
+  const { user_id } = req.user;
+  const {
+    location,
+    status,
+    gk_count,
+    player_count,
+    gk_current_count,
+    player_current_count,
+    title,
+    contents,
+  } = req.body;
+
+  const { error } = updateMyGroupSchema.validate({
+    group_id,
+    user_id,
+    location,
+    status,
+    gk_count,
+    player_count,
+    gk_current_count,
+    player_current_count,
+    title,
+    contents,
+  });
+
+  if (error) {
+    const message = errorMessageHandler(error);
+    return next(new AppError(400, message));
+  }
+
+  try {
+    const result = await groupService.updateMyGroup({
+      group_id,
+      user_id,
+      location,
+      status,
+      gk_count,
+      player_count,
+      gk_current_count,
+      player_current_count,
+      title,
+      contents,
+    });
 
     if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
@@ -163,6 +243,8 @@ const leaderApplicantAccept = async (req, res, next) => {
 
 module.exports = {
   getAllGroups,
+  getOneGroup,
+  updateMyGroup,
   addGroup,
   userApplicantGroup,
   leaderApplicantAccept,

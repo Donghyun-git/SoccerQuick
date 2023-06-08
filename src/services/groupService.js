@@ -40,6 +40,117 @@ const getAllGroups = async () => {
   }
 };
 
+//[ 단일 팀 조회 ]
+const getOneGroup = async (group_id) => {
+  try {
+    const foundGroup = await Group.findOne({ group_id });
+
+    if (!foundGroup) return new AppError(404, '존재하지 않는 팀 그룹입니다.');
+
+    const groupData = {
+      group_id: foundGroup.group_id,
+      title: foundGroup.title,
+      leader_id: foundGroup.leader.leader_id,
+      leader_name: foundGroup.leader.leader_name,
+      contents: foundGroup.contents,
+      location: foundGroup.location,
+      status: foundGroup.status,
+      play_date: foundGroup.play_date,
+      gk_count: foundGroup.recruitment_count.gk_count,
+      player_count: foundGroup.recruitment_count.player_count,
+      gk_current_count: foundGroup.recruitment_count.gk_current_count,
+      player_current_count: foundGroup.recruitment_count.player_current_count,
+      random_matched: foundGroup.random_matched,
+      applicant: foundGroup.applicant,
+      accept: foundGroup.accept,
+    };
+
+    return { statusCode: 200, message: '팀 조회 성공', data: groupData };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
+// [ 리더 - 자기 팀 정보 수정 ]
+const updateMyGroup = async (myGroup) => {
+  const {
+    group_id,
+    user_id,
+    location,
+    status,
+    gk_count,
+    player_count,
+    gk_current_count,
+    player_current_count,
+    title,
+    contents,
+  } = myGroup;
+
+  try {
+    const foundUser = await User.findOne({ user_id });
+
+    if (!foundUser) return new AppError(404, '존재하지 않는 사용자 입니다.');
+
+    const userObjectId = toString(foundUser._id);
+
+    const foundGroup = await Group.findOne({ group_id });
+
+    if (!foundGroup) return new AppError(404, '존재하지 않는 팀 그룹입니다.');
+
+    const leaderObjectId = toString(foundGroup.leader.leader_id);
+
+    if (userObjectId !== leaderObjectId)
+      return new AppError(403, ' 팀 리더만 수정 가능합니다.');
+
+    const newGroupData = {
+      location,
+      status,
+      recruitment_count: {
+        gk_count,
+        player_count,
+        gk_current_count,
+        player_current_count,
+      },
+      title,
+      contents,
+    };
+
+    const newGroup = await Group.findOneAndUpdate(
+      { group_id: group_id },
+      { $set: newGroupData },
+      { new: true }
+    );
+
+    const newGroupFormattedData = {
+      group_id: newGroup.group_id,
+      title: newGroup.title,
+      leader_id: newGroup.leader.leader_id,
+      leader_name: newGroup.leader.leader_name,
+      contents: newGroup.contents,
+      location: newGroup.location,
+      status: newGroup.status,
+      play_date: newGroup.play_date,
+      gk_count: newGroup.recruitment_count.gk_count,
+      player_count: newGroup.recruitment_count.player_count,
+      gk_current_count: newGroup.recruitment_count.gk_current_count,
+      player_current_count: newGroup.recruitment_count.player_current_count,
+      random_matched: newGroup.random_matched,
+      applicant: newGroup.applicant,
+      accept: newGroup.accept,
+    };
+
+    return {
+      statusCode: 200,
+      message: '팀 정보가 수정되었습니다.',
+      data: newGroupFormattedData,
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
 // [팀 그룹 등록]
 /** (그룹 데이터) */
 const addGroup = async (group) => {
@@ -300,6 +411,8 @@ const leaderApplicantAccept = async (group_id, leaderId, user_id) => {
 
 module.exports = {
   getAllGroups,
+  getOneGroup,
+  updateMyGroup,
   addGroup,
   userApplicantGroup,
   leaderApplicantAccept,
