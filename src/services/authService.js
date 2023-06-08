@@ -12,7 +12,7 @@ const {
 
 //[ 유저 회원가입 ]
 /** (유저 입력 formdata) */
-const signUpUser = async (formData) => {
+const signUp = async (formData) => {
   const { user_id, password, name, nick_name, email, phone_number, gender } =
     formData;
 
@@ -55,7 +55,7 @@ const signUpUser = async (formData) => {
 
 //[유저 로그인]
 /** (아이디, 패스워드)*/
-const logInUser = async (user_id, password) => {
+const logIn = async (user_id, password) => {
   try {
     const foundUser = await User.findOne({ user_id });
 
@@ -145,6 +145,19 @@ const logInUser = async (user_id, password) => {
   }
 };
 
+// [ 유저 로그아웃 ]
+const logOut = async (req, res) => {
+  try {
+    res.clearCookie('refreshToken');
+    res.clearCookie('accessToken');
+
+    return { statusCode: 200, message: '로그아웃 완료' };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
 //[ 회원가입 아이디 중복 체크 ]
 const validateUniqueUserId = async (user_id) => {
   try {
@@ -182,8 +195,9 @@ const validatePassword = async (user_id, password) => {
 };
 
 module.exports = {
-  logInUser,
-  signUpUser,
+  logIn,
+  signUp,
+  logOut,
   validateUniqueUserId,
   validatePassword,
 };

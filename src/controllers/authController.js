@@ -31,7 +31,7 @@ const signUp = async (req, res, next) => {
   }
 
   try {
-    const result = await authService.signUpUser({
+    const result = await authService.signUp({
       user_id,
       password,
       name,
@@ -63,7 +63,7 @@ const logIn = async (req, res, next) => {
   }
 
   try {
-    const result = await authService.logInUser(user_id, password);
+    const result = await authService.logIn(user_id, password);
 
     if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
@@ -105,6 +105,23 @@ const logIn = async (req, res, next) => {
         banEndDate,
         createdAt,
       },
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
+// [ 유저 로그아웃 ]
+const logOut = async (req, res, next) => {
+  try {
+    const result = await authService.logOut(req, res);
+
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
     });
   } catch (error) {
     console.error(error);
@@ -164,4 +181,10 @@ const validatePassword = async (req, res, next) => {
   }
 };
 
-module.exports = { logIn, signUp, validateUniqueUserId, validatePassword };
+module.exports = {
+  logIn,
+  logOut,
+  signUp,
+  validateUniqueUserId,
+  validatePassword,
+};
