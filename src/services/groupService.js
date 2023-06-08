@@ -230,6 +230,7 @@ const userApplicantGroup = async (user) => {
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
 
     const userObjectId = foundUser._id;
+    const userName = foundUser.name;
     const userGender = foundUser.gender;
     const userStatus = foundUser.applicant_status;
 
@@ -254,6 +255,7 @@ const userApplicantGroup = async (user) => {
 
     const applicantUserData = {
       id: userObjectId,
+      name: userName,
       gender: userGender,
       position,
       level,
