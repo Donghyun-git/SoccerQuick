@@ -31,11 +31,11 @@ const getAllReviews = async (req, res, next) => {
 // [ 리뷰 등록 ]
 const addReview = async (req, res, next) => {
   const { user_id } = req.user;
-  const { ground_id, rating, comment } = req.body;
+  const { dom_id, rating, comment } = req.body;
 
   const { error } = addReviewSchema.validate({
     user_id,
-    ground_id,
+    dom_id,
     rating,
     comment,
   });
@@ -47,7 +47,7 @@ const addReview = async (req, res, next) => {
   try {
     const result = await reviewService.addReview({
       user_id,
-      ground_id,
+      dom_id,
       rating,
       comment,
     });
