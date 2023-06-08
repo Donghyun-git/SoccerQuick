@@ -6,10 +6,10 @@ const createPostId = async () => {
   return `post${index}`;
 };
 
-const createGroundId = async () => {
+const createDomId = async () => {
   const { nanoid } = await import('nanoid');
   const index = nanoid(4);
-  return `ground${index}`;
+  return `dom${index}`;
 };
 
 const createReviewId = async () => {
@@ -38,7 +38,7 @@ const createGuestId = async () => {
 
 module.exports = {
   createPostId,
-  createGroundId,
+  createDomId,
   createReviewId,
   createCommentId,
   createGroupId,
