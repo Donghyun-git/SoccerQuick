@@ -51,6 +51,12 @@ const domSchema = new Schema({
   ball: { type: Boolean },
   toilet: { type: Number },
   url: { type: String },
+  usersFavorites: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 module.exports = domSchema;

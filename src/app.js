@@ -18,7 +18,7 @@ const authRouter = require('./routes/authRouter');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter');
 const communityRouter = require('./routes/communityRouter');
-const groundRouter = require('./routes/groundRouter');
+const domRouter = require('./routes/domRouter');
 const reviewRouter = require('./routes/reviewRouter');
 const groupRouter = require('./routes/groupRouter');
 
@@ -59,7 +59,7 @@ app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 app.use('/community', communityRouter);
-app.use('/ground', groundRouter);
+app.use('/dom', domRouter);
 app.use('/review', reviewRouter);
 app.use('/group', groupRouter);
 app.use(errorHandler);
