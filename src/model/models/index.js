@@ -18,13 +18,13 @@ const Comment = mongoose.model('Comment', CommentSchema);
 const ReviewSchema = require('../schemas/reviewSchema');
 const Review = mongoose.model('Review', ReviewSchema);
 
-// [ 풋살장 관련 모델 ]
-const GroundSchema = require('../schemas/groundSchema');
-const Ground = mongoose.model('Ground', GroundSchema);
-
 // [ 팀 그룹 관련 모델 ]
 const GroupSchema = require('../schemas/groupSchema');
 const Group = mongoose.model('Group', GroupSchema);
+
+// [ 경기장 관련 모델 ]
+const domSchema = require('../schemas/domSchema');
+const Dom = mongoose.model('Dom', domSchema);
 
 module.exports = {
   User,
@@ -33,6 +33,6 @@ module.exports = {
   Post,
   Comment,
   Review,
-  Ground,
   Group,
+  Dom,
 };
