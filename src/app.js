@@ -55,11 +55,11 @@ connectToDatabase()
     process.exit(1);
   });
 
-app.use('/auth', authRouter);
-app.use('/user', userRouter);
-app.use('/admin', adminRouter);
-app.use('/community', communityRouter);
-app.use('/dom', domRouter);
-app.use('/review', reviewRouter);
-app.use('/group', groupRouter);
+app.use('/auths', authRouter);
+app.use('/users', userRouter);
+app.use('/admins', adminRouter);
+app.use('/communities', communityRouter);
+app.use('/doms', domRouter);
+app.use('/reviews', reviewRouter);
+app.use('/groups', groupRouter);
 app.use(errorHandler);
