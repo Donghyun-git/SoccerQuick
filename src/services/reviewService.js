@@ -26,7 +26,7 @@ const addReview = async (reviews) => {
   const { user_id, dom_id, rating, comment } = reviews;
 
   try {
-    const foundUser = await User.findOne({ user_id});
+    const foundUser = await User.findOne({ user_id });
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
     const userObjectId = foundUser._id;
 
@@ -93,11 +93,9 @@ const updateReview = async (review) => {
 };
 
 // [ 리뷰 삭제 ]
-const deleteReview = async (review) => {
-  const { reviewId, user_id } = review;
-
+const deleteReview = async (review_id, user_id) => {
   try {
-    const foundReview = await Review.findOne({ review_id: reviewId });
+    const foundReview = await Review.findOne({ review_id });
 
     if (!foundReview) return new AppError(404, '존재하지 않는 리뷰입니다.');
 
@@ -112,11 +110,81 @@ const deleteReview = async (review) => {
     if (reviewUserObjectId !== userObjectId)
       return new AppError(403, '리뷰 작성자만 삭제 가능합니다.');
 
-    await Review.deleteOne({ review_id: reviewId });
+    await Review.deleteOne({ review_id });
 
     return { statusCode: 204, message: '리뷰 삭제 성공' };
   } catch (error) {
     console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
+// [ 리뷰 추천 ]
+const addLikesReview = async (review_id, user_id) => {
+  try {
+    const foundUser = await User.findOne({ user_id });
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
+    const userObjectId = foundUser._id.toString();
+
+    const foundReview = await Review.findOne({ review_id });
+    if (!foundReview) return new AppError(404, '리뷰를 찾을 수 없습니다.');
+
+    const usersLikesArray = foundReview.userslikes;
+    const filteredUsersReviews = usersLikesArray.filter(
+      (user) => user.toString() === userObjectId
+    );
+    if (filteredUsersReviews.length > 0)
+      return new AppError(400, '이미 리뷰에 추천되어 있습니다.');
+
+    usersLikesArray.push(userObjectId);
+    foundReview.userslikes = usersLikesArray;
+    await foundReview.save();
+
+    return {
+      statusCode: 200,
+      message: '리뷰 추천 추가되었습니다.',
+      data: foundReview,
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
+// 리뷰 추천 삭제
+const removeLikesReview = async (review_id, user_id) => {
+  try {
+    const foundUser = await User.findOne({ user_id });
+
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
+
+    const userObjectId = foundUser._id.toString();
+
+    const foundReview = await Review.findOne({ review_id });
+    if (!foundReview) return new AppError(404, '존재하지 않는 리뷰 입니다.');
+
+    const usersLikesArray = foundReview.userslikes;
+
+    const filteredUsersReviews = usersLikesArray.filter(
+      (user) => user.toString() !== userObjectId
+    );
+
+    if (usersLikesArray.length === filteredUsersReviews.length)
+      return new AppError(400, '이미 추천된 리뷰입니다.');
+
+    [...usersLikesArray].forEach((user, idx) => {
+      if (user.toString() === userObjectId) usersLikesArray.splice(idx, 1);
+    });
+
+    foundReview.userslikes = usersLikesArray;
+    await foundReview.save();
+
+    return {
+      statusCode: 204,
+      message: '리뷰 추천에서 삭제되었습니다.',
+    };
+  } catch (error) {
+    console.log(error);
     return new AppError(500, 'Internal Server Error');
   }
 };
@@ -126,4 +194,6 @@ module.exports = {
   addReview,
   updateReview,
   deleteReview,
+  addLikesReview,
+  removeLikesReview,
 };

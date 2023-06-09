@@ -29,6 +29,12 @@ const ReviewSchema = new Schema(
     comment: {
       type: String,
     },
+    userslikes:[
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ]
   },
   { timestamps: true }
 );

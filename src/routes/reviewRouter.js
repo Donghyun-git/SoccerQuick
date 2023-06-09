@@ -11,12 +11,27 @@ router.get('/', tokenValidator, reviewController.getAllReviews);
 // [ 리뷰 생성 ]
 router.post('/', tokenValidator, reviewController.addReview); //
 
+// [ 리뷰 좋아요 등록 ]
+router.post(
+  '/:review_id/likes',
+  tokenValidator,
+  reviewController.addLikesReview
+);
+
 /* PATCH */
 // [ 리뷰 수정 ]
-router.patch('/:reviewId', tokenValidator, reviewController.updateReview);
+router.patch('/:review_id', tokenValidator, reviewController.updateReview);
 
 /* DELETE */
 // [ 리뷰 삭제 ]
-router.delete('/:reviewId', tokenValidator, reviewController.deleteReview);
+router.delete('/:review_id', tokenValidator, reviewController.deleteReview);
+
+
+// [ 리뷰 좋아요 삭제 ]
+router.delete(
+  '/:review_id/likes',
+  tokenValidator,
+  reviewController.removeLikesReview
+);
 
 module.exports = router;
