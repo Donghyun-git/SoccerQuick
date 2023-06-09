@@ -18,32 +18,37 @@ const getAllDoms = async (req, res, next) => {
   }
 };
 
-// [ 필터링된 구장 조회 ]
-const getFilteredDoms = async (req, res, next) => {
-  // try {
-  //   // const { location, date } = req.query;
-  //   // const filteredDoms = await domService.getFilteredDoms({
-  //   //   location,
-  //   //   date,
-  //   // // });
-  //   // res.status(200).json({ filteredDoms });
-  // } catch (error) {
-  //   return next(new AppError(500, 'Internal Server Error'));
-  // }
+// [ 단일 구장 조회 ]
+const getOneDom = async (req, res, next) => {
+  const { dom_id } = req.params;
+
+  try {
+    const result = await domService.getOneDom(dom_id);
+
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    return next(new AppError(500, 'Internal Server Error'));
+  }
 };
 
 // [ 풋볼장 즐겨찾기 추가 ]
 const addFavoriteDoms = async (req, res, next) => {
-  const { groundId } = req.params;
+  const { dom_id } = req.params;
   const { user_id } = req.user;
 
   try {
-    const result = await domService.addFavoriteDoms(groundId, user_id);
+    const result = await domService.addFavoriteDoms(dom_id, user_id);
 
-    if (result.statusCode !== 201)
+    if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
 
-    res.status(201).json({
+    res.status(200).json({
       message: result.message,
       data: result.data,
     });
@@ -55,24 +60,27 @@ const addFavoriteDoms = async (req, res, next) => {
 
 // [ 풋볼장 즐겨찾기 삭제 ]
 const removeFavoriteDoms = async (req, res, next) => {
-  // const { groundId } = req.params;
-  // const { userId } = req.body;
-  // try {
-  //   const result = await domService.removeFavoriteDoms({ groundId, userId });
-  //   if (result.statusCode !== 204)
-  //     return next(new AppError(result.statusCode, result.message));
-  //   res.status(204).json({
-  //     message: result.message,
-  //   });
-  // } catch (error) {
-  //   console.error(error);
-  //   return next(new AppError(500, 'Internal Server Error'));
-  // }
+  const { dom_id } = req.params;
+  const { user_id } = req.user;
+
+  try {
+    const result = await domService.removeFavoriteDoms(dom_id, user_id);
+
+    if (result.statusCode !== 204)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(204).json({
+      message: result.message,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
 };
 
 module.exports = {
   getAllDoms,
-  getFilteredDoms,
+  getOneDom,
   addFavoriteDoms,
   removeFavoriteDoms,
 };

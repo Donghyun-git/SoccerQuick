@@ -17,33 +17,19 @@ const getAllDoms = async () => {
   }
 };
 
-// [ 위치로 필터링된 풋볼장 조회]
-const getFilteredDoms = async (location) => {
+// [ 단일 구장 조회 ]
+const getOneDom = async (dom_id) => {
   try {
-    // const doms = await Dom.find();
-    // // 필터링 로직 구현해서 해당 조건에 맞는 풋볼장 데이터 조회
-    // const filteredDoms = doms.filter((dom) => {
-    //   if (
-    //     location &&
-    //     (ground.location.latitude !== location.latitude ||
-    //       ground.location.longitude !== location.longitude)
-    //   ) {
-    //     return false;
-    //   }
-    //   if (date && ground.timestamp !== date) {
-    //     return false;
-    //   }
-    //   return true;
-    // }
-    // );
-    // // 필터링된 결과 반환
-    // return {
-    //   statusCode: 200,
-    //   message: '필터링된 풋볼장 조회 성공',
-    //   data: filteredDoms,
-    // };
+    const foundDom = await Dom.findOne({ dom_id });
+    if (!foundDom) return new AppError(404, '존재하지 않는 구장입니다.');
+
+    return {
+      statusCode: 200,
+      message: '풋볼장 조회 성공',
+      data: foundDom,
+    };
   } catch (error) {
-    console.error('풋볼장 필터링중에 오류 발생', error);
+    console.error(error);
     return new AppError(500, 'Internal Server Error');
   }
 };
@@ -53,48 +39,34 @@ const addFavoriteDoms = async (dom_id, user_id) => {
   try {
     const foundUser = await User.findOne({ user_id });
 
-    if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
 
-    const userObjectId = foundUser._id;
+    const userObjectId = foundUser._id.toString();
 
-    // 풋볼장 조회
     const foundDom = await Dom.findOne({ dom_id });
 
-    if (!foundDom) return new AppError(400, '풋볼장을 찾을 수 없습니다.');
+    if (!foundDom) return new AppError(404, '풋볼장을 찾을 수 없습니다.');
 
-    // 이미 즐겨찾기에 추가되어 있는지 확인
-    const usersFavorites = foundDom.usersFavorites;
+    const usersFavoritesArray = foundDom.usersFavorites;
 
-    const favoritesFiltered = usersFavorites.filter(
-      (v) => toString(v) === toString(userObjectId)
+    const filteredUsersFavorites = usersFavoritesArray.filter(
+      (user) => user.toString() === userObjectId
     );
 
-    if (favoritesFiltered.length > 0)
-      return new AppError(400, '이미 즐겨찾기에 추가되어있습니다.');
+    if (filteredUsersFavorites.length > 0)
+      return new AppError(400, '이미 즐겨찾기에 추가 되어있습니다.');
 
     // 즐겨찾기에 추가
-    usersFavorites.push(userObjectId);
+    usersFavoritesArray.push(userObjectId);
 
-    // 데이터 업데이트
-    // const updateData = {
-    //   dom_id,
-    //   name: foundGround.name,
-    //   location: foundGround.location,
-    //   price: foundGround.price,
-    //   rating: foundGround.rating,
-    //   usersFavorites: usersFavorites,
-    // };
+    foundDom.usersFavorites = usersFavoritesArray;
 
-    const updatedFavorites = await Dom.findOneAndUpdate(
-      { dom_id },
-      { $set: updateData },
-      { new: true }
-    );
+    await foundDom.save();
 
     return {
       statusCode: 200,
       message: '즐겨찾기에 추가되었습니다.',
-      data: updatedFavorites,
+      data: foundDom,
     };
   } catch (error) {
     console.error(error);
@@ -103,32 +75,36 @@ const addFavoriteDoms = async (dom_id, user_id) => {
 };
 
 // [ 풋볼장 즐겨찾기에서 삭제 ]
-
 const removeFavoriteDoms = async (dom_id, user_id) => {
   try {
     const foundUser = await User.findOne({ user_id });
 
-    if (!foundUser) return new AppError(400, '존재하지 않는 아이디입니다.');
+    if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
 
-    const userObjectId = foundUser._id;
+    const userObjectId = foundUser._id.toString();
 
-    // 풋볼장 조회
     const foundDom = await Dom.findOne({ dom_id });
-    if (!foundDom) return new AppError(400, '풋볼장을 찾을 수 없습니다.');
+    if (!foundDom) return new AppError(404, '존재하지 않는 구장 입니다.');
 
-    // 유저 아이디와 일치하지 않는 즐겨찾기만 남기기
-    const updatedFavorites = foundDom.usersFavorites.filter(
-      (v) => toString(v) !== toString(userObjectId)
+    const usersFavoritesArray = foundDom.usersFavorites;
+
+    const filteredUsersFavorites = usersFavoritesArray.filter(
+      (user) => user.toString() !== userObjectId
     );
 
-    // 즐겨찾기 업데이트
-    foundDom.usersFavorites = updatedFavorites;
+    if (usersFavoritesArray.length === filteredUsersFavorites.length)
+      return new AppError(400, '즐겨찾기에 추가되어 있지 않습니다.');
+
+    [...usersFavoritesArray].forEach((user, idx) => {
+      if (user.toString() === userObjectId) usersFavoritesArray.splice(idx, 1);
+    });
+
+    foundDom.usersFavorites = usersFavoritesArray;
     await foundDom.save();
 
     return {
       statusCode: 204,
       message: '즐겨찾기에서 삭제되었습니다.',
-      data: updatedFavorites,
     };
   } catch (error) {
     console.log(error);
@@ -138,7 +114,7 @@ const removeFavoriteDoms = async (dom_id, user_id) => {
 
 module.exports = {
   getAllDoms,
-  getFilteredDoms,
+  getOneDom,
   addFavoriteDoms,
   removeFavoriteDoms,
 };
