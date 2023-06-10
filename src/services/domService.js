@@ -34,6 +34,27 @@ const getOneDom = async (dom_id) => {
   }
 };
 
+// [ 검색된 지역의 구장 데이터 조회 ]
+const getSearchLocation = async (keywords) => {
+  try {
+    const foundDom = await Dom.find();
+    const filteredLocation = foundDom.filter((dom) => {
+      const { fullAddress } = dom.address;
+
+      return fullAddress.includes(keywords);
+    });
+
+    return {
+      statusCode: 200,
+      message: '검색결과 조회 성공',
+      data: filteredLocation,
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
 // [ 풋볼장 즐겨찾기에 추가 ]
 const addFavoriteDoms = async (dom_id, user_id) => {
   try {
@@ -117,4 +138,5 @@ module.exports = {
   getOneDom,
   addFavoriteDoms,
   removeFavoriteDoms,
+  getSearchLocation,
 };

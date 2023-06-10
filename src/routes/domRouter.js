@@ -3,6 +3,9 @@ const router = Router();
 const tokenValidator = require('../validator/jwt/tokenValidator');
 const domController = require('../controllers/domController');
 
+// [ 검색된 풋볼장 조회 ]
+router.get('/search', tokenValidator, domController.getSearchLocation);
+
 // [ 모든 풋볼장 조회 ]
 router.get('/', tokenValidator, domController.getAllDoms);
 

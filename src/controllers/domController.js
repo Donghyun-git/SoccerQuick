@@ -37,6 +37,26 @@ const getOneDom = async (req, res, next) => {
   }
 };
 
+// [ 검색된 위치의 풋볼장 찾기 ]
+const getSearchLocation = async (req, res, next) => {
+  const { keywords } = req.query;
+
+  try {
+    const result = await domService.getSearchLocation(keywords);
+
+    if (result.statusCode !== 200)
+      return new AppError(result.statusCode, result.message);
+
+    res.status(200).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
 // [ 풋볼장 즐겨찾기 추가 ]
 const addFavoriteDoms = async (req, res, next) => {
   const { dom_id } = req.params;
@@ -81,6 +101,7 @@ const removeFavoriteDoms = async (req, res, next) => {
 module.exports = {
   getAllDoms,
   getOneDom,
+  getSearchLocation,
   addFavoriteDoms,
   removeFavoriteDoms,
 };
