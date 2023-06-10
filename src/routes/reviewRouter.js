@@ -4,6 +4,10 @@ const tokenValidator = require('../validator/jwt/tokenValidator');
 const reviewController = require('../controllers/reviewController');
 
 /* GET */
+
+// [ 리뷰 조회 - 페이징 쿼리 ]
+router.get('/pages', tokenValidator, reviewController.getPageReview);
+
 // [ 리뷰 조회 ]
 router.get('/', tokenValidator, reviewController.getAllReviews);
 
@@ -25,7 +29,6 @@ router.patch('/:review_id', tokenValidator, reviewController.updateReview);
 /* DELETE */
 // [ 리뷰 삭제 ]
 router.delete('/:review_id', tokenValidator, reviewController.deleteReview);
-
 
 // [ 리뷰 좋아요 삭제 ]
 router.delete(

@@ -10,10 +10,30 @@ const {
   deleteReviewSchema,
 } = require('../validator/reviewValidator');
 
-// [ 리뷰 전체 조회]
+// [ 리뷰 전체 조회 ]
 const getAllReviews = async (req, res, next) => {
   try {
     const result = await reviewService.getAllReviews();
+
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
+// [ 리뷰 페이징 조회 ]
+const getPageReview = async (req, res, next) => {
+  const { page } = req.query;
+
+  try {
+    const result = await reviewService.getPageReview(page);
 
     if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
@@ -173,6 +193,7 @@ const removeLikesReview = async (req, res, next) => {
 
 module.exports = {
   getAllReviews,
+  getPageReview,
   addReview,
   updateReview,
   deleteReview,
