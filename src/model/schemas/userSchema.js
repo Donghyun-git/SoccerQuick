@@ -60,7 +60,7 @@ const UserSchema = new Schema(
     },
     community_banned: {
       type: Boolean,
-      dafault: false,
+      default: false,
     },
     community_banEndDate: {
       type: Date,
