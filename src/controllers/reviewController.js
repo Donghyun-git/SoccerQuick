@@ -168,7 +168,7 @@ const addLikesReview = async (req, res, next) => {
       data: result.data,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return next(new AppError(500, 'Internal Server Error'));
   }
 };

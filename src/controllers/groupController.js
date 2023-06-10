@@ -148,7 +148,6 @@ const addGroup = async (req, res, next) => {
       contents,
     });
 
-    console.log(result);
     res.status(201).json({
       message: result.message,
       data: result.data,

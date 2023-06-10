@@ -120,7 +120,7 @@ const logIn = async (user_id, password) => {
     const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
       expiresIn: REFRESH_TOKEN_EXPIRES_IN,
     });
-    console.log(foundUser);
+
     return {
       statusCode: 200,
       accessToken,

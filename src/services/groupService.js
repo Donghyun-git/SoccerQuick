@@ -151,7 +151,6 @@ const updateMyGroup = async (myGroup) => {
 // [팀 그룹 등록]
 /** (그룹 데이터) */
 const addGroup = async (group) => {
-  console.log('group:', group);
   const {
     title,
     leader_id,
@@ -430,7 +429,7 @@ const leaderApplicantReject = async (group_id, leaderId, user_id) => {
     const filteredApplicants = applicants.filter(
       (user) => toString(user.id) !== userObjectId
     );
-    console.log(filteredApplicants, applicants);
+
     if (filteredApplicants.length === applicants.length)
       return new AppError(404, '신청목록에 유저가 존재하지 않습니다.');
 

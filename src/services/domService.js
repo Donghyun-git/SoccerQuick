@@ -128,7 +128,7 @@ const removeFavoriteDoms = async (dom_id, user_id) => {
       message: '즐겨찾기에서 삭제되었습니다.',
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return new AppError(500, 'Internal Server Error');
   }
 };

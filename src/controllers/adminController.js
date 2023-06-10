@@ -12,7 +12,7 @@ const {
 // [ 관리자 ] 유저 전체 정보 조회
 const getAllUserInfo = async (req, res, next) => {
   const { user_id } = req.user;
-  console.log('@@@@@@@@@', user_id);
+
   const { error } = getAllUserInfoSchema.validate({ user_id });
 
   if (error) {

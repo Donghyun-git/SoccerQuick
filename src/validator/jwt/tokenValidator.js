@@ -75,7 +75,6 @@ const refreshTokenValidator = (req, res, next) => {
 const accessTokenValidator = (req, res, next) => {
   try {
     const { accessToken } = req.cookies;
-    console.log('쿠키 객체', req.cookies);
 
     //Guest
     if (!accessToken && req.method === 'GET') return nextForGuest(req, next);

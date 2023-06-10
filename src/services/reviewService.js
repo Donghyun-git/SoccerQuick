@@ -202,7 +202,7 @@ const removeLikesReview = async (review_id, user_id) => {
       message: '리뷰 추천에서 삭제되었습니다.',
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return new AppError(500, 'Internal Server Error');
   }
 };
