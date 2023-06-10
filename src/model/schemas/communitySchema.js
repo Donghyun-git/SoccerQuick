@@ -21,6 +21,11 @@ const PostSchema = new Schema(
       type: String,
       required: true,
     },
+    image: [
+      {
+        type: String,
+      },
+    ],
     notice: {
       type: String,
       enum: ['공지사항', '일반 게시글'],

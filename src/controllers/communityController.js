@@ -73,6 +73,7 @@ const getPagePost = async (req, res, next) => {
 //[ 커뮤니티 게시글 등록 ]
 const addPost = async (req, res, next) => {
   const { user_id } = req.user;
+  const imageFile = req.files;
   const { title, description, notice } = req.body;
 
   const { error } = addPostSchema.validate({
@@ -93,6 +94,7 @@ const addPost = async (req, res, next) => {
       title,
       description,
       notice,
+      imageFile,
     });
 
     if (result.statusCode !== 201)

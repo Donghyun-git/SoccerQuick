@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const router = Router();
+const imageUpload = require('../middlewares/multer');
 const tokenValidator = require('../validator/jwt/tokenValidator');
 const communityController = require('../controllers/communityController');
 
@@ -15,7 +16,12 @@ router.get('/:postId', tokenValidator, communityController.getOnePost);
 
 /* POST */
 // [ 커뮤니티 게시글 등록 ]
-router.post('/', tokenValidator, communityController.addPost);
+router.post(
+  '/',
+  tokenValidator,
+  imageUpload.array('image', 3),
+  communityController.addPost
+);
 
 //[ 커뮤니티 게시글 댓글 등록 ]
 router.post('/:postId/comment', tokenValidator, communityController.addComment);

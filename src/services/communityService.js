@@ -1,6 +1,8 @@
+const fs = require('fs');
 const { Post, Comment, User, Admin } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
 const { createPostId, createCommentId } = require('../utils/createIndex');
+const { myBucket, createParams, getMimeType } = require('../awsconfig');
 const toString = require('../utils/toString');
 
 // [ 커뮤니티 전체 게시글 조회 ]
@@ -84,7 +86,7 @@ const getPagePost = async (pageGroup) => {
 //[ 커뮤니티 게시글 등록 ]
 /** ([유저아이디, 제목, 본분, 공지사항여부] 객체) */
 const addPost = async (posts) => {
-  const { user_id, title, description, notice } = posts;
+  const { user_id, title, description, notice, imageFile } = posts;
 
   try {
     const foundUser = await User.findOne({ user_id });
@@ -133,6 +135,33 @@ const addPost = async (posts) => {
       }
     }
 
+    const postImageArray = imageFile.map((image) => {
+      const { destination, filename } = image;
+
+      const postImage = fs.readFileSync(`${destination}/${filename}`);
+      const mimeType = getMimeType(filename);
+      const params = createParams(postImage, filename, mimeType);
+
+      return new Promise((resolve, reject) => {
+        myBucket.upload(params, (err, data) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+            return;
+          }
+
+          resolve(data.Location);
+        });
+      });
+    });
+
+    const urlFormattedArray = await Promise.all(postImageArray);
+
+    imageFile.forEach((image) => {
+      const { destination, filename } = image;
+      fs.unlinkSync(`${destination}/${filename}`);
+    });
+
     const userObjectId = foundUser._id;
 
     const post_id = await createPostId();
@@ -143,6 +172,7 @@ const addPost = async (posts) => {
       title,
       description,
       notice,
+      image: urlFormattedArray,
     };
 
     const newPost = await Post.create(newPostField);
