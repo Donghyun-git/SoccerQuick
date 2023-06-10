@@ -23,7 +23,10 @@ const getAllUserInfo = async (user_id) => {
         role,
         gender,
         phone_number,
+        login_banned,
+        community_banned,
       } = user;
+
       return {
         admin_id,
         user_id,
@@ -33,6 +36,10 @@ const getAllUserInfo = async (user_id) => {
         phone_number,
         role,
         gender,
+        login_banned,
+        community_banned,
+        login_banEndDate: user.login_banEndDate,
+        community_banEndDate: user.community_banEndDate,
         createdAt: user.createdAt,
       };
     });
