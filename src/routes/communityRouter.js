@@ -4,6 +4,9 @@ const tokenValidator = require('../validator/jwt/tokenValidator');
 const communityController = require('../controllers/communityController');
 
 /* GET */
+// [ 커뮤니티 게시글 페이징 쿼리 ]
+router.get('/pages', tokenValidator, communityController.getPagePost);
+
 // [ 커뮤니티 게시글 조회 ]
 router.get('/', tokenValidator, communityController.getAllPosts);
 
