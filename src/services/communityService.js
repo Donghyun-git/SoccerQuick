@@ -22,6 +22,46 @@ const getAllPosts = async () => {
   }
 };
 
+// [ 커뮤니티 게시글 상세 페이지 ]
+const getOnePost = async (postId) => {
+  try {
+    const foundPost = await Post.findOne({ post_id: postId });
+
+    if (!foundPost)
+      return new AppError(404, '해당 게시글이 존재하지 않습니다.');
+
+    const commentsArray = foundPost.comments;
+
+    const newCommentsArray = commentsArray.map(async (comment) => {
+      try {
+        const foundComment = await Comment.findOne({ _id: comment });
+
+        if (!foundComment)
+          return new AppError(404, '존재하지 않는 댓글입니다.');
+
+        return foundComment;
+      } catch (error) {
+        console.error(error);
+        return new AppError(500, 'Internal Server Error');
+      }
+    });
+
+    const commentsData = await Promise.all(newCommentsArray);
+
+    return {
+      statusCode: 200,
+      message: '게시글 조회 성공',
+      data: {
+        post: foundPost,
+        comment: commentsData,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
 // [커뮤니티 게시글 페이징 ]
 //** (페이지그룹) */
 const getPagePost = async (pageGroup) => {
@@ -327,6 +367,7 @@ const deleteComment = async (comment) => {
 module.exports = {
   addPost,
   getAllPosts,
+  getOnePost,
   getPagePost,
   updatePost,
   deletePost,

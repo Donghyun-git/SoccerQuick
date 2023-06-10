@@ -10,6 +10,9 @@ router.get('/pages', tokenValidator, communityController.getPagePost);
 // [ 커뮤니티 게시글 조회 ]
 router.get('/', tokenValidator, communityController.getAllPosts);
 
+//[ 커뮤니티 게시글 상세 조회 ]
+router.get('/:postId', tokenValidator, communityController.getOnePost);
+
 /* POST */
 // [ 커뮤니티 게시글 등록 ]
 router.post('/', tokenValidator, communityController.addPost);
