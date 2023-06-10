@@ -20,6 +20,24 @@ const getAllReviews = async () => {
   }
 };
 
+// [ 리뷰 페이징 조회 ]
+const getPageReview = async (pageGroup) => {
+  try {
+    const pageSize = 10;
+    const skip = (pageGroup - 1) * pageSize;
+
+    const foundReview = await Review.find().skip(skip).limit(pageSize);
+
+    if (!foundReview)
+      return new AppError(404, '현재 페이지에 존재하는 리뷰가 없습니다.');
+
+    return { statusCode: 200, message: '리뷰 조회 성공', data: foundReview };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
 // [ 리뷰 등록 ]
 /** ([유저아이디, 풋볼장번호, 작성자이름, 평점, 리뷰내용 ]) */
 const addReview = async (reviews) => {
@@ -191,6 +209,7 @@ const removeLikesReview = async (review_id, user_id) => {
 
 module.exports = {
   getAllReviews,
+  getPageReview,
   addReview,
   updateReview,
   deleteReview,

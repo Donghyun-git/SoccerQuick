@@ -22,13 +22,32 @@ const getAllPosts = async () => {
   }
 };
 
+// [커뮤니티 게시글 페이징 ]
+//** (페이지그룹) */
+const getPagePost = async (pageGroup) => {
+  try {
+    const pageSize = 10;
+    const skip = (pageGroup - 1) * pageSize;
+
+    const foundPost = await Post.find().skip(skip).limit(pageSize);
+
+    if (!foundPost)
+      return new AppError(404, '현재 페이지에 존재하는 게시글이 없습니다.');
+
+    return { statusCode: 200, message: '게시글 조회 성공', data: foundPost };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
 //[ 커뮤니티 게시글 등록 ]
 /** ([유저아이디, 제목, 본분, 공지사항여부] 객체) */
 const addPost = async (posts) => {
-  const { userId, title, description, notice } = posts;
+  const { user_id, title, description, notice } = posts;
 
   try {
-    const foundUser = await User.findOne({ user_id: userId });
+    const foundUser = await User.findOne({ user_id });
 
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
 
@@ -308,6 +327,7 @@ const deleteComment = async (comment) => {
 module.exports = {
   addPost,
   getAllPosts,
+  getPagePost,
   updatePost,
   deletePost,
   addComment,

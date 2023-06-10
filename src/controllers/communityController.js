@@ -30,6 +30,26 @@ const getAllPosts = async (req, res, next) => {
   }
 };
 
+// [ 커뮤니티 게시글 페이징 ]
+const getPagePost = async (req, res, next) => {
+  const { page } = req.query;
+
+  try {
+    const result = await communityService.getPagePost(page);
+
+    if (result.statusCode !== 200)
+      return next(new AppError(result.statusCode, result.message));
+
+    res.status(200).json({
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
 //[ 커뮤니티 게시글 등록 ]
 const addPost = async (req, res, next) => {
   const { user_id } = req.user;
@@ -243,6 +263,7 @@ const deleteComment = async (req, res, next) => {
 module.exports = {
   addPost,
   getAllPosts,
+  getPagePost,
   updatePost,
   deletePost,
   addComment,
