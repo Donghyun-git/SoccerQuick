@@ -180,7 +180,7 @@ const addPost = async (posts) => {
     return {
       statusCode: 201,
       message: '게시글이 등록되었습니다.',
-      newPost: newPost,
+      data: newPost,
     };
   } catch (error) {
     console.error(error);

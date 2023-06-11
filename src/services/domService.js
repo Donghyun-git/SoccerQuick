@@ -64,7 +64,7 @@ const addFavoriteDoms = async (domId, user_id) => {
 
     const userObjectId = foundUser._id.toString();
 
-    const foundDom = await Dom.findOne({ dom_id:domId });
+    const foundDom = await Dom.findOne({ dom_id: domId });
 
     if (!foundDom) return new AppError(404, '풋볼장을 찾을 수 없습니다.');
 
@@ -104,7 +104,7 @@ const removeFavoriteDoms = async (domId, user_id) => {
 
     const userObjectId = foundUser._id.toString();
 
-    const foundDom = await Dom.findOne({ dom_id:domId });
+    const foundDom = await Dom.findOne({ dom_id: domId });
     if (!foundDom) return new AppError(404, '존재하지 않는 구장 입니다.');
 
     const usersFavoritesArray = foundDom.usersFavorites;
