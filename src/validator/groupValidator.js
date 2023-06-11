@@ -14,7 +14,7 @@ const addGroupSchema = Joi.object({
 
 //자기 팀 정보 수정
 const updateMyGroupSchema = Joi.object({
-  group_id: Joi.string().label('그룹 아이디').required(),
+  groupId: Joi.string().label('그룹 아이디').required(),
   user_id: Joi.string().label('리더 아이디').required(),
   location: Joi.string().label('경기 위치'),
   status: Joi.string().label('모집 상태'),
@@ -28,7 +28,7 @@ const updateMyGroupSchema = Joi.object({
 
 //유저 - 팀 신청
 const userApplicantGroupSchema = Joi.object({
-  group_id: Joi.string().label('팀 id').required(),
+  groupId: Joi.string().label('팀 id').required(),
   user_id: Joi.string().label('아이디').required(),
   position: Joi.string().label('포지션').required(),
   level: Joi.string().label('자신의 레벨(수준)').required(),
@@ -37,7 +37,7 @@ const userApplicantGroupSchema = Joi.object({
 
 //팀 리더  - 신청한 유저 수락.
 const leaderApplicantSchema = Joi.object({
-  group_id: Joi.string().label('팀 id').required(),
+  groupId: Joi.string().label('팀 id').required(),
   leaderId: Joi.string().label('팀 리더 아이디').required(),
   user_id: Joi.string().label('아이디').required(),
 });
