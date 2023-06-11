@@ -29,10 +29,10 @@ const getAllGroups = async (req, res, next) => {
 
 // [ 단일 팀 조회 ]
 const getOneGroup = async (req, res, next) => {
-  const { group_id } = req.params;
+  const { groupId } = req.params;
   try {
     const { statusCode, message, data } = await groupService.getOneGroup(
-      group_id
+      groupId
     );
 
     if (statusCode !== 200) return next(new AppError(statusCode, message));
@@ -49,7 +49,7 @@ const getOneGroup = async (req, res, next) => {
 
 //[ 리더 - 팀 정보 수정 ]
 const updateMyGroup = async (req, res, next) => {
-  const { group_id } = req.params;
+  const { groupId } = req.params;
   const { user_id } = req.user;
   const {
     location,
@@ -63,7 +63,7 @@ const updateMyGroup = async (req, res, next) => {
   } = req.body;
 
   const { error } = updateMyGroupSchema.validate({
-    group_id,
+    groupId,
     user_id,
     location,
     status,
@@ -82,7 +82,7 @@ const updateMyGroup = async (req, res, next) => {
 
   try {
     const { statusCode, message, data } = await groupService.updateMyGroup({
-      group_id,
+      groupId,
       user_id,
       location,
       status,
@@ -161,12 +161,12 @@ const addGroup = async (req, res, next) => {
 
 // 유저 - [ 팀 그룹 신청 ]
 const userApplicantGroup = async (req, res, next) => {
-  const { group_id } = req.params;
+  const { groupId } = req.params;
   const { user_id } = req.user;
   const { position, level, contents } = req.body;
 
   const { error } = userApplicantGroupSchema.validate({
-    group_id,
+    groupId,
     user_id,
     position,
     level,
@@ -181,7 +181,7 @@ const userApplicantGroup = async (req, res, next) => {
   try {
     const { statusCode, message, data } = await groupService.userApplicantGroup(
       {
-        group_id,
+        groupId,
         user_id,
         position,
         level,
@@ -203,12 +203,12 @@ const userApplicantGroup = async (req, res, next) => {
 
 // [ 리더 ] - 유저 신청 수락
 const leaderApplicantAccept = async (req, res, next) => {
-  const { group_id } = req.params;
+  const { groupId } = req.params;
   const { user_id } = req.body;
   const leaderId = req.user.user_id;
 
   const { error } = leaderApplicantSchema.validate({
-    group_id,
+    groupId,
     leaderId,
     user_id,
   });
@@ -220,7 +220,7 @@ const leaderApplicantAccept = async (req, res, next) => {
 
   try {
     const { statusCode, message, data } =
-      await groupService.leaderApplicantAccept(group_id, leaderId, user_id);
+      await groupService.leaderApplicantAccept(groupId, leaderId, user_id);
 
     if (statusCode !== 200) {
       return next(new AppError(statusCode, message));
@@ -238,12 +238,12 @@ const leaderApplicantAccept = async (req, res, next) => {
 
 //[ 리더 ] - 유저 신청 거절
 const leaderApplicantReject = async (req, res, next) => {
-  const { group_id } = req.params;
+  const { groupId } = req.params;
   const { user_id } = req.body;
   const leaderId = req.user.user_id;
 
   const { error } = leaderApplicantSchema.validate({
-    group_id,
+    groupId,
     leaderId,
     user_id,
   });
@@ -255,7 +255,7 @@ const leaderApplicantReject = async (req, res, next) => {
 
   try {
     const { statusCode, message, data } =
-      await groupService.leaderApplicantReject(group_id, leaderId, user_id);
+      await groupService.leaderApplicantReject(groupId, leaderId, user_id);
 
     if (statusCode !== 200) {
       return next(new AppError(statusCode, message));
@@ -273,12 +273,12 @@ const leaderApplicantReject = async (req, res, next) => {
 
 //[ 리더, 관리자 ] - 팀 그룹 삭제
 const deleteGroup = async (req, res, next) => {
-  const { group_id } = req.params;
+  const { groupId } = req.params;
   const { user_id } = req.user;
 
   try {
     const { statusCode, message, data } = await groupService.deleteGroup(
-      group_id,
+      groupId,
       user_id
     );
 
