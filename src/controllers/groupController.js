@@ -13,14 +13,13 @@ const {
 // [ 전체 팀 그룹 조회 ]
 const getAllGroups = async (req, res, next) => {
   try {
-    const result = await groupService.getAllGroups();
+    const { statusCode, message, data } = await groupService.getAllGroups();
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -32,14 +31,15 @@ const getAllGroups = async (req, res, next) => {
 const getOneGroup = async (req, res, next) => {
   const { group_id } = req.params;
   try {
-    const result = await groupService.getOneGroup(group_id);
+    const { statusCode, message, data } = await groupService.getOneGroup(
+      group_id
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -81,7 +81,7 @@ const updateMyGroup = async (req, res, next) => {
   }
 
   try {
-    const result = await groupService.updateMyGroup({
+    const { statusCode, message, data } = await groupService.updateMyGroup({
       group_id,
       user_id,
       location,
@@ -94,12 +94,11 @@ const updateMyGroup = async (req, res, next) => {
       contents,
     });
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -137,7 +136,7 @@ const addGroup = async (req, res, next) => {
   }
 
   try {
-    const result = await groupService.addGroup({
+    const { statusCode, message, data } = await groupService.addGroup({
       leader_id,
       location,
       gk_count,
@@ -148,9 +147,11 @@ const addGroup = async (req, res, next) => {
       contents,
     });
 
+    if (statusCode !== 201) return next(new AppError(statusCode, message));
+
     res.status(201).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -178,20 +179,21 @@ const userApplicantGroup = async (req, res, next) => {
   }
 
   try {
-    const result = await groupService.userApplicantGroup({
-      group_id,
-      user_id,
-      position,
-      level,
-      contents,
-    });
+    const { statusCode, message, data } = await groupService.userApplicantGroup(
+      {
+        group_id,
+        user_id,
+        position,
+        level,
+        contents,
+      }
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -217,19 +219,16 @@ const leaderApplicantAccept = async (req, res, next) => {
   }
 
   try {
-    const result = await groupService.leaderApplicantAccept(
-      group_id,
-      leaderId,
-      user_id
-    );
+    const { statusCode, message, data } =
+      await groupService.leaderApplicantAccept(group_id, leaderId, user_id);
 
-    if (result.statusCode !== 200) {
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) {
+      return next(new AppError(statusCode, message));
     }
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -255,19 +254,16 @@ const leaderApplicantReject = async (req, res, next) => {
   }
 
   try {
-    const result = await groupService.leaderApplicantReject(
-      group_id,
-      leaderId,
-      user_id
-    );
+    const { statusCode, message, data } =
+      await groupService.leaderApplicantReject(group_id, leaderId, user_id);
 
-    if (result.statusCode !== 200) {
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) {
+      return next(new AppError(statusCode, message));
     }
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -281,13 +277,15 @@ const deleteGroup = async (req, res, next) => {
   const { user_id } = req.user;
 
   try {
-    const result = await groupService.deleteGroup(group_id, user_id);
+    const { statusCode, message, data } = await groupService.deleteGroup(
+      group_id,
+      user_id
+    );
 
-    if (result.statusCode !== 204)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 204) return next(new AppError(statusCode, message));
 
     res.status(204).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);

@@ -14,7 +14,7 @@ const getUser = async (user_id) => {
     return {
       statusCode: 200,
       message: '마이페이지 조회 성공',
-      userData: {
+      data: {
         user_id: foundUser.user_id,
         name: foundUser.name,
         nick_name: foundUser.nick_name,

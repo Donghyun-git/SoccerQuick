@@ -120,12 +120,13 @@ const logIn = async (user_id, password) => {
     const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
       expiresIn: REFRESH_TOKEN_EXPIRES_IN,
     });
-
+    console.log(foundUser);
     return {
       statusCode: 200,
+      message: '로그인 성공',
       accessToken,
       refreshToken,
-      userData: {
+      data: {
         user_id: foundUser.user_id,
         name: foundUser.name,
         nick_name: foundUser.nick_name,
@@ -134,8 +135,10 @@ const logIn = async (user_id, password) => {
         role: foundUser.role,
         gender: foundUser.gender,
         favoritePlaygrounds: foundUser.favoritePlaygrounds,
-        isBanned: foundUser.isBanned,
-        banEndDate: foundUser.banEndDate,
+        login_banned: foundUser.login_banned,
+        login_banEndDate: foundUser.login_banEndDate,
+        community_banned: foundUser.community_banned,
+        community_banEndData: foundUser.community_banEndDate,
         createdAt: foundUser.createdAt,
       },
     };

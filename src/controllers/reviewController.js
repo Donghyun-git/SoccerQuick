@@ -13,14 +13,13 @@ const {
 // [ 리뷰 전체 조회 ]
 const getAllReviews = async (req, res, next) => {
   try {
-    const result = await reviewService.getAllReviews();
+    const { statusCode, message, data } = await reviewService.getAllReviews();
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -33,14 +32,15 @@ const getPageReview = async (req, res, next) => {
   const { page } = req.query;
 
   try {
-    const result = await reviewService.getPageReview(page);
+    const { statusCode, message, data } = await reviewService.getPageReview(
+      page
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -65,19 +65,18 @@ const addReview = async (req, res, next) => {
   }
 
   try {
-    const result = await reviewService.addReview({
+    const { statusCode, message, data } = await reviewService.addReview({
       user_id,
       dom_id,
       rating,
       comment,
     });
 
-    if (result.statusCode !== 201)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 201) return next(new AppError(statusCode, message));
 
     res.status(201).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -104,19 +103,18 @@ const updateReview = async (req, res, next) => {
   }
 
   try {
-    const result = await reviewService.updateReview({
+    const { statusCode, message, data } = await reviewService.updateReview({
       reviewId,
       user_id,
       rating,
       comment,
     });
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -140,13 +138,15 @@ const deleteReview = async (req, res, next) => {
   }
 
   try {
-    const result = await reviewService.deleteReview(reviewId, user_id);
+    const { statusCode, message } = await reviewService.deleteReview(
+      reviewId,
+      user_id
+    );
 
-    if (result.statusCode !== 204)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 204) return next(new AppError(statusCode, message));
 
     res.status(204).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);
@@ -159,13 +159,15 @@ const addLikesReview = async (req, res, next) => {
   const { reviewId } = req.params;
   const { user_id } = req.user;
   try {
-    const result = await reviewService.addLikesReview(reviewId, user_id);
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    const { statusCode, message, data } = await reviewService.addLikesReview(
+      reviewId,
+      user_id
+    );
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -178,12 +180,14 @@ const removeLikesReview = async (req, res, next) => {
   const { reviewId } = req.params;
   const { user_id } = req.user;
   try {
-    const result = await reviewService.removeLikesReview(reviewId, user_id);
-    if (result.statusCode !== 204)
-      return next(new AppError(result.statusCode, result.message));
+    const { statusCode, message } = await reviewService.removeLikesReview(
+      reviewId,
+      user_id
+    );
+    if (statusCode !== 204) return next(new AppError(statusCode, message));
 
     res.status(204).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);

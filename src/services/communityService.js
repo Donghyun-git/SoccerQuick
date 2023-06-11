@@ -16,7 +16,7 @@ const getAllPosts = async () => {
     return {
       statusCode: 200,
       message: '전체 게시글 조회 성공',
-      posts: posts,
+      data: posts,
     };
   } catch (error) {
     console.error(error);

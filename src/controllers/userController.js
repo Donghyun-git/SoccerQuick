@@ -20,15 +20,15 @@ const getUserInfo = async (req, res, next) => {
   }
 
   try {
-    const result = await userService.getUser(id);
+    const { statusCode, message, data } = await userService.getUser(id);
 
-    if (result.statusCode !== 200) {
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) {
+      return next(new AppError(statusCode, message));
     }
 
     res.status(200).json({
-      message: result.message,
-      userData: result.userData,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -55,7 +55,7 @@ const updateUserInfo = async (req, res, next) => {
   }
 
   try {
-    const result = await userService.updateUser({
+    const { statusCode, message, data } = await userService.updateUser({
       user_id,
       password,
       nick_name,
@@ -63,13 +63,13 @@ const updateUserInfo = async (req, res, next) => {
       phone_number,
     });
 
-    if (result.statusCode !== 200) {
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) {
+      return next(new AppError(statusCode, message));
     }
 
     res.status(200).json({
-      message: '회원정보 수정 성공',
-      updateData: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -90,14 +90,17 @@ const deleteUserInfo = async (req, res, next) => {
   }
 
   try {
-    const result = await userService.deleteUser(user_id, password);
+    const { statusCode, message } = await userService.deleteUser(
+      user_id,
+      password
+    );
 
-    if (result.statusCode !== 204) {
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 204) {
+      return next(new AppError(statusCode, message));
     }
 
     res.status(204).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);

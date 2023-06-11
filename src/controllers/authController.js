@@ -31,7 +31,7 @@ const signUp = async (req, res, next) => {
   }
 
   try {
-    const result = await authService.signUp({
+    const { statusCode, message } = await authService.signUp({
       user_id,
       password,
       name,
@@ -41,10 +41,9 @@ const signUp = async (req, res, next) => {
       gender,
     });
 
-    if (result.statusCode !== 201)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 201) return next(new AppError(statusCode, message));
 
-    res.status(201).json({ message: result.message });
+    res.status(201).json({ message });
   } catch (error) {
     console.error(error);
     return next(new AppError(500, 'Internal Server Error'));
@@ -63,24 +62,10 @@ const logIn = async (req, res, next) => {
   }
 
   try {
-    const result = await authService.logIn(user_id, password);
+    const { statusCode, message, accessToken, refreshToken, data } =
+      await authService.logIn(user_id, password);
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
-
-    const { accessToken, refreshToken, userData } = result;
-    const {
-      nick_name,
-      name,
-      email,
-      phone_number,
-      favoritePlaygrounds,
-      role,
-      gender,
-      isBanned,
-      banEndDate,
-      createdAt,
-    } = userData;
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     //[accessToken, refreshToken 각각 response 헤더, 쿠키 세팅]
     res.cookie('accessToken', accessToken, {
@@ -91,20 +76,8 @@ const logIn = async (req, res, next) => {
     });
 
     res.status(200).json({
-      message: '로그인 성공',
-      userData: {
-        user_id: userData.user_id,
-        name,
-        nick_name,
-        email,
-        phone_number,
-        role,
-        gender,
-        favoritePlaygrounds,
-        isBanned,
-        banEndDate,
-        createdAt,
-      },
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -115,13 +88,12 @@ const logIn = async (req, res, next) => {
 // [ 유저 로그아웃 ]
 const logOut = async (req, res, next) => {
   try {
-    const result = await authService.logOut(req, res);
+    const { statusCode, message } = await authService.logOut(req, res);
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);
@@ -141,13 +113,14 @@ const validateUniqueUserId = async (req, res, next) => {
   }
 
   try {
-    const result = await authService.validateUniqueUserId(user_id);
+    const { statusCode, message } = await authService.validateUniqueUserId(
+      user_id
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);
@@ -167,13 +140,15 @@ const validatePassword = async (req, res, next) => {
   }
 
   try {
-    const result = await authService.validatePassword(user_id, password);
+    const { statusCode, message } = await authService.validatePassword(
+      user_id,
+      password
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);

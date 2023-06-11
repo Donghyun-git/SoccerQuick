@@ -15,14 +15,13 @@ const {
 //[ 커뮤니티 전체 게시글 조회 ]
 const getAllPosts = async (req, res, next) => {
   try {
-    const result = await communityService.getAllPosts();
+    const { statusCode, message, data } = await communityService.getAllPosts();
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      posts: result.posts,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -35,14 +34,15 @@ const getOnePost = async (req, res, next) => {
   const { postId } = req.params;
 
   try {
-    const result = await communityService.getOnePost(postId);
+    const { statusCode, message, data } = await communityService.getOnePost(
+      postId
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -55,14 +55,15 @@ const getPagePost = async (req, res, next) => {
   const { page } = req.query;
 
   try {
-    const result = await communityService.getPagePost(page);
+    const { statusCode, message, data } = await communityService.getPagePost(
+      page
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -89,7 +90,7 @@ const addPost = async (req, res, next) => {
   }
 
   try {
-    const result = await communityService.addPost({
+    const { statusCode, message, data } = await communityService.addPost({
       user_id,
       title,
       description,
@@ -97,12 +98,11 @@ const addPost = async (req, res, next) => {
       imageFile,
     });
 
-    if (result.statusCode !== 201)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 201) return next(new AppError(statusCode, message));
 
     res.status(201).json({
-      message: result.message,
-      data: result.newPost,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -131,7 +131,7 @@ const updatePost = async (req, res, next) => {
   }
 
   try {
-    const result = await communityService.updatePost({
+    const { statusCode, message, data } = await communityService.updatePost({
       postId,
       user_id,
       title,
@@ -139,12 +139,11 @@ const updatePost = async (req, res, next) => {
       notice,
     });
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -165,13 +164,15 @@ const deletePost = async (req, res, next) => {
   }
 
   try {
-    const result = await communityService.deletePost(postId, user_id);
+    const { statusCode, message } = await communityService.deletePost(
+      postId,
+      user_id
+    );
 
-    if (result.statusCode !== 204)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 204) return next(new AppError(statusCode, message));
 
     res.status(204).json({
-      message: result.message,
+      message: message,
     });
   } catch (error) {
     console.error(error);
@@ -193,14 +194,17 @@ const addComment = async (req, res, next) => {
   }
 
   try {
-    const result = await communityService.addComment(postId, user_id, content);
+    const { statusCode, message, data } = await communityService.addComment(
+      postId,
+      user_id,
+      content
+    );
 
-    if (result.statusCode !== 201)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 201) return next(new AppError(statusCode, message));
 
     res.status(201).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -227,19 +231,18 @@ const updateComment = async (req, res, next) => {
   }
 
   try {
-    const result = await communityService.updateComment({
+    const { statusCode, message, data } = await communityService.updateComment({
       postId,
       commentId,
       user_id,
       content,
     });
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -264,17 +267,16 @@ const deleteComment = async (req, res, next) => {
   }
 
   try {
-    const result = await communityService.deleteComment({
+    const { statusCode, message } = await communityService.deleteComment({
       postId,
       commentId,
       user_id,
     });
 
-    if (result.statusCode !== 204)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 204) return next(new AppError(statusCode, message));
 
     res.status(204).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);

@@ -21,14 +21,15 @@ const getAllUserInfo = async (req, res, next) => {
   }
 
   try {
-    const result = await adminService.getAllUserInfo(user_id);
+    const { statusCode, message, data } = await adminService.getAllUserInfo(
+      user_id
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
-      data: result.data,
+      message,
+      data,
     });
   } catch (error) {
     console.error(error);
@@ -49,13 +50,15 @@ const adminBanUser = async (req, res, next) => {
   }
 
   try {
-    const result = await adminService.banUser(user_id, banUserId);
+    const { statusCode, message } = await adminService.banUser(
+      user_id,
+      banUserId
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);
@@ -77,13 +80,15 @@ const adminBanCommunity = async (req, res, next) => {
   }
 
   try {
-    const result = await adminService.banCommunity(user_id, banUserId);
+    const { statusCode, message } = await adminService.banCommunity(
+      user_id,
+      banUserId
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);
@@ -104,13 +109,15 @@ const updateUserRole = async (req, res, next) => {
   }
 
   try {
-    const result = await adminService.updateUserRole(user_id, updateUser);
+    const { statusCode, message } = await adminService.updateUserRole(
+      user_id,
+      updateUser
+    );
 
-    if (result.statusCode !== 200)
-      return next(new AppError(result.statusCode, result.message));
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
 
     res.status(200).json({
-      message: result.message,
+      message,
     });
   } catch (error) {
     console.error(error);
