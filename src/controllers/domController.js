@@ -19,10 +19,10 @@ const getAllDoms = async (req, res, next) => {
 
 // [ 단일 구장 조회 ]
 const getOneDom = async (req, res, next) => {
-  const { dom_id } = req.params;
+  const { domId } = req.params;
 
   try {
-    const { statusCode, message, data } = await domService.getOneDom(dom_id);
+    const { statusCode, message, data } = await domService.getOneDom(domId);
 
     if (statusCode !== 200) return next(new AppError(statusCode, message));
 
@@ -58,12 +58,12 @@ const getSearchLocation = async (req, res, next) => {
 
 // [ 풋볼장 즐겨찾기 추가 ]
 const addFavoriteDoms = async (req, res, next) => {
-  const { dom_id } = req.params;
+  const { domId } = req.params;
   const { user_id } = req.user;
 
   try {
     const { statusCode, message, data } = await domService.addFavoriteDoms(
-      dom_id,
+      domId,
       user_id
     );
 
@@ -81,12 +81,12 @@ const addFavoriteDoms = async (req, res, next) => {
 
 // [ 풋볼장 즐겨찾기 삭제 ]
 const removeFavoriteDoms = async (req, res, next) => {
-  const { dom_id } = req.params;
+  const { domId } = req.params;
   const { user_id } = req.user;
 
   try {
     const { statusCode, message } = await domService.removeFavoriteDoms(
-      dom_id,
+      domId,
       user_id
     );
 

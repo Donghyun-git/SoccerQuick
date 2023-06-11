@@ -18,9 +18,9 @@ const getAllDoms = async () => {
 };
 
 // [ 단일 구장 조회 ]
-const getOneDom = async (dom_id) => {
+const getOneDom = async (domId) => {
   try {
-    const foundDom = await Dom.findOne({ dom_id });
+    const foundDom = await Dom.findOne({ dom_id: domId });
     if (!foundDom) return new AppError(404, '존재하지 않는 구장입니다.');
 
     return {
@@ -56,7 +56,7 @@ const getSearchLocation = async (keywords) => {
 };
 
 // [ 풋볼장 즐겨찾기에 추가 ]
-const addFavoriteDoms = async (dom_id, user_id) => {
+const addFavoriteDoms = async (domId, user_id) => {
   try {
     const foundUser = await User.findOne({ user_id });
 
@@ -64,7 +64,7 @@ const addFavoriteDoms = async (dom_id, user_id) => {
 
     const userObjectId = foundUser._id.toString();
 
-    const foundDom = await Dom.findOne({ dom_id });
+    const foundDom = await Dom.findOne({ dom_id:domId });
 
     if (!foundDom) return new AppError(404, '풋볼장을 찾을 수 없습니다.');
 
@@ -96,7 +96,7 @@ const addFavoriteDoms = async (dom_id, user_id) => {
 };
 
 // [ 풋볼장 즐겨찾기에서 삭제 ]
-const removeFavoriteDoms = async (dom_id, user_id) => {
+const removeFavoriteDoms = async (domId, user_id) => {
   try {
     const foundUser = await User.findOne({ user_id });
 
@@ -104,7 +104,7 @@ const removeFavoriteDoms = async (dom_id, user_id) => {
 
     const userObjectId = foundUser._id.toString();
 
-    const foundDom = await Dom.findOne({ dom_id });
+    const foundDom = await Dom.findOne({ dom_id:domId });
     if (!foundDom) return new AppError(404, '존재하지 않는 구장 입니다.');
 
     const usersFavoritesArray = foundDom.usersFavorites;
