@@ -8,35 +8,35 @@ const groupController = require('../controllers/groupController');
 router.get('/', tokenValidator, groupController.getAllGroups);
 
 // [ 단일 팀 조회 ]
-router.get('/:groupId', tokenValidator, groupController.getOneGroup);
+router.get('/:group_id', tokenValidator, groupController.getOneGroup);
 
 // POST
 // [ 팀 등록 ]
 router.post('/', tokenValidator, groupController.addGroup);
 
 // [ 팀 신청 ]
-router.post('/:groupId', tokenValidator, groupController.userApplicantGroup);
+router.post('/:group_id', tokenValidator, groupController.userApplicantGroup);
 
 // PATCH
 // [ 팀 정보 수정 ]
-router.patch('/:groupId/info', tokenValidator, groupController.updateMyGroup);
+router.patch('/:group_id/info', tokenValidator, groupController.updateMyGroup);
 
 // [ 팀 수락 ]
 router.patch(
-  '/:groupId/accept',
+  '/:group_id/accept',
   tokenValidator,
   groupController.leaderApplicantAccept
 );
 
 //[ 팀 거절 ]
 router.patch(
-  '/:groupId/reject',
+  '/:group_id/reject',
   tokenValidator,
   groupController.leaderApplicantReject
 );
 
 // DELETE
 // [ 팀 삭제 ]
-router.delete('/:groupId', tokenValidator, groupController.deleteGroup);
+router.delete('/:group_id', tokenValidator, groupController.deleteGroup);
 
 module.exports = router;
