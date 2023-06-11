@@ -126,11 +126,11 @@ const updateReview = async (req, res, next) => {
 
 // [ 리뷰 삭제 ]
 const deleteReview = async (req, res, next) => {
-  const { review_id } = req.params;
+  const { reviewId } = req.params;
   const { user_id } = req.user;
 
   const { error } = deleteReviewSchema.validate({
-    review_id,
+    reviewId,
     user_id,
   });
 
@@ -140,7 +140,7 @@ const deleteReview = async (req, res, next) => {
   }
 
   try {
-    const result = await reviewService.deleteReview(review_id, user_id);
+    const result = await reviewService.deleteReview(reviewId, user_id);
 
     if (result.statusCode !== 204)
       return next(new AppError(result.statusCode, result.message));
@@ -156,10 +156,10 @@ const deleteReview = async (req, res, next) => {
 
 // [ 리뷰 좋아요 등록 ]
 const addLikesReview = async (req, res, next) => {
-  const { review_id } = req.params;
+  const { reviewId } = req.params;
   const { user_id } = req.user;
   try {
-    const result = await reviewService.addLikesReview(review_id, user_id);
+    const result = await reviewService.addLikesReview(reviewId, user_id);
     if (result.statusCode !== 200)
       return next(new AppError(result.statusCode, result.message));
 
@@ -175,10 +175,10 @@ const addLikesReview = async (req, res, next) => {
 
 // [ 리뷰 추천 삭제 ]
 const removeLikesReview = async (req, res, next) => {
-  const { review_id } = req.params;
+  const { reviewId } = req.params;
   const { user_id } = req.user;
   try {
-    const result = await reviewService.removeLikesReview(review_id, user_id);
+    const result = await reviewService.removeLikesReview(reviewId, user_id);
     if (result.statusCode !== 204)
       return next(new AppError(result.statusCode, result.message));
 

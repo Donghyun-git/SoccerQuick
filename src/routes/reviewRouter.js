@@ -17,22 +17,22 @@ router.post('/', tokenValidator, reviewController.addReview); //
 
 // [ 리뷰 좋아요 등록 ]
 router.post(
-  '/:review_id/likes',
+  '/:reviewId/likes',
   tokenValidator,
   reviewController.addLikesReview
 );
 
 /* PATCH */
 // [ 리뷰 수정 ]
-router.patch('/:review_id', tokenValidator, reviewController.updateReview);
+router.patch('/:reviewId', tokenValidator, reviewController.updateReview);
 
 /* DELETE */
 // [ 리뷰 삭제 ]
-router.delete('/:review_id', tokenValidator, reviewController.deleteReview);
+router.delete('/:reviewId', tokenValidator, reviewController.deleteReview);
 
 // [ 리뷰 좋아요 삭제 ]
 router.delete(
-  '/:review_id/likes',
+  '/:reviewId/likes',
   tokenValidator,
   reviewController.removeLikesReview
 );

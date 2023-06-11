@@ -15,7 +15,7 @@ const updateReviewSchema = Joi.object({
 });
 
 const deleteReviewSchema = Joi.object({
-  review_id: Joi.string().label('리뷰번호').required(),
+  reviewId: Joi.string().label('리뷰번호').required(),
   user_id: Joi.string().label('아이디').required(),
 });
 

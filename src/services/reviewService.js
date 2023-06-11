@@ -111,9 +111,9 @@ const updateReview = async (review) => {
 };
 
 // [ 리뷰 삭제 ]
-const deleteReview = async (review_id, user_id) => {
+const deleteReview = async (reviewId, user_id) => {
   try {
-    const foundReview = await Review.findOne({ review_id });
+    const foundReview = await Review.findOne({ review_id: reviewId });
 
     if (!foundReview) return new AppError(404, '존재하지 않는 리뷰입니다.');
 
@@ -128,7 +128,7 @@ const deleteReview = async (review_id, user_id) => {
     if (reviewUserObjectId !== userObjectId)
       return new AppError(403, '리뷰 작성자만 삭제 가능합니다.');
 
-    await Review.deleteOne({ review_id });
+    await Review.deleteOne({ review_id: reviewId });
 
     return { statusCode: 204, message: '리뷰 삭제 성공' };
   } catch (error) {
@@ -138,13 +138,13 @@ const deleteReview = async (review_id, user_id) => {
 };
 
 // [ 리뷰 추천 ]
-const addLikesReview = async (review_id, user_id) => {
+const addLikesReview = async (reviewId, user_id) => {
   try {
     const foundUser = await User.findOne({ user_id });
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
     const userObjectId = foundUser._id.toString();
 
-    const foundReview = await Review.findOne({ review_id });
+    const foundReview = await Review.findOne({ review_id: reviewId });
     if (!foundReview) return new AppError(404, '리뷰를 찾을 수 없습니다.');
 
     const usersLikesArray = foundReview.userslikes;
@@ -170,7 +170,7 @@ const addLikesReview = async (review_id, user_id) => {
 };
 
 // 리뷰 추천 삭제
-const removeLikesReview = async (review_id, user_id) => {
+const removeLikesReview = async (reviewId, user_id) => {
   try {
     const foundUser = await User.findOne({ user_id });
 
@@ -178,7 +178,7 @@ const removeLikesReview = async (review_id, user_id) => {
 
     const userObjectId = foundUser._id.toString();
 
-    const foundReview = await Review.findOne({ review_id });
+    const foundReview = await Review.findOne({ review_id: reviewId });
     if (!foundReview) return new AppError(404, '존재하지 않는 리뷰 입니다.');
 
     const usersLikesArray = foundReview.userslikes;
