@@ -1,7 +1,9 @@
+const fs = require('fs');
 const { User, WithdrawnUser } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
 const bcrypt = require('bcrypt');
 const { BCRYPT_SALT_ROUNDS } = require('../envconfig');
+const { myBucket, createParams, getMimeType } = require('../awsconfig');
 
 //[ 유저정보 조회 ]
 /** (유저아이디) */
@@ -33,11 +35,11 @@ const getUser = async (user_id) => {
 };
 
 //[ 유저정보 수정 ]
-/** (수정 formData) */
+/** (수정 userData) */
 
 // 기존에 등록되어있던 정보는 예외처리 x
 const updateUser = async (formData) => {
-  const { user_id, password, nick_name, email, phone_number } = formData;
+  const { user_id, password, nick_name, email, phone_number, image } = formData;
   try {
     const foundUser = await User.findOne({ user_id });
 
@@ -69,6 +71,37 @@ const updateUser = async (formData) => {
       updateData.email = email;
     } else {
       updateData.email = email;
+    }
+
+    //이미지 업로드
+    if (image) {
+      console.log('이미지있어서 드러옴 ㅋㅋㅋ ㄲ움?');
+      const { destination, filename } = image;
+
+      const postImage = await fs.promises.readFile(
+        `${destination}/${filename}`
+      );
+
+      const mimeType = getMimeType(filename);
+      const params = createParams(postImage, filename, mimeType);
+
+      const imageUpload = (params) => {
+        return new Promise((resolve, reject) => {
+          myBucket.upload(params, (err, data) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve(data.Location);
+          });
+        });
+      };
+
+      const imageUploaded = await imageUpload(params);
+
+      updateData.profile = imageUploaded;
+
+      await fs.promises.unlink(`${destination}/${filename}`);
     }
 
     const updatedUser = await User.findOneAndUpdate(

@@ -40,6 +40,7 @@ const getUserInfo = async (req, res, next) => {
 const updateUserInfo = async (req, res, next) => {
   const { user_id } = req.user;
   const { password, nick_name, email, phone_number } = req.body;
+  const image = req.file || null;
 
   const { error } = updateUserInfoSchema.validate({
     user_id,
@@ -61,6 +62,7 @@ const updateUserInfo = async (req, res, next) => {
       nick_name,
       email,
       phone_number,
+      image,
     });
 
     if (statusCode !== 200) {

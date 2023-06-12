@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const router = Router();
+const imageUpload = require('../middlewares/multer');
 const tokenValidator = require('../validator/jwt/tokenValidator');
 const userController = require('../controllers/userController');
 
@@ -7,7 +8,12 @@ const userController = require('../controllers/userController');
 router.get('/', tokenValidator, userController.getUserInfo);
 
 //[ 회원정보 수정 ]
-router.patch('/', tokenValidator, userController.updateUserInfo);
+router.patch(
+  '/',
+  tokenValidator,
+  imageUpload.single('image'),
+  userController.updateUserInfo
+);
 
 // [ 회원 탈퇴 ]
 router.delete('/', tokenValidator, userController.deleteUserInfo);

@@ -134,6 +134,7 @@ const logIn = async (user_id, password) => {
         phone_number: foundUser.phone_number,
         role: foundUser.role,
         gender: foundUser.gender,
+        profile: foundUser.profile,
         favoritePlaygrounds: foundUser.favoritePlaygrounds,
         login_banned: foundUser.login_banned,
         login_banEndDate: foundUser.login_banEndDate,
