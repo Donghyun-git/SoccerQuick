@@ -26,15 +26,20 @@ const ReviewSchema = new Schema(
       type: Number,
       required: true,
     },
-    comment: {
+    title: {
       type: String,
+      required: true,
     },
-    userslikes:[
+    contents: {
+      type: String,
+      required: true,
+    },
+    userslikes: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'User'
-      }
-    ]
+        ref: 'User',
+      },
+    ],
   },
   { timestamps: true }
 );
