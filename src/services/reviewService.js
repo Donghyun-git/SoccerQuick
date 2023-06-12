@@ -20,6 +20,19 @@ const getAllReviews = async () => {
   }
 };
 
+// [ 리뷰 상세 조회 ]
+const getOneReview = async (reviewId) => {
+  try {
+    const foundReview = await Review.findOne({ review_id: reviewId });
+    if (!foundReview)
+      return new AppError(404, '해당 리뷰가 존재하지 않습니다.');
+    return { statusCode: 200, message: '리뷰 조회 성공', data: foundReview };
+  } catch (error) {
+    console.error(error);
+    return new AppError(500, 'Internal Server Error');
+  }
+};
+
 // [ 리뷰 페이징 조회 ]
 const getPageReview = async (pageGroup) => {
   try {
@@ -209,6 +222,7 @@ const removeLikesReview = async (reviewId, user_id) => {
 
 module.exports = {
   getAllReviews,
+  getOneReview,
   getPageReview,
   addReview,
   updateReview,
