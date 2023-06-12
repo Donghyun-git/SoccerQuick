@@ -27,6 +27,24 @@ const getAllReviews = async (req, res, next) => {
   }
 };
 
+// [ 리뷰 상세 조회 ]
+const getOneReview = async (req, res, next) => {
+  const { reviewId } = req.params;
+  try {
+    const { statusCode, message, data } = await reviewService.getOneReview(
+      reviewId
+    );
+    if (statusCode !== 200) return next(new AppError(statusCode, message));
+    res.status(200).json({
+      message,
+      data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
 // [ 리뷰 페이징 조회 ]
 const getPageReview = async (req, res, next) => {
   const { page } = req.query;
@@ -197,6 +215,7 @@ const removeLikesReview = async (req, res, next) => {
 
 module.exports = {
   getAllReviews,
+  getOneReview,
   getPageReview,
   addReview,
   updateReview,
