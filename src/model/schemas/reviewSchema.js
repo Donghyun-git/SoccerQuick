@@ -22,14 +22,6 @@ const ReviewSchema = new Schema(
       ref: 'User',
       required: true,
     },
-    rating: {
-      type: Number,
-      required: true,
-    },
-    title: {
-      type: String,
-      required: true,
-    },
     contents: {
       type: String,
       required: true,
