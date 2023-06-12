@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { Post, Comment, User, Admin } = require('../model/models/index');
+const { Post, Comment, User } = require('../model/models/index');
 const { AppError } = require('../middlewares/errorHandler');
 const { createPostId, createCommentId } = require('../utils/createIndex');
 const { myBucket, createParams, getMimeType } = require('../awsconfig');
@@ -135,32 +135,38 @@ const addPost = async (posts) => {
       }
     }
 
-    const postImageArray = imageFile.map((image) => {
-      const { destination, filename } = image;
+    const postImageArray = await Promise.all(
+      imageFile.map(async (image, i) => {
+        const { destination, filename } = image;
 
-      const postImage = fs.readFileSync(`${destination}/${filename}`);
-      const mimeType = getMimeType(filename);
-      const params = createParams(postImage, filename, mimeType);
-
-      return new Promise((resolve, reject) => {
-        myBucket.upload(params, (err, data) => {
-          if (err) {
-            console.error(err);
-            reject(err);
-            return;
-          }
-
-          resolve(data.Location);
+        const postImage = await fs.promises.readFile(
+          `${destination}/${filename}`
+        );
+        const mimeType = getMimeType(filename);
+        const params = createParams(postImage, filename, mimeType);
+        console.log('이미지 업로드중', i);
+        return new Promise((resolve, reject) => {
+          myBucket.upload(params, (err, data) => {
+            if (err) {
+              console.error(err);
+              reject(err);
+              return;
+            }
+            resolve(data.Location);
+          });
         });
-      });
-    });
+      })
+    );
 
     const urlFormattedArray = await Promise.all(postImageArray);
 
-    imageFile.forEach((image) => {
-      const { destination, filename } = image;
-      fs.unlinkSync(`${destination}/${filename}`);
-    });
+    await Promise.all(
+      imageFile.map(async (image, i) => {
+        const { destination, filename } = image;
+        await fs.promises.unlink(`${destination}/${filename}`);
+        console.log('이미지 삭제중', i);
+      })
+    );
 
     const userObjectId = foundUser._id;
 

@@ -8,8 +8,7 @@ class AppError extends Error {
 
 const errorHandler = (err, req, res, next) => {
   const { statusCode, message } = err;
-  console.log(err);
-  console.log('에러핸들러드러옴', statusCode, message);
+  console.log(statusCode, message);
   res.status(statusCode || 500).json({
     status: 'error',
     statusCode: statusCode || 500,
