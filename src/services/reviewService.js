@@ -60,9 +60,12 @@ const addReview = async (reviews) => {
     const foundUser = await User.findOne({ user_id });
     if (!foundUser) return new AppError(404, '존재하지 않는 아이디입니다.');
     const userObjectId = foundUser._id;
+    const userName = foundUser.name;
+    const userIcon = foundUser.profile;
 
     const foundDom = await Dom.findOne({ dom_id });
     if (!foundDom) return new AppError(404, '존재하지 않는 풋볼장입니다.');
+
     const domObjectId = foundDom._id;
 
     const reviewId = await createReviewId();
@@ -77,6 +80,19 @@ const addReview = async (reviews) => {
 
     const newReview = await Review.create(newReviewField);
 
+    const updatedDomReview = {
+      review_id: newReview.review_id,
+      contents: newReview.contents,
+      user_name: userName,
+      likedreviews: newReview.userslikes,
+      user_icon: userIcon,
+    };
+
+    foundDom.reviews.push(updatedDomReview);
+
+    await foundDom.save();
+
+    console.log(foundDom.reviews);
     return {
       statusCode: 201,
       message: '리뷰가 등록되었습니다.',
@@ -158,12 +174,26 @@ const addLikesReview = async (reviewId, user_id) => {
     const foundReview = await Review.findOne({ review_id: reviewId });
     if (!foundReview) return new AppError(404, '리뷰를 찾을 수 없습니다.');
 
+    const domObjectId = foundReview.dom_id;
     const usersLikesArray = foundReview.userslikes;
     const filteredUsersReviews = usersLikesArray.filter(
       (user) => user.toString() === userObjectId
     );
     if (filteredUsersReviews.length > 0)
       return new AppError(400, '이미 리뷰에 추천되어 있습니다.');
+
+    const foundDom = await Dom.findOne({ _id: domObjectId });
+    if (!foundDom)
+      return new AppError(404, '존재하지 않는 구장이거나 폐장된 구장입니다.');
+
+    foundDom.reviews.forEach((review) => {
+      if (review.review_id === reviewId) {
+        const { likedreviews } = review;
+        likedreviews.push(userObjectId);
+      }
+    });
+
+    await foundDom.save();
 
     usersLikesArray.push(userObjectId);
     foundReview.userslikes = usersLikesArray;
@@ -192,18 +222,34 @@ const removeLikesReview = async (reviewId, user_id) => {
     const foundReview = await Review.findOne({ review_id: reviewId });
     if (!foundReview) return new AppError(404, '존재하지 않는 리뷰 입니다.');
 
+    const domObjectId = foundReview.dom_id;
     const usersLikesArray = foundReview.userslikes;
 
     const filteredUsersReviews = usersLikesArray.filter(
       (user) => user.toString() !== userObjectId
     );
 
-    if (usersLikesArray.length === filteredUsersReviews.length)
-      return new AppError(400, '이미 추천된 리뷰입니다.');
+    // if (usersLikesArray.length === filteredUsersReviews.length)
+    //   return new AppError(400, '이미 추천 해제된 리뷰입니다.');
 
     [...usersLikesArray].forEach((user, idx) => {
       if (user.toString() === userObjectId) usersLikesArray.splice(idx, 1);
     });
+
+    const foundDom = await Dom.findOne({ _id: domObjectId });
+    if (!foundDom)
+      return new AppError(404, '존재하지 않는 구장이거나 폐지된 구장입니다.');
+
+    foundDom.reviews.forEach((review) => {
+      const { likedreviews } = review;
+      [...likedreviews].forEach((user, idx) => {
+        if (user.toString() === userObjectId) {
+          likedreviews.splice(idx, 1);
+        }
+      });
+    });
+
+    await foundDom.save();
 
     foundReview.userslikes = usersLikesArray;
     await foundReview.save();

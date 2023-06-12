@@ -60,6 +60,32 @@ const domSchema = new Schema({
     ],
     default: [],
   },
+  reviews: [
+    {
+      review_id: {
+        type: String,
+        ref: 'Review.review_id',
+      },
+      contents: {
+        type: String,
+        ref: 'Review.contents',
+      },
+      user_name: {
+        type: String,
+        ref: 'Review.name',
+      },
+      likedreviews: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Review.userslikes',
+        },
+      ],
+      user_icon: {
+        type: String,
+      },
+    },
+  ],
+  default: [],
 });
 
 module.exports = domSchema;
