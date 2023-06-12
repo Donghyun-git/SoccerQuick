@@ -84,6 +84,10 @@ const addFavoriteDoms = async (domId, user_id) => {
 
     await foundDom.save();
 
+    foundUser.favoritePlaygrounds.push(foundDom.dom_id);
+
+    await foundUser.save();
+
     return {
       statusCode: 200,
       message: '즐겨찾기에 추가되었습니다.',

@@ -39,6 +39,11 @@ const UserSchema = new Schema(
       enum: ['남', '여'],
       required: true,
     },
+    profile: {
+      type: String,
+      default:
+        'https://soccerquick.s3.ap-northeast-2.amazonaws.com/default_profile.png',
+    },
     role: {
       type: String,
       enum: ['admin', 'manager', 'user'],
@@ -49,7 +54,7 @@ const UserSchema = new Schema(
       enum: ['모집 가능', '모집 불가능'],
       default: '모집 가능',
     },
-    favoritePlaygrounds: [{ type: Schema.Types.ObjectId, ref: 'Ground' }],
+    favoritePlaygrounds: [{ type: String, ref: 'Dom.dom_id' }],
     login_banned: {
       type: Boolean,
       default: false,

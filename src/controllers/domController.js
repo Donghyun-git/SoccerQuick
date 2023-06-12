@@ -58,7 +58,7 @@ const getSearchLocation = async (req, res, next) => {
 
 // [ 풋볼장 즐겨찾기 추가 ]
 const addFavoriteDoms = async (req, res, next) => {
-  const { domId } = req.params;
+  const { domId } = req.body;
   const { user_id } = req.user;
 
   try {

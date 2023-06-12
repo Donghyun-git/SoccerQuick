@@ -13,7 +13,7 @@ router.get('/', tokenValidator, domController.getAllDoms);
 router.get('/:domId', domController.getOneDom);
 
 // [ 풋볼장 즐겨찾기에 추가 ]
-router.post('/:domId', tokenValidator, domController.addFavoriteDoms);
+router.post('/', tokenValidator, domController.addFavoriteDoms);
 
 // [ 풋볼장 즐겨찾기에서 삭제]
 router.delete('/:domId', tokenValidator, domController.removeFavoriteDoms);
