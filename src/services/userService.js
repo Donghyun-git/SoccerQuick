@@ -75,16 +75,12 @@ const updateUser = async (formData) => {
 
     //이미지 업로드
     if (image) {
-      console.log('이미지있어서 드러옴 ㅋㅋㅋ ㄲ움?');
       const { destination, filename } = image;
-
       const postImage = await fs.promises.readFile(
         `${destination}/${filename}`
       );
-
       const mimeType = getMimeType(filename);
       const params = createParams(postImage, filename, mimeType);
-
       const imageUpload = (params) => {
         return new Promise((resolve, reject) => {
           myBucket.upload(params, (err, data) => {
@@ -96,11 +92,8 @@ const updateUser = async (formData) => {
           });
         });
       };
-
       const imageUploaded = await imageUpload(params);
-
       updateData.profile = imageUploaded;
-
       await fs.promises.unlink(`${destination}/${filename}`);
     }
 
