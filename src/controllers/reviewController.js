@@ -69,13 +69,11 @@ const getPageReview = async (req, res, next) => {
 // [ 리뷰 등록 ]
 const addReview = async (req, res, next) => {
   const { user_id } = req.user;
-  const { dom_id, rating, title, contents } = req.body;
+  const { dom_id, contents } = req.body;
 
   const { error } = addReviewSchema.validate({
     user_id,
     dom_id,
-    rating,
-    title,
     contents,
   });
   if (error) {
@@ -87,8 +85,6 @@ const addReview = async (req, res, next) => {
     const { statusCode, message, data } = await reviewService.addReview({
       user_id,
       dom_id,
-      rating,
-      title,
       contents,
     });
 
@@ -108,13 +104,11 @@ const addReview = async (req, res, next) => {
 const updateReview = async (req, res, next) => {
   const { reviewId } = req.params;
   const { user_id } = req.user;
-  const { rating, title, contents } = req.body;
+  const { contents } = req.body;
 
   const { error } = updateReviewSchema.validate({
     reviewId,
     user_id,
-    rating,
-    title,
     contents,
   });
 
@@ -127,8 +121,6 @@ const updateReview = async (req, res, next) => {
     const { statusCode, message, data } = await reviewService.updateReview({
       reviewId,
       user_id,
-      rating,
-      title,
       contents,
     });
 
