@@ -25,6 +25,7 @@ const getUser = async (user_id) => {
         favoritePlaygrounds: foundUser.favoritePlaygrounds,
         role: foundUser.role,
         gender: foundUser.gender,
+        profile: foundUser.profile,
         createdAt: foundUser.createdAt,
       },
     };
