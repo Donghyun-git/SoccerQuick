@@ -284,6 +284,26 @@ const deleteComment = async (req, res, next) => {
   }
 };
 
+//[ 이미지 업로드 용 ]
+const uploadImage = async (req, res, next) => {
+  const image = req.file || null;
+
+  try {
+    const { statusCode, message, data } = await communityService.uploadImage(
+      image
+    );
+
+    if (statusCode !== 201) return next(new AppError(statusCode, message));
+
+    res.status(201).json({
+      data,
+    });
+  } catch (error) {
+    console.error(error);
+    return next(new AppError(500, 'Internal Server Error'));
+  }
+};
+
 module.exports = {
   addPost,
   getAllPosts,
@@ -294,4 +314,5 @@ module.exports = {
   addComment,
   updateComment,
   deleteComment,
+  uploadImage,
 };

@@ -26,6 +26,14 @@ router.post(
 //[ 커뮤니티 게시글 댓글 등록 ]
 router.post('/:postId/comment', tokenValidator, communityController.addComment);
 
+//[ 이미지 업로드 ]
+router.post(
+  '/uploads',
+  tokenValidator,
+  imageUpload.single('image'),
+  communityController.uploadImage
+);
+
 /* PATCH */
 //[ 커뮤니티 게시글 댓글 수정]
 router.patch(

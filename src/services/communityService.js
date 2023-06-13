@@ -400,6 +400,41 @@ const deleteComment = async (comment) => {
   }
 };
 
+// [ 이미지 업로드 용 ]
+const uploadImage = async (image) => {
+  try {
+    if (!image)
+      return new AppError(400, '이미지 업로드가 정상적으로 되지 않았습니다.');
+
+    const { destination, filename } = image;
+    const postImage = await fs.promises.readFile(`${destination}/${filename}`);
+    const mimeType = getMimeType(filename);
+    const params = createParams(postImage, filename, mimeType);
+    const imageUpload = (params) => {
+      return new Promise((resolve, reject) => {
+        myBucket.upload(params, (err, data) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(data.Location);
+        });
+      });
+    };
+    const imageUploaded = await imageUpload(params);
+    await fs.promises.unlink(`${destination}/${filename}`);
+
+    return {
+      statusCode: 201,
+      message: '이미지 업로드 성공',
+      data: imageUploaded,
+    };
+  } catch (error) {
+    console.error(error);
+    return new AppError();
+  }
+};
+
 module.exports = {
   addPost,
   getAllPosts,
@@ -410,4 +445,5 @@ module.exports = {
   addComment,
   updateComment,
   deleteComment,
+  uploadImage,
 };
