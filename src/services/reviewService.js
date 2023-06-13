@@ -107,7 +107,7 @@ const addReview = async (reviews) => {
 // [ 리뷰 수정 ]
 /** ([리뷰번호, 유저아이디, 평점, 리뷰내용 ]) */
 const updateReview = async (review) => {
-  const { reviewId, user_id, contents } = review;
+  const { reviewId, user_id, domId, contents } = review;
 
   try {
     const foundReview = await Review.findOne({ review_id: reviewId });
@@ -130,6 +130,20 @@ const updateReview = async (review) => {
       { $set: updatedReviewObj },
       { new: true }
     );
+
+    const foundDom = await Dom.findOne({ dom_id: domId });
+    if (!foundDom) return new AppError(404, '구장 정보를 찾을 수 없습니다.');
+
+    foundDom.reviews.forEach((review) => {
+      const { review_id } = review;
+
+      if (reviewId === review_id) {
+        review.contents = contents;
+      }
+    });
+
+    await foundDom.save();
+
     return { statusCode: 200, message: '리뷰 수정 성공', data: updatedReview };
   } catch (error) {
     console.error(error);
@@ -138,7 +152,7 @@ const updateReview = async (review) => {
 };
 
 // [ 리뷰 삭제 ]
-const deleteReview = async (reviewId, user_id) => {
+const deleteReview = async (reviewId, user_id, domId) => {
   try {
     const foundReview = await Review.findOne({ review_id: reviewId });
 
@@ -154,6 +168,17 @@ const deleteReview = async (reviewId, user_id) => {
 
     if (reviewUserObjectId !== userObjectId)
       return new AppError(403, '리뷰 작성자만 삭제 가능합니다.');
+
+    const foundDom = await Dom.findOne({ dom_id: domId });
+    if (!foundDom) return new AppError(404, '구장 정보를 찾을 수 없습니다.');
+
+    [...foundDom.reviews].forEach((review, idx) => {
+      const { review_id } = review;
+
+      if (reviewId === review_id) foundDom.reviews.splice(idx, 1);
+    });
+
+    await foundDom.save();
 
     await Review.deleteOne({ review_id: reviewId });
 
@@ -229,8 +254,8 @@ const removeLikesReview = async (reviewId, user_id) => {
       (user) => user.toString() !== userObjectId
     );
 
-    // if (usersLikesArray.length === filteredUsersReviews.length)
-    //   return new AppError(400, '이미 추천 해제된 리뷰입니다.');
+    if (usersLikesArray.length === filteredUsersReviews.length)
+      return new AppError(400, '이미 추천 해제된 리뷰입니다.');
 
     [...usersLikesArray].forEach((user, idx) => {
       if (user.toString() === userObjectId) usersLikesArray.splice(idx, 1);

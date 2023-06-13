@@ -104,11 +104,12 @@ const addReview = async (req, res, next) => {
 const updateReview = async (req, res, next) => {
   const { reviewId } = req.params;
   const { user_id } = req.user;
-  const { contents } = req.body;
+  const { domId, contents } = req.body;
 
   const { error } = updateReviewSchema.validate({
     reviewId,
     user_id,
+    domId,
     contents,
   });
 
@@ -121,6 +122,7 @@ const updateReview = async (req, res, next) => {
     const { statusCode, message, data } = await reviewService.updateReview({
       reviewId,
       user_id,
+      domId,
       contents,
     });
 
@@ -140,10 +142,12 @@ const updateReview = async (req, res, next) => {
 const deleteReview = async (req, res, next) => {
   const { reviewId } = req.params;
   const { user_id } = req.user;
+  const { domId } = req.body;
 
   const { error } = deleteReviewSchema.validate({
     reviewId,
     user_id,
+    domId,
   });
 
   if (error) {
@@ -154,7 +158,8 @@ const deleteReview = async (req, res, next) => {
   try {
     const { statusCode, message } = await reviewService.deleteReview(
       reviewId,
-      user_id
+      user_id,
+      domId
     );
 
     if (statusCode !== 204) return next(new AppError(statusCode, message));
@@ -170,7 +175,7 @@ const deleteReview = async (req, res, next) => {
 
 // [ 리뷰 좋아요 등록 ]
 const addLikesReview = async (req, res, next) => {
-  const { reviewId } = req.params;
+  const { reviewId } = req.body;
   const { user_id } = req.user;
   try {
     const { statusCode, message, data } = await reviewService.addLikesReview(
