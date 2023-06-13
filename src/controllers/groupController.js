@@ -277,7 +277,7 @@ const deleteGroup = async (req, res, next) => {
   const { user_id } = req.user;
 
   try {
-    const { statusCode, message, data } = await groupService.deleteGroup(
+    const { statusCode, message } = await groupService.deleteGroup(
       groupId,
       user_id
     );
