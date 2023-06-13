@@ -19,11 +19,7 @@ router.get('/:reviewId', tokenValidator, reviewController.getOneReview);
 router.post('/', tokenValidator, reviewController.addReview);
 
 // [ 리뷰 좋아요 등록 ]
-router.post(
-  '/:reviewId/likes',
-  tokenValidator,
-  reviewController.addLikesReview
-);
+router.post('/likes', tokenValidator, reviewController.addLikesReview);
 
 /* PATCH */
 // [ 리뷰 수정 ]
