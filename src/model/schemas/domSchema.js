@@ -66,6 +66,14 @@ const domSchema = new Schema({
         type: String,
         ref: 'Review.review_id',
       },
+      dom_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Review.dom_id',
+      },
+      ground_id: {
+        type: String,
+        ref: 'Review.ground_id',
+      },
       contents: {
         type: String,
         ref: 'Review.contents',
@@ -82,6 +90,14 @@ const domSchema = new Schema({
       ],
       user_icon: {
         type: String,
+      },
+      createdAt: {
+        type: String,
+        ref: 'Review.createdAt',
+      },
+      updatedAt: {
+        type: String,
+        ref: 'Review.updatedAt',
       },
     },
   ],

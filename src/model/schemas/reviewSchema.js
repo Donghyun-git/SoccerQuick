@@ -17,6 +17,11 @@ const ReviewSchema = new Schema(
       ref: 'Dom',
       required: true,
     },
+    ground_id: {
+      type: String,
+      ref: 'Dom.dom_id',
+      required: true,
+    },
     name: {
       type: String,
       ref: 'User',
@@ -28,8 +33,14 @@ const ReviewSchema = new Schema(
     },
     userslikes: [
       {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
+        _id: {
+          type: Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        user_id: {
+          type: String,
+          ref: 'User.user_id',
+        },
       },
     ],
   },

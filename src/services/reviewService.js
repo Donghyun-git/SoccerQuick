@@ -74,6 +74,7 @@ const addReview = async (reviews) => {
       review_id: reviewId,
       user_id: userObjectId,
       dom_id: domObjectId,
+      ground_id: dom_id,
       name: foundUser.name,
       contents,
     };
@@ -82,10 +83,14 @@ const addReview = async (reviews) => {
 
     const updatedDomReview = {
       review_id: newReview.review_id,
+      dom_id: newReview.dom_id,
+      ground_id: newReview.ground_id,
       contents: newReview.contents,
       user_name: userName,
       likedreviews: newReview.userslikes,
       user_icon: userIcon,
+      createdAt: newReview.createdAt,
+      updatedAt: newReview.updatedAt,
     };
 
     foundDom.reviews.push(updatedDomReview);
@@ -139,6 +144,7 @@ const updateReview = async (review) => {
 
       if (reviewId === review_id) {
         review.contents = contents;
+        review.updatedAt = updatedReview.updatedAt;
       }
     });
 
@@ -202,7 +208,7 @@ const addLikesReview = async (reviewId, user_id) => {
     const domObjectId = foundReview.dom_id;
     const usersLikesArray = foundReview.userslikes;
     const filteredUsersReviews = usersLikesArray.filter(
-      (user) => user.toString() === userObjectId
+      (user) => user._id.toString() === userObjectId
     );
     if (filteredUsersReviews.length > 0)
       return new AppError(400, '이미 리뷰에 추천되어 있습니다.');
@@ -220,7 +226,10 @@ const addLikesReview = async (reviewId, user_id) => {
 
     await foundDom.save();
 
-    usersLikesArray.push(userObjectId);
+    usersLikesArray.push({
+      _id: userObjectId,
+      user_id,
+    });
     foundReview.userslikes = usersLikesArray;
     await foundReview.save();
 
@@ -251,14 +260,14 @@ const removeLikesReview = async (reviewId, user_id) => {
     const usersLikesArray = foundReview.userslikes;
 
     const filteredUsersReviews = usersLikesArray.filter(
-      (user) => user.toString() !== userObjectId
+      (user) => user._id.toString() !== userObjectId
     );
 
     if (usersLikesArray.length === filteredUsersReviews.length)
       return new AppError(400, '이미 추천 해제된 리뷰입니다.');
 
     [...usersLikesArray].forEach((user, idx) => {
-      if (user.toString() === userObjectId) usersLikesArray.splice(idx, 1);
+      if (user._id.toString() === userObjectId) usersLikesArray.splice(idx, 1);
     });
 
     const foundDom = await Dom.findOne({ _id: domObjectId });
