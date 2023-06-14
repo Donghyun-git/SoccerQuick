@@ -84,13 +84,21 @@
 
 <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
 <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
 <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React">
-<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
 
 #### **Library**
 
-(사용 라이브러리 추가해주시면 됩니다)
+[![Redux](https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white)](https://redux.js.org/)
+[![Redux Persist](https://img.shields.io/badge/Redux_Persist-764ABC?style=for-the-badge)](https://github.com/rt2zz/redux-persist)
+[![Redux Thunk](https://img.shields.io/badge/Redux_Thunk-764ABC?style=for-the-badge)](https://github.com/reduxjs/redux-thunk)
+[![HTML Parser](https://img.shields.io/badge/HTML_Parser-E34F26?style=for-the-badge)](https://example.com/)
+[![React Quill](https://img.shields.io/badge/React_Quill-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://github.com/zenoamaro/react-quill)
+[![React Slick](https://img.shields.io/badge/React_Slick-CC6699?style=for-the-badge&logo=react&logoColor=white)](https://example.com/)
+[![React Select](https://img.shields.io/badge/React_Select-00B8D9?style=for-the-badge&logo=react&logoColor=white)](https://react-select.com/)
+[![React Share](https://img.shields.io/badge/React_Share-4C75A3?style=for-the-badge&logo=react&logoColor=white)](https://example.com/)
+[![Styled Components](https://img.shields.io/badge/Styled_Components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white)](https://styled-components.com/)
 
 <br><br>
 
