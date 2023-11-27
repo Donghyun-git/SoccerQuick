@@ -15,7 +15,7 @@
 
 ## 데모 사이트
 
-- https://www.soccer-quick.xyz
+- https://www.soccerquick.kr
 
 <br>
 
